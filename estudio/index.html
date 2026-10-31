@@ -364,7 +364,7 @@ footer a{color:var(--plum);font-weight:700}
   <div class="wrap center">
     <span class="eyebrow" style="color:var(--blush2)">Preços</span>
     <h2 class="h2">Escolha o seu <em>pacote</em></h2>
-    <p class="sub">Gere e veja suas prévias de graça. Depois libere em alta qualidade o pacote que preferir, no Pix.</p>
+    <p class="sub">Veja 3 prévias grátis. Amou? Escolha o pacote, pague no Pix e gere o restante do seu ensaio na hora.</p>
     <div class="plans" style="text-align:left">
       <div class="plan">
         <h3>Essencial</h3>
@@ -407,7 +407,7 @@ footer a{color:var(--plum);font-weight:700}
     <div class="center"><span class="eyebrow rv">Dúvidas</span><h2 class="h2 rv">Perguntas <em>frequentes</em></h2></div>
     <div class="faq">
       <details><summary>A foto fica parecida comigo mesmo?</summary><p>A IA usa o seu rosto como referência. Quanto melhores as selfies (de frente, com boa luz, sem óculos escuros e sem filtro), mais fiel fica o resultado. Como você vê antes de pagar, só libera se gostar.</p></details>
-      <details><summary>Preciso pagar para ver as fotos?</summary><p>Não. Você gera e vê as prévias de graça. O pagamento é só para baixar as fotos em alta qualidade, sem marca d'água.</p></details>
+      <details><summary>Preciso pagar para ver as fotos?</summary><p>Não. Você gera 3 prévias de graça para ver como fica. Gostou? Escolhe o pacote, paga no Pix e libera as fotos em alta qualidade, sem marca d'água. As fotos que faltam para completar o pacote você gera na hora.</p></details>
       <details><summary>Como recebo as fotos depois de pagar?</summary><p>Assim que o Pix é confirmado (normalmente em segundos), os botões de download são liberados na mesma tela: foto de perfil, stories e original.</p></details>
       <details><summary>Minhas fotos ficam guardadas?</summary><p>Não guardamos suas selfies. Elas são usadas apenas para criar o seu ensaio naquele momento. As fotos geradas ficam salvas só no seu próprio celular, para você baixar depois.</p></details>
       <details><summary>Quanto tempo demora?</summary><p>Cada foto leva de 20 segundos a 1 minuto para ficar pronta.</p></details>
@@ -496,9 +496,9 @@ footer a{color:var(--plum);font-weight:700}
     <div id="shEscolha">
       <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Sem marca d'água, em alta resolução, nos formatos perfil, stories e original.</p>
       <button class="pk" data-pk="foto"><span class="rd"></span><span class="t"><b>Essencial · 1 foto</b><small id="pkFotoTxt">Esta foto · perfil + stories + original</small></span><span class="v">R$ <span data-preco="foto">9,90</span></span></button>
-      <button class="pk" data-pk="kit5"><span class="rd"></span><span class="t"><b>Ensaio · até 5 fotos</b><small id="pkKit5Txt">R$ 3,98 por foto</small></span><span class="v">R$ <span data-preco="kit5">19,90</span><s>R$ 49,50</s></span></button>
-      <button class="pk on" data-pk="kit15"><span class="rd"></span><span class="t"><b>Álbum completo · até 15 fotos</b><small id="pkKit15Txt">R$ 1,99 por foto · mais escolhido</small></span><span class="v">R$ <span data-preco="kit15">29,90</span><s>R$ 148,50</s></span></button>
-      <p id="pkDica" style="font-size:13px;color:var(--rose);font-weight:600;margin-top:10px"></p>
+      <button class="pk" data-pk="kit5"><span class="rd"></span><span class="t"><b>Ensaio · 5 fotos</b><small>R$ 3,98 por foto</small></span><span class="v">R$ <span data-preco="kit5">19,90</span><s>R$ 49,50</s></span></button>
+      <button class="pk on" data-pk="kit15"><span class="rd"></span><span class="t"><b>Álbum completo · 15 fotos</b><small>R$ 1,99 por foto · mais escolhido</small></span><span class="v">R$ <span data-preco="kit15">29,90</span><s>R$ 148,50</s></span></button>
+      <p id="pkDica" style="font-size:13px;color:var(--muted);margin-top:10px"></p>
       <input class="fld" id="nome" placeholder="Seu primeiro nome" autocomplete="given-name">
       <input class="fld" id="email" type="email" placeholder="Seu e-mail (para o comprovante)" autocomplete="email">
       <button class="btn btn-r" id="gerarPix" style="width:100%;margin-top:16px">Pagar com Pix</button>
@@ -522,16 +522,16 @@ footer a{color:var(--plum);font-weight:700}
 const API='/api/estudio';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const brl=v=>v.toFixed(2).replace('.',',');
-let CAT=[], PRECOS={foto:{valor:9.9,qtd:1},kit5:{valor:19.9,qtd:5},kit15:{valor:29.9,qtd:15}}, MAXF=15;
+let CAT=[], PRECOS={foto:{valor:9.9,qtd:1},kit5:{valor:19.9,qtd:5},kit15:{valor:29.9,qtd:15}}, MAXF=3;
 const DEPOIMENTOS=[]; // depoimentos reais: {nome:'',msgs:['...'],img:'url opcional'}
-const S={passo:1,estilo:null,selfies:[],fotos:[],liberadas:{},pg:null,alvo:null,acao:null};
+const S={passo:1,estilo:null,selfies:[],fotos:[],liberadas:{},pg:null,cred:null,alvo:null,acao:null};
 const track=(ev,p)=>{try{window.fbq&&fbq('track',ev,p)}catch(e){}};
 
 /* ---------- persistência (IndexedDB, opcional) ---------- */
 const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>ok(r.result);r.onerror=ko}catch(e){ko(e)}})},
  async set(k,v){try{const d=await this.open();d.transaction('k','readwrite').objectStore('k').put(v,k)}catch(e){}},
  async get(k){try{const d=await this.open();return await new Promise(ok=>{const q=d.transaction('k').objectStore('k').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})}catch(e){return null}}};
-const salvar=()=>DB.set('estado',{fotos:S.fotos,liberadas:S.liberadas,pg:S.pg});
+const salvar=()=>DB.set('estado',{fotos:S.fotos,liberadas:S.liberadas,pg:S.pg,cred:S.cred});
 
 /* ---------- imagens do catálogo ---------- */
 const imgCat=(el,id)=>{el.loading='lazy';el.src='catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
@@ -551,7 +551,7 @@ function renderSGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#sgrid');g
   renderTabs($('#stabs'),cat,renderSGrid)}
 const estiloInfo=id=>{for(const c of CAT){const i=c.itens.find(x=>x.id===id);if(i)return{...i,catNome:c.catNome,cat:c.cat}}return null};
 
-fetch(API+'?acao=catalogo').then(r=>r.json()).then(j=>{CAT=j.catalogo;PRECOS=j.precos;MAXF=j.maxFotos||15;
+fetch(API+'?acao=catalogo').then(r=>r.json()).then(j=>{CAT=j.catalogo;PRECOS=j.precos;MAXF=j.maxFotos||3;
   $$('[data-preco]').forEach(e=>e.textContent=brl(PRECOS[e.dataset.preco].valor));
   $('#mq').innerHTML=[...CAT,...CAT].flatMap(c=>c.itens.map(i=>`<span>${i.nome}</span>`)).join('');
   renderGrid(CAT[0].cat)}).catch(()=>{});
@@ -587,17 +587,22 @@ drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
 /* ---------- geração ---------- */
 const dicas=['Ajustando a luz do estúdio…','Escolhendo o melhor ângulo…','Cuidando de cada detalhe do seu rosto…','Finalizando a edição…'];
 let gerando=false;
+const pendentes=()=>S.fotos.filter(f=>!S.liberadas[f.id]);
+const restantes=()=>S.cred?Math.max(0,S.cred.qtd-S.cred.usados):0;
+const podeGerar=()=>S.cred?restantes()>pendentes().length:S.fotos.length<MAXF;
 async function gerar(){
   if(gerando)return;if(!S.selfies.length){ir(2);return}
-  if(S.fotos.length>=MAXF){erro('Você chegou ao limite de fotos grátis desta sessão. Libere seu álbum para continuar.');return}
+  if(!podeGerar()){if(S.cred&&!restantes()){S.cred=null;salvar()}S.alvo=null;S.acao='album';abrirPagamento('kit15');
+    toast(S.cred?'Libere as fotos prontas antes de gerar mais':'Você usou as '+MAXF+' prévias grátis. Escolha seu pacote para continuar');return}
   gerando=true;erro('');const g=$('#gen');g.classList.add('on');$('#more').hidden=true;
   const e=estiloInfo(S.estilo);$('#gentxt').textContent='Criando sua foto · '+(e?e.nome:'');
   let t=0;const bar=$('#genbar');bar.style.width='4%';const iv=setInterval(()=>{t++;bar.style.width=Math.min(94,4+t*2.2)+'%';$('#gendica').textContent=dicas[Math.floor(t/7)%dicas.length]},1000);
-  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo})});
+  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,pagamentoId:S.cred?S.cred.id:undefined})});
     const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
     if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
-    S.fotos.unshift({id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa});salvar();track('ViewContent',{content_name:j.estilo});
+    const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();track('ViewContent',{content_name:j.estilo});
     bar.style.width='100%';renderRes();
+    if(S.cred&&restantes()>0)await liberarFoto(f);
   }catch(err){erro(err.message)}
   finally{clearInterval(iv);gerando=false;g.classList.remove('on');$('#more').hidden=false;renderRes()}
 }
@@ -605,15 +610,18 @@ $('#maisUma').onclick=gerar;
 $('#trocar').onclick=()=>ir(1);
 
 function renderRes(){const box=$('#res');box.innerHTML='';
-  S.fotos.forEach(f=>{const ok=!!S.liberadas[f.id];const e=estiloInfo(f.estilo);const d=document.createElement('div');d.className='ph2';
+  S.fotos.forEach(f=>{const ok=!!S.liberadas[f.id];const d=document.createElement('div');d.className='ph2';
    d.innerHTML=`<div class="im"><img src="${ok?S.liberadas[f.id]:f.previa}" alt="" draggable="false"><div class="shield"></div><span class="lock ${ok?'ok':''}">${ok?'✓ Liberada':'🔒 Prévia'}</span></div>
    <div class="acts"><button data-a="perfil">Foto de perfil</button><button data-a="stories">Stories</button><button class="full" data-a="original">${ok?'Baixar em HD':'Liberar em HD'}</button></div>`;
    d.querySelector('.shield').oncontextmenu=ev=>ev.preventDefault();
    d.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>baixar(f,b.dataset.a));box.appendChild(d)});
-  const n=S.fotos.length,pend=S.fotos.filter(f=>!S.liberadas[f.id]).length;
-  $('#albumbar').hidden=!n;$('#albumtxt').textContent=pend?`${n} de ${MAXF} fotos · gere até ${MAXF} grátis e libere em HD`:'Tudo liberado! Baixe todas de uma vez.';
-  $('#baixarAlbum').textContent=pend?'Liberar fotos · a partir de R$ '+brl(PRECOS.foto.valor):'Baixar todas';
-  $('#more').hidden=gerando||!n&&!S.selfies.length;$('#maisUma').disabled=!S.selfies.length||n>=MAXF;
+  const n=S.fotos.length,pend=pendentes().length;
+  $('#albumbar').hidden=!n;
+  if(S.cred){$('#albumtxt').textContent=`Pacote ativo: ${Math.min(S.cred.usados,S.cred.qtd)} de ${S.cred.qtd} fotos liberadas · restam ${restantes()}`}
+  else $('#albumtxt').textContent=pend?`${Math.min(n,MAXF)} de ${MAXF} prévias grátis · libere em HD sem marca d'água`:'Tudo liberado! Baixe todas de uma vez.';
+  $('#baixarAlbum').textContent=pend&&!restantes()?'Liberar fotos · a partir de R$ '+brl(PRECOS.foto.valor):(pend?'Liberar com meu pacote':'Baixar todas');
+  $('#maisUma').textContent=S.cred?`+ Gerar outra (restam ${Math.max(0,restantes()-pend)})`:(S.fotos.length<MAXF?`+ Gerar outra grátis (${MAXF-S.fotos.length} restantes)`:'+ Gerar mais fotos');
+  $('#more').hidden=gerando||!n&&!S.selfies.length;$('#maisUma').disabled=!S.selfies.length;
   $('#ressub').textContent=n?'Toque em perfil, stories ou HD para baixar. As fotos com 🔒 precisam ser liberadas.':'Suas prévias aparecem aqui. Libere as que amar em alta qualidade.'}
 
 /* ---------- download nos formatos ---------- */
@@ -626,45 +634,53 @@ async function salvarArquivo(dataUrl,nome){
   try{if(navigator.canShare&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const b=await (await fetch(dataUrl)).blob();const f=new File([b],nome,{type:'image/jpeg'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}}catch(e){if(e.name==='AbortError')return}
   const a=document.createElement('a');a.href=dataUrl;a.download=nome;document.body.appendChild(a);a.click();a.remove()}
 async function baixar(f,fmt){
-  if(!S.liberadas[f.id]){S.alvo=f;S.acao=fmt;abrirPagamento('foto');return}
+  if(!S.liberadas[f.id]){
+    if(restantes()>0){if(await liberarFoto(f))return baixar(f,fmt);return}
+    S.alvo=f;S.acao=fmt;abrirPagamento('foto');return}
   const url=await formatar(S.liberadas[f.id],fmt);await salvarArquivo(url,`estudio-${f.estilo}-${fmt}-${f.id.slice(0,5)}.jpg`);toast('Foto salva ✨')}
-$('#baixarAlbum').onclick=async()=>{const pend=S.fotos.filter(f=>!S.liberadas[f.id]);
+$('#baixarAlbum').onclick=async()=>{const pend=pendentes();
+  if(pend.length&&restantes()>0){await liberarPendentes();return}
   if(pend.length){S.alvo=null;S.acao='album';abrirPagamento('kit15');return}
   for(const f of S.fotos){const url=await formatar(S.liberadas[f.id],'original');await salvarArquivo(url,`estudio-${f.estilo}-${f.id.slice(0,5)}.jpg`);await new Promise(r=>setTimeout(r,500))}toast('Álbum baixado ✨')};
 
+/* ---------- créditos ---------- */
+async function liberarFoto(f){if(!S.cred||S.liberadas[f.id])return !!S.liberadas[f.id];
+  try{const r=await fetch(API+'?acao=liberar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pagamentoId:S.cred.id,sealed:f.sealed})});const j=await r.json();
+    if(j.foto){S.liberadas[f.id]=j.foto;S.cred.usados=S.cred.qtd-j.restantes;salvar();renderRes();return true}
+    if(j.esgotado){S.cred.usados=S.cred.qtd;salvar();renderRes()}toast(j.erro||'Não foi possível liberar');}catch(e){toast('Falha de conexão')}
+  return false}
+async function liberarPendentes(primeiro){let n=0;const lista=pendentes();if(primeiro){lista.sort((a,b)=>(b.id===primeiro.id)-(a.id===primeiro.id))}
+  for(const f of lista){if(restantes()<=0)break;if(await liberarFoto(f))n++}return n}
+
 /* ---------- pagamento Pix ---------- */
 let pacote='kit15',poll=null;
-const pendentes=()=>S.fotos.filter(f=>!S.liberadas[f.id]);
-function idsDo(pk){if(pk==='foto')return [S.alvo?S.alvo.id:(pendentes()[0]||{}).id].filter(Boolean);return pendentes().slice(0,PRECOS[pk].qtd).map(f=>f.id)}
-function dica(){const n=pendentes().length,q=PRECOS[pacote].qtd;$('#pkDica').textContent=pacote!=='foto'&&n<q?`Você tem ${n} foto${n>1?'s':''} pronta${n>1?'s':''}. Pode gerar mais ${q-n} grátis antes de liberar, para aproveitar o pacote inteiro.`:''}
-function abrirPagamento(pref){const n=pendentes().length;pacote=pref==='foto'&&S.alvo?'foto':(n>5?'kit15':(pref==='kit15'?'kit15':'kit5'));
-  $('.pk[data-pk="foto"]').style.display=(S.alvo||n===1)?'':'none';
+function abrirPagamento(pref){const n=pendentes().length;pacote=pref==='foto'&&S.alvo?'foto':(n>5||pref==='kit15'?'kit15':'kit5');
   $$('.pk').forEach(p=>p.classList.toggle('on',p.dataset.pk===pacote));
-  $('#pkKit5Txt').textContent=n>5?'Suas 5 fotos mais recentes':`R$ 3,98 por foto · você tem ${n}`;
-  $('#pkKit15Txt').textContent=n>15?'Suas 15 fotos mais recentes':`R$ 1,99 por foto · você tem ${n}`;dica();
+  $('#pkFotoTxt').textContent=S.alvo?'Esta foto · perfil + stories + original':'1 foto · perfil + stories + original';
+  $('#pkDica').textContent=n?`Os pacotes valem para as ${n} foto${n>1?'s':''} que você já gerou e para as próximas que gerar, até completar a quantidade do pacote.`:'Você gera as fotos depois de pagar, até completar a quantidade do pacote.';
   $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Liberar suas fotos';$('#sheet').classList.add('open');track('AddPaymentInfo')}
-$$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.classList.toggle('on',x===p));dica()});
+$$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.classList.toggle('on',x===p))});
 const fecharSheet=()=>{$('#sheet').classList.remove('open');clearInterval(poll)};
 $('#shX').onclick=fecharSheet;$('#sheet').onclick=e=>{if(e.target.id==='sheet')fecharSheet()};
 $('#gerarPix').onclick=async()=>{const b=$('#gerarPix');b.disabled=true;b.textContent='Gerando Pix…';
-  const ids=idsDo(pacote);if(!ids.length){toast('Gere uma foto primeiro');b.disabled=false;b.textContent='Pagar com Pix';return}
-  try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,pacote,nome:$('#nome').value,email:$('#email').value})});
+  try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pacote,nome:$('#nome').value,email:$('#email').value})});
     const j=await r.json();if(!r.ok||j.erro)throw new Error(j.erro||'Erro ao gerar Pix');
-    S.pg={id:j.pagamentoId,pacote,ids,valor:j.valor};salvar();
+    S.pg={id:j.pagamentoId,pacote,qtd:j.qtd,valor:j.valor};salvar();
     $('#qrImg').src='data:image/png;base64,'+j.qr;$('#ccTxt').value=j.copiaCola;$('#pixValor').textContent=brl(j.valor);
     $('#shEscolha').hidden=true;$('#shPix').hidden=false;$('#shTitle').textContent='Pague com Pix';esperar();
   }catch(e){toast(e.message)}finally{b.disabled=false;b.textContent='Pagar com Pix'}};
 $('#copiar').onclick=async()=>{try{await navigator.clipboard.writeText($('#ccTxt').value)}catch(e){$('#ccTxt').select();document.execCommand('copy')}toast('Código Pix copiado!')};
 function esperar(){clearInterval(poll);poll=setInterval(checar,4000)}
-async function checar(){if(!S.pg)return;try{const j=await (await fetch(API+'?acao=status&id='+S.pg.id)).json();if(j.status==='approved'){clearInterval(poll);await liberar()}}catch(e){}}
-async function liberar(){const pg=S.pg;if(!pg)return;let n=0;
-  for(const id of pg.ids){if(S.liberadas[id])continue;const f=S.fotos.find(x=>x.id===id);if(!f)continue;
-    try{const r=await fetch(API+'?acao=liberar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pagamentoId:pg.id,sealed:f.sealed})});const j=await r.json();if(j.foto){S.liberadas[id]=j.foto;n++}}catch(e){}}
-  track('Purchase',{value:pg.valor,currency:'BRL'});S.pg=null;salvar();fecharSheet();renderRes();toast(n?'Pagamento confirmado! Suas fotos foram liberadas 🎉':'Fotos liberadas');
+async function checar(){if(!S.pg)return;try{const j=await (await fetch(API+'?acao=status&id='+S.pg.id)).json();if(j.aprovado){clearInterval(poll);await confirmado(j)}else if(['rejected','cancelled','expired'].includes(j.status)){S.pg=null;salvar();clearInterval(poll)}}catch(e){}}
+async function confirmado(j){const pg=S.pg;S.cred={id:pg.id,pacote:pg.pacote,qtd:j.qtd||pg.qtd,usados:j.usados||0};S.pg=null;salvar();
+  track('Purchase',{value:pg.valor,currency:'BRL'});fecharSheet();
+  const n=await liberarPendentes(S.alvo);renderRes();
+  const r=restantes();toast(n?`Pagamento confirmado! ${n} foto${n>1?'s':''} liberada${n>1?'s':''} 🎉`:'Pagamento confirmado! 🎉');
+  if(r>0&&S.passo===3)setTimeout(()=>toast(`Você ainda pode gerar mais ${r} foto${r>1?'s':''} no seu pacote`),2800);
   if(S.alvo&&S.acao&&S.acao!=='album'&&S.liberadas[S.alvo.id]){const f=S.alvo;S.alvo=null;setTimeout(()=>baixar(f,S.acao),400)}}
 
 /* ---------- restaurar sessão ---------- */
-DB.get('estado').then(st=>{if(!st)return;S.fotos=st.fotos||[];S.liberadas=st.liberadas||{};S.pg=st.pg||null;renderRes();if(S.pg)checar()});
+DB.get('estado').then(st=>{if(!st)return;S.fotos=st.fotos||[];S.liberadas=st.liberadas||{};S.pg=st.pg||null;S.cred=st.cred||null;renderRes();if(S.pg)checar()});
 
 /* ---------- efeitos ---------- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
