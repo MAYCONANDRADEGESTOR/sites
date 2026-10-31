@@ -597,7 +597,7 @@ async function gerar(){
   gerando=true;erro('');const g=$('#gen');g.classList.add('on');$('#more').hidden=true;
   const e=estiloInfo(S.estilo);$('#gentxt').textContent='Criando sua foto · '+(e?e.nome:'');
   let t=0;const bar=$('#genbar');bar.style.width='4%';const iv=setInterval(()=>{t++;bar.style.width=Math.min(94,4+t*2.2)+'%';$('#gendica').textContent=dicas[Math.floor(t/7)%dicas.length]},1000);
-  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,pagamentoId:S.cred?S.cred.id:undefined})});
+  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred?S.cred.id:undefined})});
     const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
     if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
     const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();track('ViewContent',{content_name:j.estilo});
