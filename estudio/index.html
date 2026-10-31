@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Estúdio das Modelos · Seu ensaio fotográfico com inteligência artificial</title>
 <meta name="description" content="Envie 3 selfies, escolha o estilo e veja seu ensaio fotográfico profissional pronto em minutos. Aniversário, profissional, estilo celebridade e mais. Pague só se amar, no Pix.">
 <meta name="theme-color" content="#FBF5EF">
@@ -10,6 +10,15 @@
 <meta property="og:description" content="Escolha o estilo, envie suas fotos e veja o resultado antes de pagar.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ===== Meta Pixel =====
+   Cole o ID do Pixel entre as aspas. Vazio = pixel desligado (nada é carregado). */
+window.PIXEL_ID='';
+if(window.PIXEL_ID){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init',window.PIXEL_ID);fbq('track','PageView');}
+</script>
+<link rel="preload" as="image" href="vsl-capa.jpg">
+<noscript><style>.trava .pos{display:block}.vsl-ov,.unlock{display:none}</style></noscript>
 <style>
 :root{
   --ivory:#FBF5EF; --paper:#FFFDFB; --blush:#F4DDD6; --blush2:#EBC7BE; --rose:#B85C68; --rose-d:#93424F;
@@ -17,7 +26,9 @@
   --r:22px; --shadow:0 30px 60px -30px rgba(46,23,32,.45); --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+button,a,label,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font-size:16px}
 body{background:var(--ivory);color:var(--ink);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{text-decoration:none;color:inherit}
@@ -44,6 +55,48 @@ header.top.sc{border-color:var(--line)}
 .logo{display:flex;flex-direction:column;line-height:1;font-size:25px;font-style:italic;font-weight:500;letter-spacing:-.02em}
 .logo small{font-family:Manrope;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.34em;text-transform:uppercase;color:var(--rose);margin-bottom:3px}
 .top .btn{padding:11px 20px;font-size:14px}
+
+/* ===== VSL ===== */
+.vsl{position:relative;z-index:2;padding:22px 0 40px}
+.vsl .wrap{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);grid-template-areas:"pl tx" "pl un";column-gap:56px;align-items:end;justify-content:center}
+.vsl-tx{grid-area:tx}.player{grid-area:pl;align-self:center}.unlock{grid-area:un;align-self:start}
+.vsl-h{font-family:Fraunces,serif;font-weight:400;font-size:clamp(30px,4.6vw,62px);line-height:1.02;letter-spacing:-.03em;margin:14px 0 14px}
+.vsl-h em{font-style:italic;color:var(--rose)}
+.vsl-sub{color:var(--muted);font-size:clamp(15px,1.4vw,18px);max-width:480px}
+.player{position:relative;width:min(100%,420px,calc(68svh * 9 / 16));aspect-ratio:9/16;margin:0 auto;border-radius:26px;overflow:hidden;background:#1d0f15;box-shadow:0 40px 80px -35px rgba(46,23,32,.7),0 0 0 1px rgba(46,23,32,.08);isolation:isolate}
+.player video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#1d0f15}
+.vsl-ov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:20px;background:radial-gradient(circle at 50% 50%,rgba(29,15,21,.25),rgba(29,15,21,.6));width:100%}
+.vsl-ov .pb{width:84px;height:84px;border-radius:50%;background:var(--rose);display:grid;place-items:center;box-shadow:0 0 0 0 rgba(184,92,104,.6);animation:pulse 1.8s infinite}
+.vsl-ov .pb svg{width:34px;height:34px;margin-left:5px}
+.vsl-ov b{font-size:17px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.vsl-ov small{font-size:13px;opacity:.85}
+.vsl-ov.som{background:none;justify-content:flex-start;padding-top:18px}
+.vsl-ov.som .pb{display:none}
+.vsl-ov.som .pill{display:inline-flex}
+.pill{display:none;white-space:nowrap;align-items:center;gap:9px;background:rgba(184,92,104,.95);padding:12px 18px;border-radius:999px;font-weight:800;font-size:14.5px;box-shadow:0 10px 30px -8px rgba(0,0,0,.5);animation:pulse 1.8s infinite}
+.vsl-ov.som b,.vsl-ov.som small{display:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(184,92,104,.55)}70%{box-shadow:0 0 0 18px rgba(184,92,104,0)}100%{box-shadow:0 0 0 0 rgba(184,92,104,0)}}
+.vsl-prog{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.22);z-index:4}
+.vsl-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .25s linear}
+.unlock{margin-top:24px;max-width:480px}
+.lockmsg{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px 16px;font-size:14px;color:var(--plum2);font-weight:600}
+.lockmsg i{font-style:normal;width:36px;height:36px;border-radius:50%;background:var(--blush);display:grid;place-items:center;flex:none}
+.cta-box{display:none}
+.liberado .lockmsg{display:none}
+.liberado .cta-box{display:block;animation:fade .6s var(--ease)}
+.cta-box .btn{width:100%;font-size:17px;padding:19px 26px;animation:pulse 1.8s infinite}
+.cta-box .micro{justify-content:center}
+.trava .pos{display:none}
+.trava header.top .btn,.trava .mobcta,.navsl .mobcta{display:none!important}
+@media (max-width:900px){
+  .vsl{padding:14px 0 30px}
+  .vsl .wrap{grid-template-columns:1fr;grid-template-areas:"tx" "pl" "un";column-gap:0}
+  .vsl-tx{text-align:center}
+  .vsl-h{font-size:clamp(27px,7.4vw,40px);margin:8px auto 14px;max-width:560px}
+  .vsl-sub{display:none}
+  .vsl-tx .eyebrow{justify-content:center}
+  .unlock{width:min(100%,420px);margin:18px auto 0}
+}
 
 /* hero */
 .hero{position:relative;padding:56px 0 40px;z-index:2}
@@ -248,7 +301,7 @@ footer a{color:var(--plum);font-weight:700}
 .fld:focus{outline:none;border-color:var(--rose)}
 .qr{text-align:center;margin-top:12px}
 .qr img{width:220px;height:220px;margin:12px auto;border-radius:12px;border:1px solid var(--line);image-rendering:pixelated}
-.cc{display:flex;gap:8px;margin-top:6px}.cc input{flex:1;min-width:0;font-size:12px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--ivory)}
+.cc{display:flex;gap:8px;margin-top:6px}.cc input{flex:1;min-width:0;font-size:16px;text-overflow:ellipsis;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--ivory)}
 .wait{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-weight:700;color:var(--rose)}
 .wait .spin{width:20px;height:20px;border-width:2px}
 .safe{display:flex;gap:8px;justify-content:center;margin-top:14px;font-size:12px;color:var(--muted)}
@@ -273,7 +326,7 @@ footer a{color:var(--plum);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
-<body>
+<body class="trava">
 <div class="grain"></div>
 
 <header class="top" id="top">
@@ -283,30 +336,38 @@ footer a{color:var(--plum);font-weight:700}
   </div>
 </header>
 
-<section class="hero">
+<section class="vsl" id="vsl">
   <div class="wrap">
-    <div>
-      <span class="eyebrow">Ensaio fotográfico com IA</span>
-      <h1>Seu ensaio de <em>revista</em>, a partir de 3 selfies.</h1>
-      <p class="lead">Escolha o estilo, envie suas fotos e veja seu ensaio profissional pronto em minutos. Aniversário, profissional, estilo celebridade e muito mais, sem estúdio e sem fotógrafo.</p>
-      <div class="cta-row">
-        <button class="btn btn-r" data-open>Criar meu ensaio grátis <span class="arr">→</span></button>
-        <a class="btn btn-g" href="#catalogo">Ver estilos</a>
-      </div>
-      <div class="micro">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Veja antes de pagar</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Pronto em minutos</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pix na hora</span>
-      </div>
+    <div class="vsl-tx">
+      <span class="eyebrow">Assista ao vídeo · menos de 1 minuto</span>
+      <h1 class="vsl-h">Seu ensaio de <em>revista</em> com IA, a partir das suas selfies.</h1>
+      <p class="vsl-sub">Aniversário, profissional, estilo celebridade e muito mais. Sem estúdio, sem fotógrafo e você vê antes de pagar.</p>
     </div>
-    <div class="stack" aria-hidden="true">
-      <div class="card c2"><img data-cat="aniv-rose" alt=""><span class="tag">Rosé Chic</span></div>
-      <div class="card c3"><img data-cat="pro-executiva" alt=""><span class="tag">Executiva</span></div>
-      <div class="card c1"><img data-cat="aniv-dourado" alt=""><span class="tag">Glam Dourado</span></div>
-      <div class="badge"><b>24 estilos</b>em 6 categorias</div>
+    <div class="player" id="player">
+      <video id="vslVid" src="vsl.mp4" poster="vsl-capa.jpg" playsinline webkit-playsinline muted autoplay preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback"></video>
+      <button class="vsl-ov" id="vslOv" aria-label="Assistir ao vídeo com som">
+        <span class="pb"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 4l15 8-15 8z"/></svg></span>
+        <b id="vslOvTxt">Toque para assistir</b>
+        <small id="vslOvSm">Ative o som 🔊</small>
+        <span class="pill">🔊 Toque para ativar o som</span>
+      </button>
+      <div class="vsl-prog"><i id="vslProg"></i></div>
+    </div>
+    <div class="unlock">
+      <div class="lockmsg"><i>🔒</i><span>Assista até o final: o acesso ao estúdio é liberado ao fim do vídeo.</span></div>
+      <div class="cta-box">
+        <button class="btn btn-r" id="ctaVsl" data-open>Quero criar meu ensaio agora <span class="arr">→</span></button>
+        <div class="micro">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Veja antes de pagar</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Pronto em minutos</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pix na hora</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<div class="pos" id="pos">
 
 <div class="marquee"><div class="tr" id="mq"></div></div>
 
@@ -424,6 +485,8 @@ footer a{color:var(--plum);font-weight:700}
   </div>
 </section>
 
+</div><!-- /pos -->
+
 <footer>
   <div class="wrap">
     <a class="logo serif" href="#" style="font-size:22px"><small>Estúdio</small>das Modelos</a>
@@ -525,7 +588,38 @@ const brl=v=>v.toFixed(2).replace('.',',');
 let CAT=[], PRECOS={foto:{valor:9.9,qtd:1},kit5:{valor:19.9,qtd:5},kit15:{valor:29.9,qtd:15}}, MAXF=3;
 const DEPOIMENTOS=[]; // depoimentos reais: {nome:'',msgs:['...'],img:'url opcional'}
 const S={passo:1,estilo:null,selfies:[],fotos:[],liberadas:{},pg:null,cred:null,alvo:null,acao:null};
-const track=(ev,p)=>{try{window.fbq&&fbq('track',ev,p)}catch(e){}};
+/* eventos do pixel: padrão (otimizáveis) e personalizados (públicos/relatórios) */
+const track=(ev,p,opt)=>{try{window.fbq&&fbq('track',ev,p||{},opt||{})}catch(e){}};
+const trackC=(ev,p)=>{try{window.fbq&&fbq('trackCustom',ev,p||{})}catch(e){}};
+const uma=(k,fn)=>{try{if(sessionStorage.getItem('px_'+k))return;sessionStorage.setItem('px_'+k,1)}catch(e){}fn()};
+const PROD={content_category:'ensaio-fotografico-ia',content_type:'product',currency:'BRL'};
+
+/* ---------- VSL: libera o acesso perto do fim do vídeo ---------- */
+const LIBERA_ANTES_DO_FIM=6; // segundos antes do fim em que o botão aparece
+const vid=$('#vslVid'),ov=$('#vslOv'),prog=$('#vslProg');
+let liberado=false,comSom=false,marcos={};
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function liberar(origem){if(liberado)return;liberado=true;document.body.classList.remove('trava');document.body.classList.add('liberado');lsSet('edm_vsl','1');
+  if(origem==='video'){uma('vc',()=>track('ViewContent',{...PROD,content_name:'VSL assistida',value:PRECOS.foto.valor}))}}
+if(lsGet('edm_vsl')==='1'||/[?&](liberar|acesso)=1/.test(location.search))setTimeout(()=>liberar('retorno'));
+function modoSom(){ov.classList.add('som');ov.hidden=false}
+function atualizaProg(){if(!vid.duration)return;const p=vid.currentTime/vid.duration;
+  prog.style.width=(100*(1-Math.pow(1-p,1.6))).toFixed(1)+'%'; // anda mais rápido no começo
+  if(comSom){[25,50,75].forEach(m=>{if(p*100>=m&&!marcos[m]){marcos[m]=1;trackC('VSL_'+m)}})}
+  if(vid.currentTime>=vid.duration-LIBERA_ANTES_DO_FIM)liberar('video')}
+vid.addEventListener('timeupdate',atualizaProg);
+vid.addEventListener('play',()=>{if(comSom)ov.hidden=true});
+vid.addEventListener('pause',()=>{if(comSom&&!vid.ended){ov.classList.remove('som');$('#vslOvTxt').textContent='Continuar assistindo';$('#vslOvSm').hidden=true;ov.hidden=false}});
+new IntersectionObserver(es=>document.body.classList.toggle('navsl',es[0].isIntersecting),{threshold:.2}).observe($('#vsl'));
+vid.addEventListener('ended',()=>{liberar('video');if(comSom)uma('vfim',()=>trackC('VSL_Completo'));ov.classList.remove('som');$('#vslOvTxt').textContent='Assistir de novo';$('#vslOvSm').hidden=true;ov.hidden=false;
+  if(innerWidth<901)$('.unlock').scrollIntoView({behavior:'smooth',block:'center'})});
+vid.addEventListener('error',()=>liberar('erro'));
+// autoplay mudo (permitido no celular); se o navegador bloquear, mostra o botão de play
+const tentativa=vid.play();if(tentativa&&tentativa.then)tentativa.then(modoSom).catch(()=>{ov.classList.remove('som');ov.hidden=false});else modoSom();
+ov.onclick=()=>{if(!comSom){comSom=true;vid.currentTime=0;uma('vplay',()=>trackC('VSL_Play'))}
+  if(vid.ended)vid.currentTime=0;vid.muted=false;vid.play().catch(()=>{});ov.hidden=true};
+$('#player').addEventListener('click',e=>{if(e.target===vid&&comSom&&!vid.paused)vid.pause()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&!vid.paused&&comSom)vid.pause()});
 
 /* ---------- persistência (IndexedDB, opcional) ---------- */
 const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>ok(r.result);r.onerror=ko}catch(e){ko(e)}})},
@@ -547,7 +641,7 @@ function renderGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#grid');g.i
 function renderSGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#sgrid');g.innerHTML='';
   c.itens.forEach(it=>{const b=document.createElement('button');b.className='opt'+(S.estilo===it.id?' on':'');
    b.innerHTML=`<div class="im"><img alt="${it.nome}"></div><b>${it.nome}</b>`;imgCat(b.querySelector('img'),it.id);
-   b.onclick=()=>{S.estilo=it.id;renderSGrid(cat);atualizar();track('CustomizeProduct',{content_name:it.id})};g.appendChild(b)});
+   b.onclick=()=>{S.estilo=it.id;renderSGrid(cat);atualizar();track('CustomizeProduct',{...PROD,content_name:it.nome,content_ids:[it.id]})};g.appendChild(b)});
   renderTabs($('#stabs'),cat,renderSGrid)}
 const estiloInfo=id=>{for(const c of CAT){const i=c.itens.find(x=>x.id===id);if(i)return{...i,catNome:c.catNome,cat:c.cat}}return null};
 
@@ -562,7 +656,7 @@ if(DEPOIMENTOS.length){$('#depoimentos').hidden=false;$('#zap').innerHTML=DEPOIM
 const studio=$('#studio');
 function abrirEstudio(estilo){if(estilo)S.estilo=estilo;studio.classList.add('open');document.body.style.overflow='hidden';
   const cat=(estiloInfo(S.estilo)||{}).cat||(CAT[0]&&CAT[0].cat);if(cat)renderSGrid(cat);
-  ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));track('InitiateCheckout')}
+  ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));uma('lead',()=>track('Lead',{...PROD,content_name:'Abriu o estúdio'}))}
 $$('[data-open]').forEach(b=>b.onclick=()=>abrirEstudio());
 $('#fechar').onclick=()=>{studio.classList.remove('open');document.body.style.overflow=''};
 function ir(p){S.passo=p;$$('.pane').forEach(x=>x.classList.toggle('on',+x.dataset.pane===p));$$('.prog i').forEach(i=>i.classList.toggle('on',+i.dataset.p<=p));erro('');$('#sbody').scrollTop=0;atualizar()}
@@ -600,7 +694,7 @@ async function gerar(){
   try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred?S.cred.id:undefined})});
     const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
     if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
-    const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();track('ViewContent',{content_name:j.estilo});
+    const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();trackC('PreviaGerada',{estilo:j.estilo});uma('atc',()=>track('AddToCart',{...PROD,content_ids:[j.estilo],value:PRECOS.foto.valor}));
     bar.style.width='100%';renderRes();
     if(S.cred&&restantes()>0)await liberarFoto(f);
   }catch(err){erro(err.message)}
@@ -658,14 +752,14 @@ function abrirPagamento(pref){const n=pendentes().length;pacote=pref==='foto'&&S
   $$('.pk').forEach(p=>p.classList.toggle('on',p.dataset.pk===pacote));
   $('#pkFotoTxt').textContent=S.alvo?'Esta foto · perfil + stories + original':'1 foto · perfil + stories + original';
   $('#pkDica').textContent=n?`Os pacotes valem para as ${n} foto${n>1?'s':''} que você já gerou e para as próximas que gerar, até completar a quantidade do pacote.`:'Você gera as fotos depois de pagar, até completar a quantidade do pacote.';
-  $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Liberar suas fotos';$('#sheet').classList.add('open');track('AddPaymentInfo')}
+  $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Liberar suas fotos';$('#sheet').classList.add('open');track('InitiateCheckout',{...PROD,content_ids:[pacote],value:PRECOS[pacote].valor,num_items:PRECOS[pacote].qtd})}
 $$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.classList.toggle('on',x===p))});
 const fecharSheet=()=>{$('#sheet').classList.remove('open');clearInterval(poll)};
 $('#shX').onclick=fecharSheet;$('#sheet').onclick=e=>{if(e.target.id==='sheet')fecharSheet()};
 $('#gerarPix').onclick=async()=>{const b=$('#gerarPix');b.disabled=true;b.textContent='Gerando Pix…';
   try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pacote,nome:$('#nome').value,email:$('#email').value})});
     const j=await r.json();if(!r.ok||j.erro)throw new Error(j.erro||'Erro ao gerar Pix');
-    S.pg={id:j.pagamentoId,pacote,qtd:j.qtd,valor:j.valor};salvar();
+    S.pg={id:j.pagamentoId,pacote,qtd:j.qtd,valor:j.valor};salvar();track('AddPaymentInfo',{...PROD,content_ids:[pacote],value:j.valor});
     $('#qrImg').src='data:image/png;base64,'+j.qr;$('#ccTxt').value=j.copiaCola;$('#pixValor').textContent=brl(j.valor);
     $('#shEscolha').hidden=true;$('#shPix').hidden=false;$('#shTitle').textContent='Pague com Pix';esperar();
   }catch(e){toast(e.message)}finally{b.disabled=false;b.textContent='Pagar com Pix'}};
@@ -673,7 +767,7 @@ $('#copiar').onclick=async()=>{try{await navigator.clipboard.writeText($('#ccTxt
 function esperar(){clearInterval(poll);poll=setInterval(checar,4000)}
 async function checar(){if(!S.pg)return;try{const j=await (await fetch(API+'?acao=status&id='+S.pg.id)).json();if(j.aprovado){clearInterval(poll);await confirmado(j)}else if(['rejected','cancelled','expired'].includes(j.status)){S.pg=null;salvar();clearInterval(poll)}}catch(e){}}
 async function confirmado(j){const pg=S.pg;S.cred={id:pg.id,pacote:pg.pacote,qtd:j.qtd||pg.qtd,usados:j.usados||0};S.pg=null;salvar();
-  track('Purchase',{value:pg.valor,currency:'BRL'});fecharSheet();
+  if(lsGet('px_buy_'+pg.id)!=='1'){lsSet('px_buy_'+pg.id,'1');track('Purchase',{...PROD,content_ids:[pg.pacote],value:pg.valor,num_items:S.cred.qtd},{eventID:'pix-'+pg.id});}fecharSheet();
   const n=await liberarPendentes(S.alvo);renderRes();
   const r=restantes();toast(n?`Pagamento confirmado! ${n} foto${n>1?'s':''} liberada${n>1?'s':''} 🎉`:'Pagamento confirmado! 🎉');
   if(r>0&&S.passo===3)setTimeout(()=>toast(`Você ainda pode gerar mais ${r} foto${r>1?'s':''} no seu pacote`),2800);
