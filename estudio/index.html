@@ -17,7 +17,7 @@ window.PIXEL_ID='';
 if(window.PIXEL_ID){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init',window.PIXEL_ID);fbq('track','PageView');}
 </script>
-<link rel="preload" as="image" href="vsl-capa.jpg">
+<link rel="preload" as="image" href="/estudio/vsl-capa.jpg">
 <noscript><style>.trava .pos{display:block}.vsl-ov,.unlock{display:none}</style></noscript>
 <style>
 :root{
@@ -344,7 +344,7 @@ footer a{color:var(--plum);font-weight:700}
       <p class="vsl-sub">Aniversário, profissional, estilo celebridade e muito mais. Sem estúdio, sem fotógrafo e você vê antes de pagar.</p>
     </div>
     <div class="player" id="player">
-      <video id="vslVid" src="vsl.mp4" poster="vsl-capa.jpg" playsinline webkit-playsinline muted autoplay preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback"></video>
+      <video id="vslVid" src="/estudio/vsl.mp4" poster="/estudio/vsl-capa.jpg" playsinline webkit-playsinline muted autoplay preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback"></video>
       <button class="vsl-ov" id="vslOv" aria-label="Assistir ao vídeo com som">
         <span class="pb"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 4l15 8-15 8z"/></svg></span>
         <b id="vslOvTxt">Toque para assistir</b>
@@ -628,7 +628,7 @@ const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',
 const salvar=()=>DB.set('estado',{fotos:S.fotos,liberadas:S.liberadas,pg:S.pg,cred:S.cred});
 
 /* ---------- imagens do catálogo ---------- */
-const imgCat=(el,id)=>{el.loading='lazy';el.src='catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
+const imgCat=(el,id)=>{el.loading='lazy';el.src='/estudio/catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
 $$('img[data-cat]').forEach(i=>imgCat(i,i.dataset.cat));
 
 /* ---------- catálogo ---------- */
