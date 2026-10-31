@@ -26,6 +26,7 @@ fbq('init',window.PIXEL_ID);fbq('track','PageView');}
   --r:22px; --shadow:0 30px 60px -30px rgba(46,23,32,.45); --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
 button,a,label,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input,select,textarea{font-size:16px}
@@ -144,10 +145,12 @@ section{position:relative;z-index:2}
 .trust i{font-style:normal;width:40px;height:40px;border-radius:12px;background:var(--blush);display:grid;place-items:center;flex:none;font-size:18px}
 .trust b{display:block;font-size:14.5px}.trust span{font-size:13px;color:var(--muted)}
 /* galeria */
-.gal{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:40px}
-.gal figure{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/4;background:linear-gradient(160deg,var(--blush),var(--blush2))}
-.gal figure:nth-child(even){transform:translateY(26px)}
-.gal img{width:100%;height:100%;object-fit:cover}
+.gal{margin-top:40px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);padding:6px 0 34px}
+.gal::-webkit-scrollbar{display:none}
+.gal .tr{display:flex;gap:14px;width:max-content}
+.gal figure{position:relative;flex:none;width:clamp(170px,22vw,240px);border-radius:20px;overflow:hidden;aspect-ratio:3/4;background:linear-gradient(160deg,var(--blush),var(--blush2));box-shadow:0 18px 40px -24px rgba(46,23,32,.5)}
+.gal figure:nth-child(even){transform:translateY(22px)}
+.gal img{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 .gal figcaption{position:absolute;left:10px;bottom:10px;background:rgba(255,253,251,.92);font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px}
 /* depoimentos */
 .zap{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
@@ -305,24 +308,52 @@ footer a{color:var(--plum);font-weight:700}
 .qr{text-align:center;margin-top:12px}
 .qr img{width:220px;height:220px;margin:12px auto;border-radius:12px;border:1px solid var(--line);image-rendering:pixelated}
 .cc{display:flex;gap:8px;margin-top:6px}.cc input{flex:1;min-width:0;font-size:16px;text-overflow:ellipsis;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--ivory)}
+.cupom{display:flex;gap:8px;margin-top:14px}.cupom .fld{margin-top:0;flex:1;min-width:0}.cupom .btn{padding:12px 18px;font-size:14px}
 .wait{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-weight:700;color:var(--rose)}
 .wait .spin{width:20px;height:20px;border-width:2px}
 .safe{display:flex;gap:8px;justify-content:center;margin-top:14px;font-size:12px;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:var(--plum);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:.35s;z-index:90;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%)}
 
+/* ===== assistente (chat) ===== */
+.chatbtn{position:fixed;right:16px;bottom:max(18px,env(safe-area-inset-bottom));z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(20,120,60,.7);animation:pulseG 2.2s infinite}
+.chatbtn svg{width:30px;height:30px}
+.chatbtn .dot{position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:var(--rose);border:2px solid #fff}
+@keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+@media (max-width:900px){.chatbtn{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 74px)}}
+.trava .chatbtn{display:none}
+.chat{position:fixed;right:16px;bottom:max(18px,env(safe-area-inset-bottom));z-index:70;width:min(380px,calc(100% - 24px));height:min(560px,calc(100svh - 40px));background:var(--paper);border-radius:24px;box-shadow:0 30px 70px -20px rgba(46,23,32,.55);display:none;flex-direction:column;overflow:hidden;border:1px solid var(--line)}
+.chat.open{display:flex;animation:up .35s var(--ease)}
+@media (max-width:620px){.chat{right:0;left:0;bottom:0;width:100%;height:min(88svh,640px);border-radius:24px 24px 0 0}}
+.chat .hd{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#075E54;color:#fff}
+.chat .av{width:40px;height:40px;border-radius:50%;background:var(--blush);color:var(--rose);display:grid;place-items:center;font-family:Fraunces;font-style:italic;font-weight:600;font-size:19px;flex:none}
+.chat .hd b{display:block;font-size:15px}.chat .hd small{font-size:12px;opacity:.85}
+.chat .hd .x{margin-left:auto;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:#fff}
+.chat .bd{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:8px;background:#efe7de;-webkit-overflow-scrolling:touch}
+.chat .m{max-width:86%;padding:9px 12px;border-radius:14px;font-size:14.5px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.06)}
+.chat .m.bot{align-self:flex-start;background:#fff;border-top-left-radius:4px}
+.chat .m.eu{align-self:flex-end;background:#d9fdd3;border-top-right-radius:4px}
+.chat .m.dig{color:var(--muted);font-style:italic}
+.chat .sug{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 10px;background:#efe7de}
+.chat .sug button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600}
+.chat .go{margin:0 14px 10px;background:var(--rose);color:#fff;border-radius:12px;padding:11px;font-weight:700;font-size:14px;text-align:center}
+.chat form{display:flex;gap:8px;padding:10px 12px max(10px,env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)}
+.chat textarea{flex:1;min-width:0;resize:none;border:1.5px solid var(--line);border-radius:22px;padding:11px 14px;font:inherit;font-size:16px;line-height:1.3;max-height:110px;background:#fff}
+.chat textarea:focus{outline:none;border-color:#25D366}
+.chat form button{width:46px;height:46px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;flex:none}
+
 @media (max-width:900px){
   .hero{padding-top:28px}.hero .wrap{grid-template-columns:1fr;gap:20px}
   .stack{height:auto;aspect-ratio:1/1.02;max-width:520px;width:100%;margin:0 auto}
   .steps,.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:1fr}.plan.hot{transform:none}
-  .trust{grid-template-columns:1fr 1fr}.gal{grid-template-columns:repeat(3,1fr)}.zap{grid-template-columns:1fr}
+  .trust{grid-template-columns:1fr 1fr}.zap{grid-template-columns:1fr}
   .sec{padding:72px 0}.mobcta{display:block}.top .btn{display:none}
   .price{border-radius:0}
 }
 @media (max-width:620px){
   .steps{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr;gap:12px}
   .item .bd{padding:12px 12px 14px}.item h4{font-size:17px}.item p{display:none}.item .go{width:34px;height:34px}
-  .sgrid{grid-template-columns:1fr 1fr}.tips{grid-template-columns:1fr 1fr}.trust div{padding:12px;gap:10px}.trust b{font-size:13px}.trust span{font-size:12px}.gal{gap:10px}
+  .sgrid{grid-template-columns:1fr 1fr}.tips{grid-template-columns:1fr 1fr}.trust div{padding:12px;gap:10px}.trust b{font-size:13px}.trust span{font-size:12px}.gal figure{width:44vw}
   .res{gap:10px}.ph2 .acts{grid-template-columns:1fr}.cta-row .btn{width:100%}
   .plan{padding:26px 22px}.plan .val{font-size:48px}
 }
@@ -387,14 +418,7 @@ footer a{color:var(--plum);font-weight:700}
       <h2 class="h2 rv">Ensaios que parecem <em>de revista</em></h2>
       <p class="sub rv">Referências de alguns dos nossos estilos. O seu ensaio é criado com o seu rosto.</p>
     </div>
-    <div class="gal">
-      <figure><img data-cat="aniv-dourado" alt=""><figcaption>Aniversário</figcaption></figure>
-      <figure><img data-cat="cel-capa" alt=""><figcaption>Capa de Revista</figcaption></figure>
-      <figure><img data-cat="pro-executiva" alt=""><figcaption>Profissional</figcaption></figure>
-      <figure><img data-cat="fe-igreja" alt=""><figcaption>Fé & Gratidão</figcaption></figure>
-      <figure><img data-cat="fem-golden" alt=""><figcaption>Pôr do Sol</figcaption></figure>
-      <figure><img data-cat="data-natal" alt=""><figcaption>Natal</figcaption></figure>
-    </div>
+    <div class="gal" id="gal"><div class="tr"><figure><img data-cat="aniv-dourado" alt="Aniversário"><figcaption>Aniversário</figcaption></figure><figure><img data-cat="cel-capa" alt="Capa de Revista"><figcaption>Capa de Revista</figcaption></figure><figure><img data-cat="pro-executiva" alt="Profissional"><figcaption>Profissional</figcaption></figure><figure><img data-cat="viag-santorini" alt="Viagem dos Sonhos"><figcaption>Viagem dos Sonhos</figcaption></figure><figure><img data-cat="fe-igreja" alt="Fé & Gratidão"><figcaption>Fé & Gratidão</figcaption></figure><figure><img data-cat="fem-golden" alt="Pôr do Sol"><figcaption>Pôr do Sol</figcaption></figure><figure><img data-cat="noiva-classica" alt="Noiva"><figcaption>Noiva</figcaption></figure><figure><img data-cat="data-natal" alt="Natal"><figcaption>Natal</figcaption></figure></div></div>
   </div>
 </section>
 
@@ -470,9 +494,9 @@ footer a{color:var(--plum);font-weight:700}
   <div class="wrap">
     <div class="center"><span class="eyebrow rv">Dúvidas</span><h2 class="h2 rv">Perguntas <em>frequentes</em></h2></div>
     <div class="faq">
-      <details><summary>A foto fica parecida comigo mesmo?</summary><p>A IA usa o seu rosto como referência. Quanto melhores as selfies (de frente, com boa luz, sem óculos escuros e sem filtro), mais fiel fica o resultado. Você confere cada foto na tela antes de baixar em alta resolução.</p></details>
-      <details><summary>Como funciona o pagamento?</summary><p>Você escolhe o pacote (1, 5 ou 15 fotos), paga no Pix e as fotos são liberadas em alta qualidade, sem marca d'água. As fotos que faltam para completar o pacote você gera na hora.</p></details>
-      <details><summary>Como recebo as fotos depois de pagar?</summary><p>Assim que o Pix é confirmado (normalmente em segundos), os botões de download são liberados na mesma tela: foto de perfil, stories e original.</p></details>
+      <details><summary>A foto fica parecida comigo mesmo?</summary><p>A IA usa o seu rosto como referência. Quanto melhores as selfies (de frente, com boa luz, sem óculos escuros e sem filtro), mais fiel fica o resultado. Por isso, envie de 1 a 3 selfies nítidas: é o que mais influencia o resultado.</p></details>
+      <details><summary>Como funciona o pagamento?</summary><p>Você escolhe o estilo, envia suas selfies e escolhe o pacote (1, 5 ou 15 fotos). Assim que o Pix é confirmado, as fotos são geradas na hora, em alta qualidade e sem marca d'água. Você pode misturar estilos até completar o pacote.</p></details>
+      <details><summary>Como recebo as fotos depois de pagar?</summary><p>Assim que o Pix é confirmado (normalmente em segundos), suas fotos começam a ser geradas na mesma tela, com botões para baixar como foto de perfil, stories ou original.</p></details>
       <details><summary>Minhas fotos ficam guardadas?</summary><p>Não guardamos suas selfies. Elas são usadas apenas para criar o seu ensaio naquele momento. As fotos geradas ficam salvas só no seu próprio celular, para você baixar depois.</p></details>
       <details><summary>Quanto tempo demora?</summary><p>Cada foto leva de 20 segundos a 1 minuto para ficar pronta.</p></details>
       <details><summary>Posso fazer fotos de outra pessoa?</summary><p>Somente com a autorização dela. As fotos enviadas precisam ser suas ou de uma pessoa adulta que permitiu o uso. Não criamos fotos de menores de 18 anos.</p></details>
@@ -532,11 +556,11 @@ footer a{color:var(--plum);font-weight:700}
       </div>
       <div class="pane" data-pane="3">
         <h2>Seu <em>ensaio</em></h2>
-        <p class="sub" id="ressub">Suas prévias aparecem aqui. Libere as que amar em alta qualidade.</p>
+        <p class="sub" id="ressub">Suas fotos aparecem aqui em instantes.</p>
         <div class="gen" id="gen"><div class="spin"></div><div style="flex:1"><b id="gentxt">Criando sua foto…</b><div class="bar"><i id="genbar"></i></div><small style="color:var(--muted)" id="gendica">Isso leva de 20 a 60 segundos.</small></div></div>
         <div class="res" id="res"></div>
         <div class="more" id="more" hidden>
-          <button class="btn btn-g" id="maisUma">+ Gerar outra neste estilo</button>
+          <button class="btn btn-g" id="maisUma">+ Gerar outra</button>
           <button class="btn btn-g" id="trocar">Trocar estilo</button>
         </div>
         <div class="albumbar" id="albumbar" hidden>
@@ -561,14 +585,15 @@ footer a{color:var(--plum);font-weight:700}
       <button class="x" id="shX" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line)">✕</button>
     </div>
     <div id="shEscolha">
-      <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Sem marca d'água, em alta resolução, nos formatos perfil, stories e original.</p>
-      <button class="pk" data-pk="foto"><span class="rd"></span><span class="t"><b>Essencial · 1 foto</b><small id="pkFotoTxt">Esta foto · perfil + stories + original</small></span><span class="v">R$ <span data-preco="foto">9,90</span></span></button>
+      <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Assim que o Pix é confirmado, suas fotos são geradas na hora, em alta resolução, nos formatos perfil, stories e original.</p>
+      <button class="pk" data-pk="foto"><span class="rd"></span><span class="t"><b>Essencial · 1 foto</b><small>1 foto · perfil + stories + original</small></span><span class="v">R$ <span data-preco="foto">9,90</span></span></button>
       <button class="pk" data-pk="kit5"><span class="rd"></span><span class="t"><b>Ensaio · 5 fotos</b><small>R$ 3,98 por foto</small></span><span class="v">R$ <span data-preco="kit5">19,90</span><s>R$ 49,50</s></span></button>
       <button class="pk on" data-pk="kit15"><span class="rd"></span><span class="t"><b>Álbum completo · 15 fotos</b><small>R$ 1,99 por foto · mais escolhido</small></span><span class="v">R$ <span data-preco="kit15">29,90</span><s>R$ 148,50</s></span></button>
-      <p id="pkDica" style="font-size:13px;color:var(--muted);margin-top:10px"></p>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">Você gera as fotos logo depois do pagamento e pode misturar estilos até completar o pacote.</p>
       <input class="fld" id="nome" placeholder="Seu primeiro nome" autocomplete="given-name">
       <input class="fld" id="email" type="email" placeholder="Seu e-mail (para o comprovante)" autocomplete="email">
       <button class="btn btn-r" id="gerarPix" style="width:100%;margin-top:16px">Pagar com Pix</button>
+      <div class="cupom"><input class="fld" id="cupom" placeholder="Tem um cupom?" autocapitalize="characters" autocomplete="off"><button class="btn btn-g" id="aplicarCupom" type="button">Aplicar</button></div>
       <div class="safe">🔒 Pagamento seguro via Mercado Pago</div>
     </div>
     <div id="shPix" hidden>
@@ -577,10 +602,20 @@ footer a{color:var(--plum);font-weight:700}
         <img id="qrImg" alt="QR Code Pix">
         <div class="cc"><input id="ccTxt" readonly><button class="btn btn-p" id="copiar" style="padding:12px 16px;font-size:14px">Copiar</button></div>
         <div class="wait"><div class="spin"></div>Aguardando pagamento de R$ <span id="pixValor"></span>…</div>
-        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">Assim que o Pix for confirmado, suas fotos são liberadas aqui automaticamente.</p>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">Assim que o Pix for confirmado, suas fotos começam a ser geradas automaticamente.</p>
       </div>
     </div>
   </div>
+</div>
+
+<!-- ===== ASSISTENTE ===== -->
+<button class="chatbtn" id="chatBtn" aria-label="Tirar dúvidas com a assistente"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.6 1.3 4.9 3.4 6.5L4.6 22l4.2-2.2c1 .3 2.1.4 3.2.4 5.5 0 10-3.9 10-8.6S17.5 3 12 3zm-4 9.9a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm4 0a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm4 0a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6z"/></svg><span class="dot"></span></button>
+<div class="chat" id="chat" role="dialog" aria-label="Assistente do Estúdio">
+  <div class="hd"><span class="av">M</span><div><b>Mel · Estúdio das Modelos</b><small>● online · assistente virtual</small></div><button class="x" id="chatX" aria-label="Fechar">✕</button></div>
+  <div class="bd" id="chatBd"></div>
+  <div class="sug" id="chatSug"><button>Quanto custa?</button><button>Fica parecida comigo?</button><button>Como funciona?</button><button>Quais estilos têm?</button></div>
+  <button class="go" id="chatGo">Criar meu ensaio agora →</button>
+  <form id="chatForm"><textarea id="chatIn" rows="1" placeholder="Descreva sua dúvida ou pergunte o que quiser…" maxlength="600"></textarea><button aria-label="Enviar"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5 21 12 3 3.5l.01 6.6L15 12 3.01 13.9z"/></svg></button></form>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -589,9 +624,9 @@ footer a{color:var(--plum);font-weight:700}
 const API='/api/estudio';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const brl=v=>v.toFixed(2).replace('.',',');
-let CAT=[], PRECOS={foto:{valor:9.9,qtd:1},kit5:{valor:19.9,qtd:5},kit15:{valor:29.9,qtd:15}}, MAXF=3;
+let CAT=[], PRECOS={foto:{valor:9.9,qtd:1},kit5:{valor:19.9,qtd:5},kit15:{valor:29.9,qtd:15}};
 const DEPOIMENTOS=[]; // depoimentos reais: {nome:'',msgs:['...'],img:'url opcional'}
-const S={passo:1,estilo:null,selfies:[],fotos:[],liberadas:{},pg:null,cred:null,alvo:null,acao:null};
+const S={passo:1,estilo:null,selfies:[],fotos:[],pg:null,cred:null};
 /* eventos do pixel: padrão (otimizáveis) e personalizados (públicos/relatórios) */
 const track=(ev,p,opt)=>{try{window.fbq&&fbq('track',ev,p||{},opt||{})}catch(e){}};
 const trackC=(ev,p)=>{try{window.fbq&&fbq('trackCustom',ev,p||{})}catch(e){}};
@@ -632,11 +667,11 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&!vid.pause
 const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>ok(r.result);r.onerror=ko}catch(e){ko(e)}})},
  async set(k,v){try{const d=await this.open();d.transaction('k','readwrite').objectStore('k').put(v,k)}catch(e){}},
  async get(k){try{const d=await this.open();return await new Promise(ok=>{const q=d.transaction('k').objectStore('k').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})}catch(e){return null}}};
-const salvar=()=>DB.set('estado',{fotos:S.fotos,liberadas:S.liberadas,pg:S.pg,cred:S.cred});
+const salvar=()=>DB.set('estado',{fotos:S.fotos,pg:S.pg,cred:S.cred});
 
 /* ---------- imagens do catálogo ---------- */
 const imgCat=(el,id)=>{el.loading='lazy';el.src='/estudio/catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
-$$('img[data-cat]').forEach(i=>imgCat(i,i.dataset.cat));
+$$('img[data-cat]').forEach(i=>{if(!i.closest('#gal'))imgCat(i,i.dataset.cat)});
 
 /* ---------- catálogo ---------- */
 function renderTabs(box,on,cb){box.innerHTML='';CAT.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c.cat===on?' on':'');b.textContent=c.catNome;b.onclick=()=>cb(c.cat);box.appendChild(b)})}
@@ -652,7 +687,7 @@ function renderSGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#sgrid');g
   renderTabs($('#stabs'),cat,renderSGrid)}
 const estiloInfo=id=>{for(const c of CAT){const i=c.itens.find(x=>x.id===id);if(i)return{...i,catNome:c.catNome,cat:c.cat}}return null};
 
-fetch(API+'?acao=catalogo').then(r=>r.json()).then(j=>{CAT=j.catalogo;PRECOS=j.precos;MAXF=j.maxFotos||3;
+fetch(API+'?acao=catalogo').then(r=>r.json()).then(j=>{CAT=j.catalogo;PRECOS=j.precos;
   $$('[data-preco]').forEach(e=>e.textContent=brl(PRECOS[e.dataset.preco].valor));
   $('#mq').innerHTML=[...CAT,...CAT].flatMap(c=>c.itens.map(i=>`<span>${i.nome}</span>`)).join('');
   renderGrid(CAT[0].cat)}).catch(()=>{});
@@ -663,15 +698,15 @@ if(DEPOIMENTOS.length){$('#depoimentos').hidden=false;$('#zap').innerHTML=DEPOIM
 const studio=$('#studio');
 function abrirEstudio(estilo){if(estilo)S.estilo=estilo;studio.classList.add('open');document.body.style.overflow='hidden';
   const cat=(estiloInfo(S.estilo)||{}).cat||(CAT[0]&&CAT[0].cat);if(cat)renderSGrid(cat);
-  ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));uma('lead',()=>track('Lead',{...PROD,content_name:'Abriu o estúdio'}))}
+  ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));renderRes();uma('lead',()=>track('Lead',{...PROD,content_name:'Abriu o estúdio'}))}
 $$('[data-open]').forEach(b=>b.onclick=()=>abrirEstudio());
 $('#fechar').onclick=()=>{studio.classList.remove('open');document.body.style.overflow=''};
 function ir(p){S.passo=p;$$('.pane').forEach(x=>x.classList.toggle('on',+x.dataset.pane===p));$$('.prog i').forEach(i=>i.classList.toggle('on',+i.dataset.p<=p));erro('');$('#sbody').scrollTop=0;atualizar()}
 function atualizar(){const a=$('#avancar'),v=$('#voltar');$('#sfoot').hidden=S.passo===3;v.style.display=S.passo>1?'':'none';
   if(S.passo===1){a.disabled=!S.estilo;a.innerHTML='Continuar <span class="arr">→</span>'}
-  if(S.passo===2){const ei=estiloInfo(S.estilo);$('#idadeBox').hidden=!(ei&&ei.cat==='aniversario');a.disabled=!(S.selfies.length&&$('#aceite').checked);const e=estiloInfo(S.estilo);a.innerHTML='Gerar minhas fotos <span class="arr">✦</span>'}}
+  if(S.passo===2){const ei=estiloInfo(S.estilo);$('#idadeBox').hidden=!(ei&&ei.cat==='aniversario');a.disabled=!(S.selfies.length&&$('#aceite').checked);const e=estiloInfo(S.estilo);a.innerHTML=restantes()?'Gerar minhas fotos <span class="arr">✦</span>':'Escolher meu pacote <span class="arr">→</span>'}}
 $('#voltar').onclick=()=>ir(Math.max(1,S.passo-1));
-$('#avancar').onclick=()=>{if(S.passo===1)ir(2);else if(S.passo===2){ir(3);gerar()}};
+$('#avancar').onclick=()=>{if(S.passo===1)ir(2);else if(S.passo===2){if(restantes()){ir(3);gerar()}else{uma('atc',()=>track('AddToCart',{...PROD,content_ids:[S.estilo],value:PRECOS.kit15.valor}));abrirPagamento('kit15')}}};
 $('#aceite').onchange=atualizar;
 function erro(m){const e=$('#err');e.textContent=m;e.style.display=m?'block':'none'}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -685,45 +720,40 @@ const drop=$('#drop');['dragenter','dragover'].forEach(ev=>drop.addEventListener
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('ov')}));
 drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
 
-/* ---------- geração ---------- */
+/* ---------- geração (só depois do pagamento ou cupom) ---------- */
 const dicas=['Ajustando a luz do estúdio…','Escolhendo o melhor ângulo…','Cuidando de cada detalhe do seu rosto…','Finalizando a edição…'];
 let gerando=false;
-const pendentes=()=>S.fotos.filter(f=>!S.liberadas[f.id]);
 const restantes=()=>S.cred?Math.max(0,S.cred.qtd-S.cred.usados):0;
-const podeGerar=()=>S.cred?restantes()>pendentes().length:S.fotos.length<MAXF;
 async function gerar(){
-  if(gerando)return;if(!S.selfies.length){ir(2);return}
-  if(!podeGerar()){if(S.cred&&!restantes()){S.cred=null;salvar()}S.alvo=null;S.acao='album';abrirPagamento('kit15');
-    toast(S.cred?'Libere as fotos prontas antes de gerar mais':'Escolha seu pacote para continuar gerando');return}
+  if(gerando)return;if(!S.selfies.length){ir(2);toast('Envie sua selfie para gerar as fotos');return}
+  if(!restantes()){abrirPagamento('kit15');return}
   gerando=true;erro('');const g=$('#gen');g.classList.add('on');$('#more').hidden=true;
   const e=estiloInfo(S.estilo);$('#gentxt').textContent='Criando sua foto · '+(e?e.nome:'');
   let t=0;const bar=$('#genbar');bar.style.width='4%';const iv=setInterval(()=>{t++;bar.style.width=Math.min(94,4+t*2.2)+'%';$('#gendica').textContent=dicas[Math.floor(t/7)%dicas.length]},1000);
-  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,idade:(estiloInfo(S.estilo)||{}).cat==='aniversario'?($('#idade').value||undefined):undefined,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred?S.cred.id:undefined})});
+  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,idade:(e||{}).cat==='aniversario'?($('#idade').value||undefined):undefined,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred.id})});
     const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
+    if(j.esgotado){S.cred.usados=S.cred.qtd;salvar()}
     if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
-    const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();trackC('PreviaGerada',{estilo:j.estilo});uma('atc',()=>track('AddToCart',{...PROD,content_ids:[j.estilo],value:PRECOS.foto.valor}));
-    bar.style.width='100%';renderRes();
-    if(S.cred&&restantes()>0)await liberarFoto(f);
+    S.fotos.unshift({id:j.id,estilo:j.estilo,foto:j.foto});S.cred.usados=S.cred.qtd-j.restantes;salvar();
+    trackC('FotoGerada',{estilo:j.estilo});bar.style.width='100%';
   }catch(err){erro(err.message)}
-  finally{clearInterval(iv);gerando=false;g.classList.remove('on');$('#more').hidden=false;renderRes()}
+  finally{clearInterval(iv);gerando=false;g.classList.remove('on');renderRes()}
 }
-$('#maisUma').onclick=gerar;
+$('#maisUma').onclick=()=>restantes()?gerar():abrirPagamento('kit15');
 $('#trocar').onclick=()=>ir(1);
 
 function renderRes(){const box=$('#res');box.innerHTML='';
-  S.fotos.forEach(f=>{const ok=!!S.liberadas[f.id];const d=document.createElement('div');d.className='ph2';
-   d.innerHTML=`<div class="im"><img src="${ok?S.liberadas[f.id]:f.previa}" alt="" draggable="false"><div class="shield"></div><span class="lock ${ok?'ok':''}">${ok?'✓ Liberada':'🔒 Prévia'}</span></div>
-   <div class="acts"><button data-a="perfil">Foto de perfil</button><button data-a="stories">Stories</button><button class="full" data-a="original">${ok?'Baixar em HD':'Liberar em HD'}</button></div>`;
-   d.querySelector('.shield').oncontextmenu=ev=>ev.preventDefault();
+  S.fotos.forEach(f=>{const d=document.createElement('div');d.className='ph2';
+   d.innerHTML=`<div class="im"><img src="${f.foto}" alt="Sua foto"><span class="lock ok">✓ Pronta</span></div>
+   <div class="acts"><button data-a="perfil">Foto de perfil</button><button data-a="stories">Stories</button><button class="full" data-a="original">Baixar em HD</button></div>`;
    d.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>baixar(f,b.dataset.a));box.appendChild(d)});
-  const n=S.fotos.length,pend=pendentes().length;
+  const n=S.fotos.length,r=restantes();
   $('#albumbar').hidden=!n;
-  if(S.cred){$('#albumtxt').textContent=`Pacote ativo: ${Math.min(S.cred.usados,S.cred.qtd)} de ${S.cred.qtd} fotos liberadas · restam ${restantes()}`}
-  else $('#albumtxt').textContent=pend?`${Math.min(n,MAXF)} de ${MAXF} prévias · libere em HD sem marca d'água`:'Tudo liberado! Baixe todas de uma vez.';
-  $('#baixarAlbum').textContent=pend&&!restantes()?'Liberar fotos · a partir de R$ '+brl(PRECOS.foto.valor):(pend?'Liberar com meu pacote':'Baixar todas');
-  $('#maisUma').textContent=S.cred?`+ Gerar outra (restam ${Math.max(0,restantes()-pend)})`:(S.fotos.length<MAXF?`+ Gerar outra prévia (${MAXF-S.fotos.length} restantes)`:'+ Gerar mais fotos');
-  $('#more').hidden=gerando||!n&&!S.selfies.length;$('#maisUma').disabled=!S.selfies.length;
-  $('#ressub').textContent=n?'Toque em perfil, stories ou HD para baixar. As fotos com 🔒 precisam ser liberadas.':'Suas prévias aparecem aqui. Libere as que amar em alta qualidade.'}
+  $('#albumtxt').textContent=S.cred?`Seu pacote: ${Math.min(S.cred.usados,S.cred.qtd)} de ${S.cred.qtd} fotos geradas${r?` · restam ${r}`:''}`:'Todas as fotos em HD, perfil e stories';
+  $('#baixarAlbum').textContent='Baixar todas';
+  $('#maisUma').textContent=r?`+ Gerar outra (restam ${r})`:'+ Comprar mais fotos';
+  $('#more').hidden=gerando||(!n&&!r);$('#maisUma').disabled=gerando;
+  $('#ressub').textContent=n?'Toque em perfil, stories ou HD para baixar. Pode trocar de estilo entre uma foto e outra.':'Suas fotos aparecem aqui em instantes.'}
 
 /* ---------- download nos formatos ---------- */
 function carregar(src){return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=src})}
@@ -734,32 +764,15 @@ async function formatar(src,fmt){if(fmt==='original')return src;const im=await c
 async function salvarArquivo(dataUrl,nome){
   try{if(navigator.canShare&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const b=await (await fetch(dataUrl)).blob();const f=new File([b],nome,{type:'image/jpeg'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}}catch(e){if(e.name==='AbortError')return}
   const a=document.createElement('a');a.href=dataUrl;a.download=nome;document.body.appendChild(a);a.click();a.remove()}
-async function baixar(f,fmt){
-  if(!S.liberadas[f.id]){
-    if(restantes()>0){if(await liberarFoto(f))return baixar(f,fmt);return}
-    S.alvo=f;S.acao=fmt;abrirPagamento('foto');return}
-  const url=await formatar(S.liberadas[f.id],fmt);await salvarArquivo(url,`estudio-${f.estilo}-${fmt}-${f.id.slice(0,5)}.jpg`);toast('Foto salva ✨')}
-$('#baixarAlbum').onclick=async()=>{const pend=pendentes();
-  if(pend.length&&restantes()>0){await liberarPendentes();return}
-  if(pend.length){S.alvo=null;S.acao='album';abrirPagamento('kit15');return}
-  for(const f of S.fotos){const url=await formatar(S.liberadas[f.id],'original');await salvarArquivo(url,`estudio-${f.estilo}-${f.id.slice(0,5)}.jpg`);await new Promise(r=>setTimeout(r,500))}toast('Álbum baixado ✨')};
+async function baixar(f,fmt){const url=await formatar(f.foto,fmt);await salvarArquivo(url,`estudio-${f.estilo}-${fmt}-${f.id.slice(0,5)}.jpg`);toast('Foto salva ✨')}
+$('#baixarAlbum').onclick=async()=>{for(const f of S.fotos){await salvarArquivo(f.foto,`estudio-${f.estilo}-${f.id.slice(0,5)}.jpg`);await new Promise(r=>setTimeout(r,500))}toast('Álbum baixado ✨')};
 
-/* ---------- créditos ---------- */
-async function liberarFoto(f){if(!S.cred||S.liberadas[f.id])return !!S.liberadas[f.id];
-  try{const r=await fetch(API+'?acao=liberar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pagamentoId:S.cred.id,sealed:f.sealed})});const j=await r.json();
-    if(j.foto){S.liberadas[f.id]=j.foto;S.cred.usados=S.cred.qtd-j.restantes;salvar();renderRes();return true}
-    if(j.esgotado){S.cred.usados=S.cred.qtd;salvar();renderRes()}toast(j.erro||'Não foi possível liberar');}catch(e){toast('Falha de conexão')}
-  return false}
-async function liberarPendentes(primeiro){let n=0;const lista=pendentes();if(primeiro){lista.sort((a,b)=>(b.id===primeiro.id)-(a.id===primeiro.id))}
-  for(const f of lista){if(restantes()<=0)break;if(await liberarFoto(f))n++}return n}
-
-/* ---------- pagamento Pix ---------- */
+/* ---------- pagamento Pix + cupom ---------- */
 let pacote='kit15',poll=null;
-function abrirPagamento(pref){const n=pendentes().length;pacote=pref==='foto'&&S.alvo?'foto':(n>5||pref==='kit15'?'kit15':'kit5');
+function abrirPagamento(pref){pacote=PRECOS[pref]?pref:'kit15';
   $$('.pk').forEach(p=>p.classList.toggle('on',p.dataset.pk===pacote));
-  $('#pkFotoTxt').textContent=S.alvo?'Esta foto · perfil + stories + original':'1 foto · perfil + stories + original';
-  $('#pkDica').textContent=n?`Os pacotes valem para as ${n} foto${n>1?'s':''} que você já gerou e para as próximas que gerar, até completar a quantidade do pacote.`:'Você gera as fotos depois de pagar, até completar a quantidade do pacote.';
-  $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Liberar suas fotos';$('#sheet').classList.add('open');track('InitiateCheckout',{...PROD,content_ids:[pacote],value:PRECOS[pacote].valor,num_items:PRECOS[pacote].qtd})}
+  $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Escolha seu pacote';$('#sheet').classList.add('open');
+  track('InitiateCheckout',{...PROD,content_ids:[pacote],value:PRECOS[pacote].valor,num_items:PRECOS[pacote].qtd})}
 $$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.classList.toggle('on',x===p))});
 const fecharSheet=()=>{$('#sheet').classList.remove('open');clearInterval(poll)};
 $('#shX').onclick=fecharSheet;$('#sheet').onclick=e=>{if(e.target.id==='sheet')fecharSheet()};
@@ -773,15 +786,49 @@ $('#gerarPix').onclick=async()=>{const b=$('#gerarPix');b.disabled=true;b.textCo
 $('#copiar').onclick=async()=>{try{await navigator.clipboard.writeText($('#ccTxt').value)}catch(e){$('#ccTxt').select();document.execCommand('copy')}toast('Código Pix copiado!')};
 function esperar(){clearInterval(poll);poll=setInterval(checar,4000)}
 async function checar(){if(!S.pg)return;try{const j=await (await fetch(API+'?acao=status&id='+S.pg.id)).json();if(j.aprovado){clearInterval(poll);await confirmado(j)}else if(['rejected','cancelled','expired'].includes(j.status)){S.pg=null;salvar();clearInterval(poll)}}catch(e){}}
+function comecarComCredito(msg){fecharSheet();toast(msg);if(!studio.classList.contains('open'))abrirEstudio();if(S.selfies.length){ir(3);gerar()}else ir(2)}
 async function confirmado(j){const pg=S.pg;S.cred={id:pg.id,pacote:pg.pacote,qtd:j.qtd||pg.qtd,usados:j.usados||0};S.pg=null;salvar();
-  if(lsGet('px_buy_'+pg.id)!=='1'){lsSet('px_buy_'+pg.id,'1');track('Purchase',{...PROD,content_ids:[pg.pacote],value:pg.valor,num_items:S.cred.qtd},{eventID:'pix-'+pg.id});}fecharSheet();
-  const n=await liberarPendentes(S.alvo);renderRes();
-  const r=restantes();toast(n?`Pagamento confirmado! ${n} foto${n>1?'s':''} liberada${n>1?'s':''} 🎉`:'Pagamento confirmado! 🎉');
-  if(r>0&&S.passo===3)setTimeout(()=>toast(`Você ainda pode gerar mais ${r} foto${r>1?'s':''} no seu pacote`),2800);
-  if(S.alvo&&S.acao&&S.acao!=='album'&&S.liberadas[S.alvo.id]){const f=S.alvo;S.alvo=null;setTimeout(()=>baixar(f,S.acao),400)}}
+  if(lsGet('px_buy_'+pg.id)!=='1'){lsSet('px_buy_'+pg.id,'1');track('Purchase',{...PROD,content_ids:[pg.pacote],value:pg.valor,num_items:S.cred.qtd},{eventID:'pix-'+pg.id})}
+  comecarComCredito('Pagamento confirmado! Gerando suas fotos 🎉')}
+$('#aplicarCupom').onclick=async()=>{const c=$('#cupom').value.trim();if(!c){toast('Digite o cupom');return}
+  const b=$('#aplicarCupom');b.disabled=true;
+  try{const r=await fetch(API+'?acao=cupom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:c})});const j=await r.json();
+    if(!r.ok||j.erro)throw new Error(j.erro||'Cupom inválido');
+    S.cred={id:j.pagamentoId,pacote:'cupom',qtd:j.qtd,usados:0};salvar();comecarComCredito(`Cupom aplicado: ${j.qtd} fotos liberadas ✨`)}
+  catch(e){toast(e.message)}finally{b.disabled=false}};
 
 /* ---------- restaurar sessão ---------- */
-DB.get('estado').then(st=>{if(!st)return;S.fotos=st.fotos||[];S.liberadas=st.liberadas||{};S.pg=st.pg||null;S.cred=st.cred||null;renderRes();if(S.pg)checar()});
+DB.get('estado').then(st=>{if(!st)return;S.fotos=(st.fotos||[]).filter(f=>f&&f.foto);S.pg=st.pg||null;S.cred=st.cred||null;renderRes();if(S.pg)checar()});
+
+/* ---------- galeria em carrossel automático (pausa no toque) ---------- */
+(()=>{const g=$('#gal');if(!g)return;const tr=g.querySelector('.tr');tr.innerHTML+=tr.innerHTML;
+  tr.querySelectorAll('img[data-cat]').forEach(i=>imgCat(i,i.dataset.cat));
+  let pausa=false,vol=null,pos=0;const vel=.45;
+  const parar=()=>{pausa=true;clearTimeout(vol)},seguir=()=>{clearTimeout(vol);vol=setTimeout(()=>{pos=g.scrollLeft;pausa=false},900)};
+  g.addEventListener('touchstart',parar,{passive:true});g.addEventListener('touchend',seguir,{passive:true});g.addEventListener('touchcancel',seguir,{passive:true});
+  g.addEventListener('mouseenter',parar);g.addEventListener('mouseleave',seguir);
+  (function passo(){if(!pausa&&!document.hidden){const meio=tr.scrollWidth/2;pos+=vel;if(pos>=meio)pos-=meio;g.scrollLeft=pos}else if(pausa){const meio=tr.scrollWidth/2;if(g.scrollLeft>=meio)g.scrollLeft-=meio;pos=g.scrollLeft}requestAnimationFrame(passo)})();
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)pausa=true;})();
+
+/* ---------- assistente de vendas (chat com IA) ---------- */
+const CH={msgs:[],ocupado:false};
+const chatEl=$('#chat'),chatBd=$('#chatBd'),chatIn=$('#chatIn');
+function bolha(t,quem,cls){const d=document.createElement('div');d.className='m '+quem+(cls?' '+cls:'');d.textContent=t;chatBd.appendChild(d);chatBd.scrollTop=chatBd.scrollHeight;return d}
+function abrirChat(){chatEl.classList.add('open');$('#chatBtn').hidden=true;$('.chatbtn .dot')&&$('.chatbtn .dot').remove();
+  if(!CH.msgs.length){const oi='Oi! Eu sou a Mel, do Estúdio das Modelos ✨ Me conta: é para aniversário, trabalho ou só para arrasar no Instagram? Posso tirar qualquer dúvida sobre os estilos, os preços ou como funciona.';CH.msgs.push({r:'bot',t:oi});bolha(oi,'bot')}
+  uma('chat',()=>trackC('ChatAberto'));setTimeout(()=>{if(innerWidth>620)chatIn.focus()},300)}
+function fecharChat(){chatEl.classList.remove('open');$('#chatBtn').hidden=false}
+async function enviarChat(t){t=(t||'').trim();if(!t||CH.ocupado)return;CH.ocupado=true;$('#chatSug').hidden=true;
+  CH.msgs.push({r:'eu',t});bolha(t,'eu');chatIn.value='';chatIn.style.height='';const dig=bolha('Mel está digitando…','bot','dig');trackC('ChatMensagem');
+  try{const r=await fetch(API+'?acao=chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msgs:CH.msgs.slice(-12)})});const j=await r.json();
+    const resp=j.resposta||j.erro||'Não consegui responder agora. Tente de novo em instantes.';dig.remove();CH.msgs.push({r:'bot',t:resp});bolha(resp,'bot')}
+  catch(e){dig.remove();bolha('Falha de conexão. Tente de novo.','bot')}finally{CH.ocupado=false}}
+$('#chatBtn').onclick=abrirChat;$('#chatX').onclick=fecharChat;
+$('#chatForm').onsubmit=e=>{e.preventDefault();enviarChat(chatIn.value)};
+chatIn.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enviarChat(chatIn.value)}});
+chatIn.addEventListener('input',()=>{chatIn.style.height='';chatIn.style.height=Math.min(110,chatIn.scrollHeight)+'px'});
+$$('#chatSug button').forEach(b=>b.onclick=()=>enviarChat(b.textContent));
+$('#chatGo').onclick=()=>{trackC('ChatCTA');fecharChat();abrirEstudio()};
 
 /* ---------- efeitos ---------- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
