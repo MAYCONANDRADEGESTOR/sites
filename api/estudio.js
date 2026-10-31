@@ -1,11 +1,8 @@
 // Estúdio das Modelos — motor do estúdio (gera, protege, cobra no Pix e libera)
 // Variáveis de ambiente (Vercel):
-//   GEMINI_API_KEY ............ Google AI Studio (motor 1, grátis)
-//   CF_ACCOUNT_ID, CF_API_TOKEN  Cloudflare Workers AI (motor 2, grátis)
-//   FAL_KEY .................... fal.ai (motor 3, pago só em emergência — opcional)
-//   MP_ACCESS_TOKEN ............ Mercado Pago (Pix)
-//   CALLMEBOT_APIKEY, ALERTA_WHATSAPP  alertas no WhatsApp do dono (nunca exibidos ao cliente)
-//   ESTUDIO_SEAL_SECRET ........ opcional (senão usa a chave do Google)
+//   GEMINI_API_KEY ...... Google AI Studio (motor de imagem, plano gratuito)
+//   MP_ACCESS_TOKEN ..... Mercado Pago (Pix)
+//   ESTUDIO_SEAL_SECRET . opcional (senão usa a chave do Google)
 const crypto = require('crypto');
 const sharp = require('sharp');
 
@@ -114,18 +111,6 @@ async function rpc(fn, args) {
   return r.json();
 }
 
-// ---------- alertas no WhatsApp do dono ----------
-async function alertar(tipo, texto, minutos = 360) {
-  const fone = process.env.ALERTA_WHATSAPP, key = process.env.CALLMEBOT_APIKEY;
-  console.log('[alerta]', tipo, texto);
-  if (!fone || !key) return;
-  try {
-    if (!(await rpc('estudio_pode_alertar', { p_tipo: tipo, p_minutos: minutos }))) return;
-    const msg = `⚠️ Estúdio das Modelos\n${texto}\n${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`;
-    await fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(fone)}&text=${encodeURIComponent(msg)}&apikey=${encodeURIComponent(key)}`);
-  } catch (e) { console.log('[alerta] falhou', e.message); }
-}
-
 // ---------- motores de imagem (troca automática) ----------
 const erroQuota = (status, txt) => status === 429 || /quota|exhaust|rate.?limit|resource_exhausted|limit/i.test(txt || '');
 
@@ -147,66 +132,22 @@ async function motorGemini(prompt, refs) {
   return { erro: ultimo, quota };
 }
 
-async function motorCloudflare(prompt, refs) {
-  const conta = process.env.CF_ACCOUNT_ID, tk = process.env.CF_API_TOKEN; if (!conta || !tk) return { pulou: true };
-  const modelo = process.env.CF_MODELO || '@cf/black-forest-labs/flux-2-klein-9b';
-  const form = new FormData();
-  const texto = refs.length ? 'The woman in image 0' + (refs.length > 1 ? ' (also shown in the other images)' : '') + ' is the subject. ' + prompt : prompt;
-  form.append('prompt', texto);
-  form.append('width', '768'); form.append('height', '1024');
-  for (let i = 0; i < Math.min(refs.length, 3); i++) {
-    const peq = await sharp(refs[i]).resize(500, 500, { fit: 'inside' }).jpeg({ quality: 90 }).toBuffer();
-    form.append('input_image_' + i, new Blob([peq], { type: 'image/jpeg' }), `ref${i}.jpg`);
-  }
-  const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${conta}/ai/run/${modelo}`, { method: 'POST', headers: { Authorization: 'Bearer ' + tk }, body: form });
-  const tipo = r.headers.get('content-type') || '';
-  if (r.ok && tipo.startsWith('image/')) return { img: Buffer.from(await r.arrayBuffer()) };
-  const j = await r.json().catch(() => ({}));
-  const b64 = j?.result?.image || j?.image;
-  if (r.ok && b64) return { img: Buffer.from(b64, 'base64') };
-  const msg = `cloudflare: ${r.status} ${JSON.stringify(j?.errors || j).slice(0, 200)}`;
-  return { erro: msg, quota: erroQuota(r.status, msg) };
-}
-
-async function motorFal(prompt, refs) {
-  const key = process.env.FAL_KEY; if (!key) return { pulou: true };
-  const comRef = refs.length > 0;
-  const r = await fetch('https://fal.run/fal-ai/' + (comRef ? 'nano-banana/edit' : 'nano-banana'), {
-    method: 'POST', headers: { Authorization: 'Key ' + key, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, num_images: 1, aspect_ratio: '3:4', ...(comRef ? { image_urls: refs.map(b => 'data:image/jpeg;base64,' + b.toString('base64')) } : {}) }),
-  });
-  const j = await r.json().catch(() => ({}));
-  const url = j?.images?.[0]?.url;
-  if (r.ok && url) {
-    const img = url.startsWith('data:') ? Buffer.from(url.split(',')[1], 'base64') : Buffer.from(await (await fetch(url)).arrayBuffer());
-    return { img };
-  }
-  return { erro: `fal: ${r.status} ${JSON.stringify(j).slice(0, 200)}` };
-}
-
 async function gerarImagem(prompt, refs = []) {
-  const log = [];
   const g = await motorGemini(prompt, refs);
   if (g.img) return { img: g.img, motor: 'gemini' };
-  if (!g.pulou) log.push(g.erro);
-  const c = await motorCloudflare(prompt, refs);
-  if (c.img) {
-    if (g.quota) await alertar('google_esgotado', 'A cota grátis do Google Gemini acabou por hoje. O site trocou sozinho para a reserva (Cloudflare) e continua funcionando.', 720);
-    return { img: c.img, motor: 'cloudflare' };
-  }
-  if (!c.pulou) log.push(c.erro);
-  const f = await motorFal(prompt, refs);
-  if (f.img) {
-    await alertar('gratis_esgotado', 'As cotas grátis (Google e Cloudflare) acabaram. O site está usando o motor pago de emergência (fal.ai).', 360);
-    return { img: f.img, motor: 'fal' };
-  }
-  if (!f.pulou) log.push(f.erro);
-  console.log('[motores]', log.join(' | '));
-  if (g.quota || c.quota || (g.pulou && c.pulou && f.pulou)) {
-    await alertar('motor_parado', 'Nenhum motor de imagem conseguiu gerar fotos agora (cotas grátis esgotadas ou chaves ausentes). As clientes estão vendo erro na geração. Adicione créditos ou uma nova chave na Vercel.', 120);
-  }
-  const e = new Error('Não conseguimos gerar agora. Tente outra foto (rosto bem iluminado, de frente) ou tente de novo em instantes.');
-  e.detalhe = log.join(' | '); throw e;
+  console.log('[motor]', g.pulou ? 'sem GEMINI_API_KEY' : g.erro);
+  const e = new Error(g.pulou ? 'Estúdio em manutenção. Volte em alguns minutos.' : (g.quota ? 'Estamos com muita procura agora. Tente novamente em alguns minutos.' : 'Não conseguimos gerar agora. Tente outra foto (rosto bem iluminado, de frente) ou tente de novo em instantes.'));
+  e.code = g.pulou ? 503 : (g.quota ? 429 : 500); e.detalhe = g.erro; throw e;
+}
+
+// variações para que cada foto do mesmo estilo saia diferente (pose, enquadramento, ângulo, luz, look)
+const POSES = ['standing confidently and facing the camera', 'turned three-quarters, looking back over her shoulder', 'seated elegantly', 'walking toward the camera mid-step', 'leaning lightly against an element of the scene', 'laughing naturally in a candid moment', 'one hand gently touching her hair', 'in profile, looking away from the camera', 'arms relaxed with a soft closed-lip smile', 'sitting on the floor with legs gracefully to the side', 'interacting with a prop from the scene', 'chin slightly raised in a powerful pose', 'eyes closed with a serene expression', 'turning with movement in her hair and clothes', 'hands framing her face'];
+const ENQUADRAMENTOS = ['tight close-up portrait', 'half-body shot', 'full-body shot', 'three-quarter body shot', 'medium shot from a slightly low angle', 'medium shot from a slightly high angle'];
+const LUZES = ['soft diffused light', 'warm golden light', 'dramatic side light', 'bright airy light', 'cinematic backlight with gentle rim light'];
+const LOOKS = ['the main outfit described', 'a different color variation of the outfit within the same theme', 'a different hairstyle (elegant updo)', 'a different hairstyle (loose waves)', 'different accessories that match the theme'];
+function variacao(i) {
+  i = Math.abs(parseInt(i, 10) || 0) % 60;
+  return ` Variation ${i + 1}: pose — ${POSES[i % POSES.length]}; framing — ${ENQUADRAMENTOS[i % ENQUADRAMENTOS.length]}; lighting — ${LUZES[i % LUZES.length]}; styling — ${LOOKS[(i + Math.floor(i / 5)) % LOOKS.length]}. Make this image clearly different from other photos of the same session (new pose, new composition, new camera angle), while keeping the same theme and the same woman.`;
 }
 
 async function marcaDagua(buf) {
@@ -275,13 +216,13 @@ module.exports = async (req, res) => {
     if (acao === 'gerar') {
       const corpo = await lerCorpo(req);
       if (!limitar(ip, corpo.pagamentoId ? 40 : 15, 3600e3)) return json(res, 429, { erro: 'Você atingiu o limite de fotos por agora. Volte mais tarde.' });
-      const { fotos = [], estilo } = corpo;
+      const { fotos = [], estilo, variacao: v = 0 } = corpo;
       const est = ESTILOS[estilo];
       if (!est) return json(res, 400, { erro: 'Escolha um estilo.' });
       const refs = fotos.filter(f => typeof f === 'string' && f.length > 1000 && f.length < 2.5e6).slice(0, 3)
         .map(f => Buffer.from(f.replace(/^data:image\/\w+;base64,/, ''), 'base64'));
       if (!refs.length) return json(res, 400, { erro: 'Envie pelo menos 1 foto sua.' });
-      const { img, motor } = await gerarImagem(IDENTIDADE + 'Create this new photo of her: ' + est.p + QUALIDADE, refs);
+      const { img, motor } = await gerarImagem(IDENTIDADE + 'Create this new photo of her: ' + est.p + variacao(v) + QUALIDADE, refs);
       const limpa = await sharp(img).rotate().resize({ width: 1536, withoutEnlargement: true }).jpeg({ quality: 92 }).toBuffer();
       const sealed = lacrar(limpa);
       const previa = await marcaDagua(limpa);
