@@ -257,6 +257,8 @@ footer a{color:var(--plum);font-weight:700}
 .thumbs button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(46,23,32,.75);color:#fff;font-size:13px}
 .tips{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
 .tips span{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px;font-size:12.5px;font-weight:600;text-align:center}
+.idade{margin-top:20px;background:var(--paper);border:1.5px solid var(--blush2);border-radius:18px;padding:16px}
+.idade label{display:block}.idade label b{display:block;font-size:15.5px}.idade label span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
 .chk{display:flex;gap:12px;align-items:flex-start;margin-top:20px;font-size:14px;color:var(--plum2);cursor:pointer}
 .chk input{width:22px;height:22px;accent-color:var(--rose);flex:none;margin-top:1px}
 .sfoot{position:fixed;left:0;right:0;bottom:0;padding:14px 16px max(14px,env(safe-area-inset-bottom));background:linear-gradient(to top,var(--ivory) 70%,transparent);z-index:5}
@@ -359,7 +361,7 @@ footer a{color:var(--plum);font-weight:700}
       <div class="cta-box">
         <button class="btn btn-r" id="ctaVsl">Quero criar meu ensaio agora <span class="arr">→</span></button>
         <div class="micro">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>24 estilos exclusivos</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>40 estilos exclusivos</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Pronto em minutos</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pix na hora</span>
         </div>
@@ -375,7 +377,7 @@ footer a{color:var(--plum);font-weight:700}
 <section class="sec" style="padding-bottom:40px">
   <div class="wrap">
     <div class="trust">
-      <div><i>✦</i><p><b>24 estilos</b><span>em 6 categorias</span></p></div>
+      <div><i>✦</i><p><b>40 estilos</b><span>em 10 categorias</span></p></div>
       <div><i>📸</i><p><b>Alta resolução</b><span>perfil, stories e original</span></p></div>
       <div><i>⚡</i><p><b>Pix na hora</b><span>liberação automática</span></p></div>
       <div><i>🔒</i><p><b>Privacidade</b><span>selfies não ficam salvas</span></p></div>
@@ -524,6 +526,7 @@ footer a{color:var(--plum);font-weight:700}
           <p style="color:var(--muted);font-size:14px;margin-top:4px">ou tire uma selfie agora</p>
         </label>
         <div class="thumbs" id="thumbs"></div>
+        <div class="idade" id="idadeBox" hidden><label for="idade"><b>🎂 Quantos anos você vai comemorar?</b><span>O número aparece nos balões da sua foto (opcional)</span></label><input id="idade" class="fld" type="number" inputmode="numeric" min="18" max="120" placeholder="Ex.: 30"></div>
         <div class="tips"><span>☀️ Boa iluminação</span><span>🙂 Rosto de frente</span><span>🕶️ Sem óculos escuros</span><span>👤 Só você na foto</span></div>
         <label class="chk"><input type="checkbox" id="aceite"><span>Confirmo que as fotos são minhas (ou de uma adulta que autorizou), que tenho 18 anos ou mais e aceito que as imagens sejam criadas por IA.</span></label>
       </div>
@@ -666,7 +669,7 @@ $('#fechar').onclick=()=>{studio.classList.remove('open');document.body.style.ov
 function ir(p){S.passo=p;$$('.pane').forEach(x=>x.classList.toggle('on',+x.dataset.pane===p));$$('.prog i').forEach(i=>i.classList.toggle('on',+i.dataset.p<=p));erro('');$('#sbody').scrollTop=0;atualizar()}
 function atualizar(){const a=$('#avancar'),v=$('#voltar');$('#sfoot').hidden=S.passo===3;v.style.display=S.passo>1?'':'none';
   if(S.passo===1){a.disabled=!S.estilo;a.innerHTML='Continuar <span class="arr">→</span>'}
-  if(S.passo===2){a.disabled=!(S.selfies.length&&$('#aceite').checked);const e=estiloInfo(S.estilo);a.innerHTML='Gerar minhas fotos <span class="arr">✦</span>'}}
+  if(S.passo===2){const ei=estiloInfo(S.estilo);$('#idadeBox').hidden=!(ei&&ei.cat==='aniversario');a.disabled=!(S.selfies.length&&$('#aceite').checked);const e=estiloInfo(S.estilo);a.innerHTML='Gerar minhas fotos <span class="arr">✦</span>'}}
 $('#voltar').onclick=()=>ir(Math.max(1,S.passo-1));
 $('#avancar').onclick=()=>{if(S.passo===1)ir(2);else if(S.passo===2){ir(3);gerar()}};
 $('#aceite').onchange=atualizar;
@@ -695,7 +698,7 @@ async function gerar(){
   gerando=true;erro('');const g=$('#gen');g.classList.add('on');$('#more').hidden=true;
   const e=estiloInfo(S.estilo);$('#gentxt').textContent='Criando sua foto · '+(e?e.nome:'');
   let t=0;const bar=$('#genbar');bar.style.width='4%';const iv=setInterval(()=>{t++;bar.style.width=Math.min(94,4+t*2.2)+'%';$('#gendica').textContent=dicas[Math.floor(t/7)%dicas.length]},1000);
-  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred?S.cred.id:undefined})});
+  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo,idade:(estiloInfo(S.estilo)||{}).cat==='aniversario'?($('#idade').value||undefined):undefined,variacao:S.fotos.filter(x=>x.estilo===S.estilo).length,pagamentoId:S.cred?S.cred.id:undefined})});
     const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
     if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
     const f={id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa};S.fotos.unshift(f);salvar();trackC('PreviaGerada',{estilo:j.estilo});uma('atc',()=>track('AddToCart',{...PROD,content_ids:[j.estilo],value:PRECOS.foto.valor}));
