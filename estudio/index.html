@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Musa Studio IA · Seu ensaio fotográfico com inteligência artificial</title>
+<meta name="description" content="Envie 3 selfies, escolha o estilo e veja seu ensaio fotográfico profissional pronto em minutos. Aniversário, profissional, estilo celebridade e mais. Pague só se amar, no Pix.">
+<meta name="theme-color" content="#FBF5EF">
+<meta property="og:title" content="Musa Studio IA · Seu ensaio de revista a partir de selfies">
+<meta property="og:description" content="Escolha o estilo, envie suas fotos e veja o resultado antes de pagar.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ivory:#FBF5EF; --paper:#FFFDFB; --blush:#F4DDD6; --blush2:#EBC7BE; --rose:#B85C68; --rose-d:#93424F;
+  --plum:#2E1720; --plum2:#4A2A36; --ink:#2E1720; --muted:#7A6168; --gold:#B8925A; --line:rgba(46,23,32,.12);
+  --r:22px; --shadow:0 30px 60px -30px rgba(46,23,32,.45); --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--ivory);color:var(--ink);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.serif{font-family:Fraunces,Georgia,serif;font-optical-sizing:auto}
+.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .09 0 0 0 0 .12 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:17px 28px;border-radius:999px;font-weight:700;font-size:16px;letter-spacing:.01em;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s}
+.btn-p{background:var(--plum);color:#fff;box-shadow:0 14px 30px -12px rgba(46,23,32,.6)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px rgba(46,23,32,.7)}
+.btn-r{background:var(--rose);color:#fff;box-shadow:0 14px 30px -12px rgba(184,92,104,.7)}
+.btn-r:hover{background:var(--rose-d);transform:translateY(-2px)}
+.btn-g{border:1.5px solid var(--line);background:rgba(255,255,255,.6)}
+.btn-g:hover{border-color:var(--plum)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn .arr{transition:transform .35s var(--ease)}.btn:hover .arr{transform:translateX(4px)}
+
+/* topo */
+header.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(251,245,239,.78);border-bottom:1px solid transparent;transition:border-color .3s}
+header.top.sc{border-color:var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:baseline;gap:6px;font-size:26px;font-style:italic;font-weight:500;letter-spacing:-.02em}
+.logo small{font-family:Manrope;font-style:normal;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--rose)}
+.top .btn{padding:11px 20px;font-size:14px}
+
+/* hero */
+.hero{position:relative;padding:56px 0 40px;z-index:2}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--rose)}
+.eyebrow:before{content:"";width:26px;height:1.5px;background:currentColor}
+h1{font-family:Fraunces,serif;font-weight:400;font-size:clamp(44px,6.4vw,84px);line-height:.98;letter-spacing:-.035em;margin:22px 0 24px}
+h1 em{font-style:italic;color:var(--rose)}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:520px}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;align-items:center}
+.micro{display:flex;flex-wrap:wrap;gap:18px;margin-top:22px;font-size:13.5px;font-weight:600;color:var(--plum2)}
+.micro span{display:inline-flex;align-items:center;gap:7px}
+.micro svg{width:16px;height:16px;color:var(--rose)}
+.stack{position:relative;height:clamp(440px,52vw,600px)}
+.card{position:absolute;border-radius:26px;overflow:hidden;background:linear-gradient(160deg,var(--blush),var(--blush2));box-shadow:var(--shadow);border:6px solid var(--paper)}
+.card img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.card:hover img{transform:scale(1.05)}
+.card .tag{position:absolute;left:12px;bottom:12px;background:rgba(255,253,251,.92);backdrop-filter:blur(6px);padding:7px 13px;border-radius:999px;font-size:12px;font-weight:700}
+.c1{width:52%;aspect-ratio:3/4;left:24%;top:2%;z-index:3;animation:fl 7s ease-in-out infinite}
+.c2{width:42%;aspect-ratio:3/4;left:0;top:30%;transform:rotate(-7deg);z-index:2;animation:fl2 8s ease-in-out infinite}
+.c3{width:42%;aspect-ratio:3/4;right:0;top:24%;transform:rotate(6deg);z-index:2;animation:fl3 9s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-12px)}}@keyframes fl2{50%{transform:rotate(-5deg) translateY(10px)}}@keyframes fl3{50%{transform:rotate(8deg) translateY(-8px)}}
+.badge{position:absolute;z-index:4;right:2%;bottom:4%;background:var(--plum);color:#fff;border-radius:18px;padding:14px 18px;box-shadow:var(--shadow);font-size:13px;line-height:1.3}
+.badge b{display:block;font-family:Fraunces;font-size:24px;font-weight:500;font-style:italic}
+.ph{display:flex;align-items:center;justify-content:center;height:100%;font-family:Fraunces;font-style:italic;color:rgba(46,23,32,.35);font-size:20px}
+
+/* faixa */
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:var(--paper);position:relative;z-index:2}
+.marquee .tr{display:flex;gap:46px;padding:18px 0;width:max-content;animation:mq 32s linear infinite}
+.marquee span{font-family:Fraunces;font-style:italic;font-size:22px;white-space:nowrap;display:flex;align-items:center;gap:46px}
+.marquee span:after{content:"✦";font-style:normal;font-size:13px;color:var(--rose)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section{position:relative;z-index:2}
+.sec{padding:96px 0}
+.h2{font-family:Fraunces,serif;font-weight:400;font-size:clamp(36px,4.6vw,58px);line-height:1.02;letter-spacing:-.03em;margin:16px 0 16px}
+.h2 em{font-style:italic;color:var(--rose)}
+.sub{color:var(--muted);max-width:560px;font-size:17px}
+.center{text-align:center}.center .sub{margin-inline:auto}
+
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:30px 28px 32px;position:relative;overflow:hidden}
+.step .n{font-family:Fraunces;font-style:italic;font-size:64px;line-height:1;color:var(--blush2)}
+.step h3{font-size:20px;margin:14px 0 8px;letter-spacing:-.01em}
+.step p{color:var(--muted);font-size:15.5px}
+
+/* catálogo */
+.tabs{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;margin-top:36px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);font-weight:700;font-size:14.5px;background:var(--paper);transition:.25s}
+.tab.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px}
+.item{background:var(--paper);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);text-align:left;transition:transform .45s var(--ease),box-shadow .45s var(--ease);display:flex;flex-direction:column}
+.item:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.item .im{aspect-ratio:3/4;background:linear-gradient(160deg,var(--blush),var(--blush2));overflow:hidden;position:relative}
+.item .im img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.item:hover .im img{transform:scale(1.06)}
+.item .im .lbl{position:absolute;top:12px;left:12px;background:rgba(255,253,251,.9);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 11px;border-radius:999px}
+.item .bd{padding:18px 20px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.item h4{font-family:Fraunces;font-weight:500;font-size:22px;letter-spacing:-.01em}
+.item p{color:var(--muted);font-size:14px}
+.item .go{flex:none;width:44px;height:44px;border-radius:50%;background:var(--blush);display:grid;place-items:center;transition:.3s}
+.item:hover .go{background:var(--rose);color:#fff}
+.note{font-size:13px;color:var(--muted);margin-top:18px;text-align:center}
+
+/* preços */
+.price{background:var(--plum);color:#fff;border-radius:34px;padding:72px 0;overflow:hidden;position:relative}
+.price:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(184,92,104,.55),transparent 65%);right:-180px;top:-260px}
+.price .h2 em{color:var(--blush2)}
+.price .sub{color:rgba(255,255,255,.72)}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px;position:relative}
+.plan{border:1px solid rgba(255,255,255,.16);border-radius:var(--r);padding:32px;background:rgba(255,255,255,.04)}
+.plan.hot{background:var(--paper);color:var(--ink);border:0}
+.plan .pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--rose);color:#fff;margin-bottom:14px}
+.plan h3{font-family:Fraunces;font-weight:500;font-size:28px}
+.plan .val{font-family:Fraunces;font-size:56px;letter-spacing:-.03em;margin:10px 0 2px}
+.plan .val small{font-size:20px}
+.plan ul{list-style:none;margin:18px 0 26px;display:grid;gap:10px;font-size:15px}
+.plan li{display:flex;gap:10px}.plan li:before{content:"✓";color:var(--rose);font-weight:800}
+.plan:not(.hot) li:before{color:var(--blush2)}
+.plan .btn{width:100%}
+
+/* faq */
+.faq{max-width:780px;margin:44px auto 0}
+details{border-bottom:1px solid var(--line);padding:22px 4px}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;font-weight:700;font-size:17.5px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";font-family:Fraunces;font-size:28px;line-height:1;color:var(--rose);transition:transform .3s}
+details[open] summary:after{transform:rotate(45deg)}
+details p{color:var(--muted);margin-top:12px;font-size:15.5px}
+
+.final{text-align:center;padding:100px 0 110px}
+footer{border-top:1px solid var(--line);padding:40px 0 110px;font-size:13px;color:var(--muted);position:relative;z-index:2}
+footer .wrap{display:grid;gap:14px}
+footer a{color:var(--plum);font-weight:700}
+.disc{font-size:12px;line-height:1.6;opacity:.85}
+.mobcta{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:45;display:none}
+.mobcta .btn{width:100%}
+.wa{position:fixed;right:16px;bottom:88px;z-index:44;width:54px;height:54px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 24px -8px rgba(0,0,0,.4)}
+.wa svg{width:28px;height:28px;fill:#fff}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* ===== estúdio ===== */
+.studio{position:fixed;inset:0;z-index:60;background:var(--ivory);display:none;flex-direction:column}
+.studio.open{display:flex;animation:up .5s var(--ease)}
+@keyframes up{from{opacity:0;transform:translateY(30px)}}
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--paper)}
+.sbar .x{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);font-size:20px}
+.prog{display:flex;gap:6px;align-items:center;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prog i{width:26px;height:4px;border-radius:4px;background:var(--line)}.prog i.on{background:var(--rose)}
+.sbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sin{width:min(860px,100% - 32px);margin:0 auto;padding:30px 0 140px}
+.sin h2{font-family:Fraunces;font-weight:400;font-size:clamp(30px,4vw,42px);letter-spacing:-.025em;line-height:1.05}
+.sin h2 em{font-style:italic;color:var(--rose)}
+.sin .sub{margin-top:8px;font-size:15.5px}
+.pane{display:none}.pane.on{display:block;animation:fade .45s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.opt{border-radius:18px;overflow:hidden;border:2px solid transparent;background:var(--paper);text-align:left;transition:.25s;position:relative}
+.opt.on{border-color:var(--rose);box-shadow:0 0 0 4px rgba(184,92,104,.15)}
+.opt .im{aspect-ratio:3/4;background:linear-gradient(160deg,var(--blush),var(--blush2))}
+.opt .im img{width:100%;height:100%;object-fit:cover}
+.opt b{display:block;padding:10px 12px 12px;font-size:14px}
+.opt.on:after{content:"✓";position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center;font-weight:800}
+.drop{display:block;cursor:pointer;margin-top:22px;border:2px dashed var(--blush2);border-radius:22px;background:var(--paper);padding:30px 20px;text-align:center;transition:.25s}
+.drop.ov{border-color:var(--rose);background:#fff}
+.drop .ic{width:58px;height:58px;border-radius:50%;background:var(--blush);display:grid;place-items:center;margin:0 auto 12px;color:var(--rose)}
+.thumbs{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.thumbs div{width:84px;height:104px;border-radius:14px;overflow:hidden;position:relative;background:var(--blush)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(46,23,32,.75);color:#fff;font-size:13px}
+.tips{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.tips span{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px;font-size:12.5px;font-weight:600;text-align:center}
+.chk{display:flex;gap:12px;align-items:flex-start;margin-top:20px;font-size:14px;color:var(--plum2);cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--rose);flex:none;margin-top:1px}
+.sfoot{position:fixed;left:0;right:0;bottom:0;padding:14px 16px max(14px,env(safe-area-inset-bottom));background:linear-gradient(to top,var(--ivory) 70%,transparent);z-index:5}
+.sfoot .in{width:min(860px,100%);margin:0 auto;display:flex;gap:10px}
+.sfoot .btn{flex:1}
+.err{margin-top:16px;background:#fbe9e7;color:#8a2c22;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:600;display:none}
+.gen{margin-top:20px;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;display:none;align-items:center;gap:16px}
+.gen.on{display:flex}
+.spin{width:44px;height:44px;border-radius:50%;border:3px solid var(--blush);border-top-color:var(--rose);animation:sp 1s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bar{height:6px;border-radius:6px;background:var(--blush);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .8s linear}
+.res{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
+.ph2{border-radius:20px;overflow:hidden;background:var(--paper);border:1px solid var(--line);position:relative}
+.ph2 .im{aspect-ratio:3/4;position:relative;background:var(--blush)}
+.ph2 .im img{width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}
+.ph2 .im .shield{position:absolute;inset:0}
+.ph2 .lock{position:absolute;top:10px;left:10px;background:rgba(46,23,32,.82);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px}
+.ph2 .lock.ok{background:#2f7a52}
+.ph2 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.ph2 .acts button{padding:11px 6px;border-radius:12px;background:var(--ivory);font-size:12.5px;font-weight:700;border:1px solid var(--line)}
+.ph2 .acts button.full{grid-column:1/-1;background:var(--plum);color:#fff;border:0}
+.more{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.more .btn{padding:13px 18px;font-size:14px}
+.albumbar{margin-top:22px;background:var(--plum);color:#fff;border-radius:22px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.albumbar b{font-family:Fraunces;font-weight:500;font-size:22px}
+.albumbar span{font-size:13.5px;opacity:.75;display:block}
+
+/* sheet pagamento */
+.sheet{position:fixed;inset:0;z-index:80;background:rgba(46,23,32,.55);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.sheet.open{display:flex}
+.sheet .box{background:var(--paper);width:min(520px,100%);max-height:92vh;overflow-y:auto;border-radius:28px 28px 0 0;padding:24px 20px max(24px,env(safe-area-inset-bottom));animation:up .4s var(--ease)}
+@media(min-width:700px){.sheet{align-items:center}.sheet .box{border-radius:28px}}
+.box h3{font-family:Fraunces;font-weight:500;font-size:28px;letter-spacing:-.02em}
+.pk{display:flex;align-items:center;gap:14px;border:2px solid var(--line);border-radius:18px;padding:16px;margin-top:12px;text-align:left;width:100%;transition:.2s}
+.pk.on{border-color:var(--rose);background:#fff6f4}
+.pk .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--blush2);flex:none;position:relative}
+.pk.on .rd{border-color:var(--rose)}.pk.on .rd:after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--rose)}
+.pk .t{flex:1}.pk .t b{display:block;font-size:15.5px}.pk .t small{color:var(--muted);font-size:13px}
+.pk .v{font-family:Fraunces;font-size:24px;font-weight:500;white-space:nowrap}
+.pk .v s{display:block;font-family:Manrope;font-size:12px;color:var(--muted);text-align:right}
+.fld{width:100%;margin-top:10px;padding:15px 16px;border-radius:14px;border:1.5px solid var(--line);font:inherit;font-size:16px;background:#fff}
+.fld:focus{outline:none;border-color:var(--rose)}
+.qr{text-align:center;margin-top:12px}
+.qr img{width:220px;height:220px;margin:12px auto;border-radius:12px;border:1px solid var(--line);image-rendering:pixelated}
+.cc{display:flex;gap:8px;margin-top:6px}.cc input{flex:1;min-width:0;font-size:12px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--ivory)}
+.wait{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-weight:700;color:var(--rose)}
+.wait .spin{width:20px;height:20px;border-width:2px}
+.safe{display:flex;gap:8px;justify-content:center;margin-top:14px;font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:var(--plum);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:.35s;z-index:90;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:900px){
+  .hero{padding-top:28px}.hero .wrap{grid-template-columns:1fr;gap:20px}
+  .stack{height:auto;aspect-ratio:1/1.02;max-width:520px;width:100%;margin:0 auto}
+  .steps,.grid{grid-template-columns:1fr 1fr}.plans{grid-template-columns:1fr}
+  .sec{padding:72px 0}.mobcta{display:block}.top .btn{display:none}
+  .price{border-radius:0}
+}
+@media (max-width:620px){
+  .steps{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr;gap:12px}
+  .item .bd{padding:12px 12px 14px}.item h4{font-size:17px}.item p{display:none}.item .go{width:34px;height:34px}
+  .sgrid{grid-template-columns:1fr 1fr}.tips{grid-template-columns:1fr 1fr}
+  .res{gap:10px}.ph2 .acts{grid-template-columns:1fr}.cta-row .btn{width:100%}
+  .plan{padding:26px 22px}.plan .val{font-size:48px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo serif" href="#">Musa<small>studio ia</small></a>
+    <button class="btn btn-p" data-open>Criar meu ensaio</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Ensaio fotográfico com IA</span>
+      <h1>Seu ensaio de <em>revista</em>, a partir de 3 selfies.</h1>
+      <p class="lead">Escolha o estilo, envie suas fotos e veja seu ensaio profissional pronto em minutos. Aniversário, profissional, estilo celebridade e muito mais, sem estúdio e sem fotógrafo.</p>
+      <div class="cta-row">
+        <button class="btn btn-r" data-open>Criar meu ensaio grátis <span class="arr">→</span></button>
+        <a class="btn btn-g" href="#catalogo">Ver estilos</a>
+      </div>
+      <div class="micro">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Veja antes de pagar</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Pronto em minutos</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pix na hora</span>
+      </div>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="card c2"><img data-cat="aniv-rose" alt=""><span class="tag">Rosé Chic</span></div>
+      <div class="card c3"><img data-cat="pro-executiva" alt=""><span class="tag">Executiva</span></div>
+      <div class="card c1"><img data-cat="aniv-dourado" alt=""><span class="tag">Glam Dourado</span></div>
+      <div class="badge"><b>12 estilos</b>escolha o seu ensaio</div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee"><div class="tr" id="mq"></div></div>
+
+<section class="sec" id="como">
+  <div class="wrap center">
+    <span class="eyebrow rv">Como funciona</span>
+    <h2 class="h2 rv">Três passos. <em>Zero estúdio.</em></h2>
+    <p class="sub rv">Você não precisa saber posar, nem pagar fotógrafo. A inteligência artificial cria o ensaio com o seu rosto.</p>
+    <div class="steps" style="text-align:left">
+      <div class="step rv"><div class="n">01</div><h3>Escolha o estilo</h3><p>Aniversário, profissional, estilo celebridade, feminino, Natal. Você vê o modelo antes.</p></div>
+      <div class="step rv"><div class="n">02</div><h3>Envie suas selfies</h3><p>De 1 a 3 fotos do seu rosto, bem iluminadas. Pode ser do celular mesmo.</p></div>
+      <div class="step rv"><div class="n">03</div><h3>Veja e libere</h3><p>Suas fotos aparecem em minutos. Amou? Libera no Pix e baixa em HD, no formato de perfil ou stories.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="catalogo" style="padding-top:0">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow rv">Catálogo de ensaios</span>
+      <h2 class="h2 rv">Escolha o ensaio <em>dos seus sonhos</em></h2>
+      <p class="sub rv">Toque no estilo que mais combina com você e crie o seu agora.</p>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+    <p class="note">Imagens ilustrativas geradas por IA com modelos fictícios. O seu ensaio é criado a partir das suas fotos.</p>
+  </div>
+</section>
+
+<section class="price" id="precos">
+  <div class="wrap center">
+    <span class="eyebrow" style="color:var(--blush2)">Preços</span>
+    <h2 class="h2">Gere grátis. <em>Pague só o que amar.</em></h2>
+    <p class="sub">Você cria e vê suas fotos sem pagar nada. Só libera em alta qualidade as que quiser.</p>
+    <div class="plans" style="text-align:left">
+      <div class="plan">
+        <h3>Foto avulsa</h3>
+        <div class="val serif"><small>R$</small> <span data-preco="foto">9,90</span></div>
+        <span style="opacity:.7;font-size:14px">por foto</span>
+        <ul><li>1 foto em alta resolução, sem marca d'água</li><li>Formato foto de perfil (quadrado)</li><li>Formato stories (vertical)</li><li>Arquivo original</li></ul>
+        <button class="btn btn-g" style="color:#fff;border-color:rgba(255,255,255,.3);background:transparent" data-open>Começar grátis</button>
+      </div>
+      <div class="plan hot">
+        <span class="pill">Mais escolhido</span>
+        <h3>Álbum completo</h3>
+        <div class="val serif"><small>R$</small> <span data-preco="album">19,90</span></div>
+        <span style="color:var(--muted);font-size:14px">todas as fotos que você gerar</span>
+        <ul><li>Todas as fotos do seu ensaio, sem marca d'água</li><li>Perfil, stories e originais em HD</li><li>Misture vários estilos antes de liberar</li><li>Sai mais barato que 3 fotos avulsas</li></ul>
+        <button class="btn btn-r" data-open>Criar meu ensaio <span class="arr">→</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="center"><span class="eyebrow rv">Dúvidas</span><h2 class="h2 rv">Perguntas <em>frequentes</em></h2></div>
+    <div class="faq">
+      <details><summary>A foto fica parecida comigo mesmo?</summary><p>A IA usa o seu rosto como referência. Quanto melhores as selfies (de frente, com boa luz, sem óculos escuros e sem filtro), mais fiel fica o resultado. Como você vê antes de pagar, só libera se gostar.</p></details>
+      <details><summary>Preciso pagar para ver as fotos?</summary><p>Não. Você gera e vê as prévias de graça. O pagamento é só para baixar as fotos em alta qualidade, sem marca d'água.</p></details>
+      <details><summary>Como recebo as fotos depois de pagar?</summary><p>Assim que o Pix é confirmado (normalmente em segundos), os botões de download são liberados na mesma tela: foto de perfil, stories e original.</p></details>
+      <details><summary>Minhas fotos ficam guardadas?</summary><p>Não guardamos suas selfies. Elas são usadas apenas para criar o seu ensaio naquele momento. As fotos geradas ficam salvas só no seu próprio celular, para você baixar depois.</p></details>
+      <details><summary>Quanto tempo demora?</summary><p>Cada foto leva de 20 segundos a 1 minuto para ficar pronta.</p></details>
+      <details><summary>Posso fazer fotos de outra pessoa?</summary><p>Somente com a autorização dela. As fotos enviadas precisam ser suas ou de uma pessoa adulta que permitiu o uso. Não criamos fotos de menores de 18 anos.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="h2 rv">Você merece um ensaio <em>à sua altura.</em></h2>
+    <p class="sub rv" style="margin:0 auto 30px">Comece agora. Leva menos de 1 minuto para enviar suas fotos.</p>
+    <button class="btn btn-r rv" data-open>Criar meu ensaio grátis <span class="arr">→</span></button>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="logo serif" href="#" style="font-size:22px">Musa<small>studio ia</small></a>
+    <div>Atendimento: <a href="https://wa.me/5534996982471" target="_blank" rel="noopener">WhatsApp (34) 99698-2471</a></div>
+    <p class="disc">As imagens são criadas por inteligência artificial e podem conter pequenas variações em relação à aparência real. Ao usar o estúdio você confirma ter 18 anos ou mais e ter autorização para usar as fotos enviadas. Pagamentos processados com segurança pelo Mercado Pago.</p>
+    <p class="disc">Este site não faz parte do site do Facebook nem da Meta Platforms, Inc. Além disso, este site não é endossado pelo Facebook de forma alguma. FACEBOOK é uma marca registrada da Meta Platforms, Inc.</p>
+    <p class="disc">© <span id="ano"></span> Musa Studio IA. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<div class="mobcta"><button class="btn btn-r" data-open>Criar meu ensaio grátis <span class="arr">→</span></button></div>
+<a class="wa" href="https://wa.me/5534996982471?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20ensaio%20com%20IA" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg></a>
+
+<!-- ===== ESTÚDIO ===== -->
+<div class="studio" id="studio" role="dialog" aria-modal="true" aria-label="Estúdio">
+  <div class="sbar">
+    <a class="logo serif" style="font-size:22px">Musa<small>studio</small></a>
+    <div class="prog"><i data-p="1"></i><i data-p="2"></i><i data-p="3"></i></div>
+    <button class="x" id="fechar" aria-label="Fechar">✕</button>
+  </div>
+  <div class="sbody" id="sbody">
+    <div class="sin">
+      <div class="pane" data-pane="1">
+        <h2>Qual ensaio você <em>quer fazer?</em></h2>
+        <p class="sub">Escolha um estilo. Depois você pode gerar outros e montar seu álbum.</p>
+        <div class="tabs" id="stabs" style="margin-top:20px"></div>
+        <div class="sgrid" id="sgrid"></div>
+      </div>
+      <div class="pane" data-pane="2">
+        <h2>Envie suas <em>selfies</em></h2>
+        <p class="sub">De 1 a 3 fotos do seu rosto. Quanto melhor a foto, mais parecido fica.</p>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="image/*" multiple hidden>
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <b>Toque para escolher suas fotos</b>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px">ou tire uma selfie agora</p>
+        </label>
+        <div class="thumbs" id="thumbs"></div>
+        <div class="tips"><span>☀️ Boa iluminação</span><span>🙂 Rosto de frente</span><span>🕶️ Sem óculos escuros</span><span>👤 Só você na foto</span></div>
+        <label class="chk"><input type="checkbox" id="aceite"><span>Confirmo que as fotos são minhas (ou de uma adulta que autorizou), que tenho 18 anos ou mais e aceito que as imagens sejam criadas por IA.</span></label>
+      </div>
+      <div class="pane" data-pane="3">
+        <h2>Seu <em>ensaio</em></h2>
+        <p class="sub" id="ressub">Suas prévias aparecem aqui. Libere as que amar em alta qualidade.</p>
+        <div class="gen" id="gen"><div class="spin"></div><div style="flex:1"><b id="gentxt">Criando sua foto…</b><div class="bar"><i id="genbar"></i></div><small style="color:var(--muted)" id="gendica">Isso leva de 20 a 60 segundos.</small></div></div>
+        <div class="res" id="res"></div>
+        <div class="more" id="more" hidden>
+          <button class="btn btn-g" id="maisUma">+ Gerar outra neste estilo</button>
+          <button class="btn btn-g" id="trocar">Trocar estilo</button>
+        </div>
+        <div class="albumbar" id="albumbar" hidden>
+          <div><b>Álbum completo</b><span id="albumtxt">Todas as fotos em HD, perfil e stories</span></div>
+          <button class="btn btn-r" id="baixarAlbum">Baixar álbum completo</button>
+        </div>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+  <div class="sfoot" id="sfoot"><div class="in">
+    <button class="btn btn-g" id="voltar" style="flex:0 0 auto">←</button>
+    <button class="btn btn-p" id="avancar">Continuar <span class="arr">→</span></button>
+  </div></div>
+</div>
+
+<!-- ===== PAGAMENTO ===== -->
+<div class="sheet" id="sheet">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 id="shTitle">Liberar suas fotos</h3>
+      <button class="x" id="shX" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line)">✕</button>
+    </div>
+    <div id="shEscolha">
+      <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Sem marca d'água, em alta resolução, nos formatos perfil, stories e original.</p>
+      <button class="pk" data-pk="foto"><span class="rd"></span><span class="t"><b>Só esta foto</b><small>1 foto · perfil + stories + original</small></span><span class="v">R$ <span data-preco="foto">9,90</span></span></button>
+      <button class="pk on" data-pk="album"><span class="rd"></span><span class="t"><b>Álbum completo</b><small id="pkAlbumTxt">Todas as fotos do seu ensaio</small></span><span class="v">R$ <span data-preco="album">19,90</span><s>mais vantajoso</s></span></button>
+      <input class="fld" id="nome" placeholder="Seu primeiro nome" autocomplete="given-name">
+      <input class="fld" id="email" type="email" placeholder="Seu e-mail (para o comprovante)" autocomplete="email">
+      <button class="btn btn-r" id="gerarPix" style="width:100%;margin-top:16px">Pagar com Pix</button>
+      <div class="safe">🔒 Pagamento seguro via Mercado Pago</div>
+    </div>
+    <div id="shPix" hidden>
+      <div class="qr">
+        <p style="font-size:15px">Escaneie o QR Code no app do seu banco<br>ou use o <b>Pix copia e cola</b>:</p>
+        <img id="qrImg" alt="QR Code Pix">
+        <div class="cc"><input id="ccTxt" readonly><button class="btn btn-p" id="copiar" style="padding:12px 16px;font-size:14px">Copiar</button></div>
+        <div class="wait"><div class="spin"></div>Aguardando pagamento de R$ <span id="pixValor"></span>…</div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:10px">Assim que o Pix for confirmado, suas fotos são liberadas aqui automaticamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(()=>{
+const API='/api/estudio';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const brl=v=>v.toFixed(2).replace('.',',');
+let CAT=[], PRECOS={foto:{valor:9.9},album:{valor:19.9}}, MAXF=6;
+const S={passo:1,estilo:null,selfies:[],fotos:[],liberadas:{},pg:null,alvo:null,acao:null};
+const track=(ev,p)=>{try{window.fbq&&fbq('track',ev,p)}catch(e){}};
+
+/* ---------- persistência (IndexedDB, opcional) ---------- */
+const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>ok(r.result);r.onerror=ko}catch(e){ko(e)}})},
+ async set(k,v){try{const d=await this.open();d.transaction('k','readwrite').objectStore('k').put(v,k)}catch(e){}},
+ async get(k){try{const d=await this.open();return await new Promise(ok=>{const q=d.transaction('k').objectStore('k').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})}catch(e){return null}}};
+const salvar=()=>DB.set('estado',{fotos:S.fotos,liberadas:S.liberadas,pg:S.pg});
+
+/* ---------- imagens do catálogo ---------- */
+const imgCat=(el,id)=>{el.loading='lazy';el.src='catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
+$$('img[data-cat]').forEach(i=>imgCat(i,i.dataset.cat));
+
+/* ---------- catálogo ---------- */
+function renderTabs(box,on,cb){box.innerHTML='';CAT.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c.cat===on?' on':'');b.textContent=c.catNome;b.onclick=()=>cb(c.cat);box.appendChild(b)})}
+function renderGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#grid');g.innerHTML='';
+  c.itens.forEach(it=>{const b=document.createElement('button');b.className='item';
+   b.innerHTML=`<div class="im"><span class="lbl">${c.catNome}</span><img alt="${it.nome}"></div><div class="bd"><div><h4>${it.nome}</h4><p>${it.desc}</p></div><span class="go">→</span></div>`;
+   imgCat(b.querySelector('img'),it.id);b.onclick=()=>abrirEstudio(it.id);g.appendChild(b)});
+  renderTabs($('#tabs'),cat,renderGrid)}
+function renderSGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#sgrid');g.innerHTML='';
+  c.itens.forEach(it=>{const b=document.createElement('button');b.className='opt'+(S.estilo===it.id?' on':'');
+   b.innerHTML=`<div class="im"><img alt="${it.nome}"></div><b>${it.nome}</b>`;imgCat(b.querySelector('img'),it.id);
+   b.onclick=()=>{S.estilo=it.id;renderSGrid(cat);atualizar();track('CustomizeProduct',{content_name:it.id})};g.appendChild(b)});
+  renderTabs($('#stabs'),cat,renderSGrid)}
+const estiloInfo=id=>{for(const c of CAT){const i=c.itens.find(x=>x.id===id);if(i)return{...i,catNome:c.catNome,cat:c.cat}}return null};
+
+fetch(API+'?acao=catalogo').then(r=>r.json()).then(j=>{CAT=j.catalogo;PRECOS=j.precos;MAXF=j.maxFotos||6;
+  $$('[data-preco]').forEach(e=>e.textContent=brl(PRECOS[e.dataset.preco].valor));
+  $('#mq').innerHTML=[...CAT,...CAT].flatMap(c=>c.itens.map(i=>`<span>${i.nome}</span>`)).join('');
+  renderGrid(CAT[0].cat)}).catch(()=>{});
+
+/* ---------- estúdio ---------- */
+const studio=$('#studio');
+function abrirEstudio(estilo){if(estilo)S.estilo=estilo;studio.classList.add('open');document.body.style.overflow='hidden';
+  const cat=(estiloInfo(S.estilo)||{}).cat||(CAT[0]&&CAT[0].cat);if(cat)renderSGrid(cat);
+  ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));track('InitiateCheckout')}
+$$('[data-open]').forEach(b=>b.onclick=()=>abrirEstudio());
+$('#fechar').onclick=()=>{studio.classList.remove('open');document.body.style.overflow=''};
+function ir(p){S.passo=p;$$('.pane').forEach(x=>x.classList.toggle('on',+x.dataset.pane===p));$$('.prog i').forEach(i=>i.classList.toggle('on',+i.dataset.p<=p));erro('');$('#sbody').scrollTop=0;atualizar()}
+function atualizar(){const a=$('#avancar'),v=$('#voltar');$('#sfoot').hidden=S.passo===3;v.style.display=S.passo>1?'':'none';
+  if(S.passo===1){a.disabled=!S.estilo;a.innerHTML='Continuar <span class="arr">→</span>'}
+  if(S.passo===2){a.disabled=!(S.selfies.length&&$('#aceite').checked);const e=estiloInfo(S.estilo);a.innerHTML='Gerar minhas fotos <span class="arr">✦</span>'}}
+$('#voltar').onclick=()=>ir(Math.max(1,S.passo-1));
+$('#avancar').onclick=()=>{if(S.passo===1)ir(2);else if(S.passo===2){ir(3);gerar()}};
+$('#aceite').onchange=atualizar;
+function erro(m){const e=$('#err');e.textContent=m;e.style.display=m?'block':'none'}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600)}
+
+/* ---------- selfies ---------- */
+function comprimir(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file);const im=new Image();im.onload=()=>{const m=1024,s=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.86))};im.onerror=ko;im.src=u})}
+async function addFiles(fs){for(const f of [...fs]){if(S.selfies.length>=3)break;if(!f.type.startsWith('image/'))continue;try{S.selfies.push(await comprimir(f))}catch(e){toast('Não consegui ler essa foto')}}renderThumbs()}
+function renderThumbs(){const t=$('#thumbs');t.innerHTML='';S.selfies.forEach((s,i)=>{const d=document.createElement('div');d.innerHTML=`<img src="${s}" alt=""><button aria-label="Remover">✕</button>`;d.querySelector('button').onclick=e=>{e.preventDefault();S.selfies.splice(i,1);renderThumbs()};t.appendChild(d)});atualizar()}
+$('#file').onchange=e=>{addFiles(e.target.files);e.target.value=''};
+const drop=$('#drop');['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('ov')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('ov')}));
+drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+
+/* ---------- geração ---------- */
+const dicas=['Ajustando a luz do estúdio…','Escolhendo o melhor ângulo…','Cuidando de cada detalhe do seu rosto…','Finalizando a edição…'];
+let gerando=false;
+async function gerar(){
+  if(gerando)return;if(!S.selfies.length){ir(2);return}
+  if(S.fotos.length>=MAXF){erro('Você chegou ao limite de fotos grátis desta sessão. Libere seu álbum para continuar.');return}
+  gerando=true;erro('');const g=$('#gen');g.classList.add('on');$('#more').hidden=true;
+  const e=estiloInfo(S.estilo);$('#gentxt').textContent='Criando sua foto · '+(e?e.nome:'');
+  let t=0;const bar=$('#genbar');bar.style.width='4%';const iv=setInterval(()=>{t++;bar.style.width=Math.min(94,4+t*2.2)+'%';$('#gendica').textContent=dicas[Math.floor(t/7)%dicas.length]},1000);
+  try{const r=await fetch(API+'?acao=gerar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fotos:S.selfies,estilo:S.estilo})});
+    const j=await r.json().catch(()=>({erro:'Falha de conexão. Tente de novo.'}));
+    if(!r.ok||j.erro)throw new Error(j.erro||'Não foi possível gerar agora.');
+    S.fotos.unshift({id:j.id,estilo:j.estilo,sealed:j.sealed,previa:j.previa});salvar();track('ViewContent',{content_name:j.estilo});
+    bar.style.width='100%';renderRes();
+  }catch(err){erro(err.message)}
+  finally{clearInterval(iv);gerando=false;g.classList.remove('on');$('#more').hidden=false;renderRes()}
+}
+$('#maisUma').onclick=gerar;
+$('#trocar').onclick=()=>ir(1);
+
+function renderRes(){const box=$('#res');box.innerHTML='';
+  S.fotos.forEach(f=>{const ok=!!S.liberadas[f.id];const e=estiloInfo(f.estilo);const d=document.createElement('div');d.className='ph2';
+   d.innerHTML=`<div class="im"><img src="${ok?S.liberadas[f.id]:f.previa}" alt="" draggable="false"><div class="shield"></div><span class="lock ${ok?'ok':''}">${ok?'✓ Liberada':'🔒 Prévia'}</span></div>
+   <div class="acts"><button data-a="perfil">Foto de perfil</button><button data-a="stories">Stories</button><button class="full" data-a="original">${ok?'Baixar em HD':'Liberar em HD'}</button></div>`;
+   d.querySelector('.shield').oncontextmenu=ev=>ev.preventDefault();
+   d.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>baixar(f,b.dataset.a));box.appendChild(d)});
+  const n=S.fotos.length,pend=S.fotos.filter(f=>!S.liberadas[f.id]).length;
+  $('#albumbar').hidden=!n;$('#albumtxt').textContent=pend?`${n} foto${n>1?'s':''} · perfil, stories e originais em HD`:'Tudo liberado! Baixe todas de uma vez.';
+  $('#baixarAlbum').textContent=pend?'Liberar álbum · R$ '+brl(PRECOS.album.valor):'Baixar todas';
+  $('#more').hidden=gerando||!n&&!S.selfies.length;$('#maisUma').disabled=!S.selfies.length||n>=MAXF;
+  $('#ressub').textContent=n?'Toque em perfil, stories ou HD para baixar. As fotos com 🔒 precisam ser liberadas.':'Suas prévias aparecem aqui. Libere as que amar em alta qualidade.'}
+
+/* ---------- download nos formatos ---------- */
+function carregar(src){return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=src})}
+async function formatar(src,fmt){if(fmt==='original')return src;const im=await carregar(src);const c=document.createElement('canvas'),x=c.getContext('2d');
+  if(fmt==='perfil'){c.width=c.height=1080;const s=Math.max(1080/im.width,1080/im.height);const w=im.width*s,h=im.height*s;x.drawImage(im,(1080-w)/2,Math.min(0,-(h-1080)*.18),w,h)}
+  else{c.width=1080;c.height=1920;const s=Math.max(1080/im.width,1920/im.height);x.filter='blur(40px) brightness(.75)';x.drawImage(im,(1080-im.width*s)/2,(1920-im.height*s)/2,im.width*s,im.height*s);x.filter='none';const s2=1080/im.width,h2=im.height*s2;x.drawImage(im,0,(1920-h2)/2,1080,h2)}
+  return c.toDataURL('image/jpeg',.94)}
+async function salvarArquivo(dataUrl,nome){
+  try{if(navigator.canShare&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const b=await (await fetch(dataUrl)).blob();const f=new File([b],nome,{type:'image/jpeg'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}}catch(e){if(e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=dataUrl;a.download=nome;document.body.appendChild(a);a.click();a.remove()}
+async function baixar(f,fmt){
+  if(!S.liberadas[f.id]){S.alvo=f;S.acao=fmt;abrirPagamento('foto');return}
+  const url=await formatar(S.liberadas[f.id],fmt);await salvarArquivo(url,`musa-${f.estilo}-${fmt}-${f.id.slice(0,5)}.jpg`);toast('Foto salva ✨')}
+$('#baixarAlbum').onclick=async()=>{const pend=S.fotos.filter(f=>!S.liberadas[f.id]);
+  if(pend.length){S.alvo=null;S.acao='album';abrirPagamento('album');return}
+  for(const f of S.fotos){const url=await formatar(S.liberadas[f.id],'original');await salvarArquivo(url,`musa-${f.estilo}-${f.id.slice(0,5)}.jpg`);await new Promise(r=>setTimeout(r,500))}toast('Álbum baixado ✨')};
+
+/* ---------- pagamento Pix ---------- */
+let pacote='album',poll=null;
+function abrirPagamento(pref){pacote=pref==='foto'&&S.alvo?'foto':'album';
+  $('.pk[data-pk="foto"]').style.display=S.alvo?'':'none';
+  $$('.pk').forEach(p=>p.classList.toggle('on',p.dataset.pk===pacote));
+  const n=S.fotos.filter(f=>!S.liberadas[f.id]).length;$('#pkAlbumTxt').textContent=n>1?`Todas as ${n} fotos do seu ensaio`:'Sua foto + perfil, stories e original';
+  $('#shEscolha').hidden=false;$('#shPix').hidden=true;$('#shTitle').textContent='Liberar suas fotos';$('#sheet').classList.add('open');track('AddPaymentInfo')}
+$$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.classList.toggle('on',x===p))});
+const fecharSheet=()=>{$('#sheet').classList.remove('open');clearInterval(poll)};
+$('#shX').onclick=fecharSheet;$('#sheet').onclick=e=>{if(e.target.id==='sheet')fecharSheet()};
+$('#gerarPix').onclick=async()=>{const b=$('#gerarPix');b.disabled=true;b.textContent='Gerando Pix…';
+  const ids=pacote==='foto'?[S.alvo.id]:S.fotos.map(f=>f.id);
+  try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids,pacote,nome:$('#nome').value,email:$('#email').value})});
+    const j=await r.json();if(!r.ok||j.erro)throw new Error(j.erro||'Erro ao gerar Pix');
+    S.pg={id:j.pagamentoId,pacote,ids,valor:j.valor};salvar();
+    $('#qrImg').src='data:image/png;base64,'+j.qr;$('#ccTxt').value=j.copiaCola;$('#pixValor').textContent=brl(j.valor);
+    $('#shEscolha').hidden=true;$('#shPix').hidden=false;$('#shTitle').textContent='Pague com Pix';esperar();
+  }catch(e){toast(e.message)}finally{b.disabled=false;b.textContent='Pagar com Pix'}};
+$('#copiar').onclick=async()=>{try{await navigator.clipboard.writeText($('#ccTxt').value)}catch(e){$('#ccTxt').select();document.execCommand('copy')}toast('Código Pix copiado!')};
+function esperar(){clearInterval(poll);poll=setInterval(checar,4000)}
+async function checar(){if(!S.pg)return;try{const j=await (await fetch(API+'?acao=status&id='+S.pg.id)).json();if(j.status==='approved'){clearInterval(poll);await liberar()}}catch(e){}}
+async function liberar(){const pg=S.pg;if(!pg)return;let n=0;
+  for(const id of pg.ids){if(S.liberadas[id])continue;const f=S.fotos.find(x=>x.id===id);if(!f)continue;
+    try{const r=await fetch(API+'?acao=liberar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pagamentoId:pg.id,sealed:f.sealed})});const j=await r.json();if(j.foto){S.liberadas[id]=j.foto;n++}}catch(e){}}
+  track('Purchase',{value:pg.valor,currency:'BRL'});S.pg=null;salvar();fecharSheet();renderRes();toast(n?'Pagamento confirmado! Suas fotos foram liberadas 🎉':'Fotos liberadas');
+  if(S.alvo&&S.acao&&S.acao!=='album'&&S.liberadas[S.alvo.id]){const f=S.alvo;S.alvo=null;setTimeout(()=>baixar(f,S.acao),400)}}
+
+/* ---------- restaurar sessão ---------- */
+DB.get('estado').then(st=>{if(!st)return;S.fotos=st.fotos||[];S.liberadas=st.liberadas||{};S.pg=st.pg||null;renderRes();if(S.pg)checar()});
+
+/* ---------- efeitos ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+$$('.rv').forEach(el=>io.observe(el));
+addEventListener('scroll',()=>$('#top').classList.toggle('sc',scrollY>10),{passive:true});
+$('#ano').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
