@@ -1,3 +1,6 @@
 {
-  "functions": { "api/estudio.js": { "maxDuration": 60, "memory": 1024 } }
+  "functions": { "api/estudio.js": { "maxDuration": 60, "memory": 1024 } },
+  "rewrites": [
+    { "source": "/", "has": [{ "type": "host", "value": "musastudio.vercel.app" }], "destination": "/estudio/" }
+  ]
 }
