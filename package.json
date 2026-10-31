@@ -1,0 +1,6 @@
+{
+  "name": "sites",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "dependencies": { "sharp": "^0.34.4" }
+}
