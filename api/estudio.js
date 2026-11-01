@@ -60,12 +60,41 @@ const CATALOGO = [
     { id: 'aniv-rose', nome: 'Rosé Chic', desc: 'Tons rosé, flores e delicadeza', p: 'Delicate birthday photoshoot in rosé tones. She wears a soft pink satin corset-style mini dress, long voluminous waves, holding a large bouquet of pink roses wrapped in pink paper. Behind her, a cluster of rose-gold and blush heart-shaped foil balloons, a white pedestal beside her. Clean light-grey studio backdrop, soft diffused light, romantic and feminine, joyful natural smile, three-quarter framing.' },
     { id: 'aniv-noir', nome: 'Noir Luxo', desc: 'Preto e prata, clima de gala', p: 'Luxury black and silver birthday photoshoot, gala mood. She wears a short elegant black sequin dress and black heeled boots, sitting gracefully on the floor holding a small black-and-silver birthday cake. Set: a white two-tier cake pedestal, mirrored disco balls scattered on the floor reflecting sparkles of light, black and silver star and round foil balloons, a large white circular backdrop arch on a grey studio wall. Dramatic spotlight, high-end editorial look, full-body framing.' },
     { id: 'aniv-neon', nome: 'Neon Party', desc: 'Luzes neon e clima de balada', p: 'Neon birthday party photoshoot with nightclub vibe. She wears a black sparkly sequin slip dress, playful hair buns, trendy dark sunglasses, confident cheeky smile. Behind her a glowing warm orange neon sign reading \'Happy Birthday\' in cursive script and colorful hanging fringe streamers. Vivid magenta, purple and orange neon lighting on her skin, dark background, bokeh party lights, energetic night-out mood, waist-up framing.' },
+    { id: "aniv-bolo", nome: "Bolo & Velas", desc: "Bolo, velas acesas e clima de festa", p: "Birthday photoshoot with cake. She wears a soft lilac tulle mini dress, hair half-up with a small sparkly clip, leaning toward a beautiful two-tier white and lilac cake with lit candles, about to blow them out, joyful expression. Background of pastel balloons and warm fairy lights, cozy light with a gentle glow from the candles." },
+    { id: "aniv-minimal", nome: "Minimalista", desc: "Branco, champanhe e elegância", p: "Minimalist chic birthday photoshoot. She wears an elegant all-white satin slip dress and delicate gold jewelry, sitting on a white cube against a clean warm-beige backdrop, holding a glass of champagne. A small white cake with one lit candle beside her and a few cream and clear balloons. Soft even light, refined and modern." },
+    { id: "aniv-flores", nome: "Jardim de Flores", desc: "Arco de flores e tons pêssego", p: "Floral birthday photoshoot. She wears a strapless coral satin dress, holding a large bouquet, standing in front of a lush arch of fresh pink, peach and white flowers with pastel balloons woven in. Soft bright studio light, romantic and feminine celebration." },
   ]},
   { cat: 'profissional', catNome: 'Profissional', itens: [
     { id: 'pro-executiva', nome: 'Executiva', desc: 'Blazer, fundo neutro, LinkedIn', p: 'Corporate executive headshot for LinkedIn. She wears a tailored grey pinstripe blazer over a simple white top, minimal jewelry and a classic watch, arms relaxed and crossed at waist level, confident warm smile, looking at the camera. Seamless light-grey studio background, soft even key light with gentle shadows, polished and trustworthy look, waist-up framing.' },
     { id: 'pro-empreendedora', nome: 'Empreendedora', desc: 'Escritório moderno, luz natural', p: 'Entrepreneur portrait in a modern bright office. She wears a crisp white button-up shirt, straight blue jeans and cream loafers, sitting casually on a black designer chair with legs crossed, one arm resting on a curved white desk with a laptop, a coffee mug and a small vase. White paneled walls with classic moldings, a framed painting, herringbone wooden floor. Soft natural window light, airy and successful mood, friendly smile, full-body framing.' },
     { id: 'pro-saude', nome: 'Saúde & Jaleco', desc: 'Jaleco branco, consultório elegante', p: 'Healthcare professional portrait. She wears an elegant white lab coat over mint-green scrubs, sitting with arms gently crossed on her knee, calm confident expression and soft smile. Dark teal-grey studio background, soft directional light sculpting the face, clean and premium medical branding look, suitable for a doctor, dentist, nurse or aesthetician, three-quarter framing. No text or names embroidered on the coat.' },
     { id: 'pro-criadora', nome: 'Criadora de Conteúdo', desc: 'Estúdio com ring light, vibe digital', p: 'Digital content creator photoshoot. She stands behind a large ring light with a smartphone mounted in the center, one hand touching her chin, recording content with a natural expression. She wears a white t-shirt tucked into high-waisted taupe trousers. Dark moody studio with dark grey walls, the ring light creating a bright circular catchlight in her eyes and a soft glow on her face, modern digital influencer vibe, three-quarter framing.' },
+    { id: "pro-marca", nome: "Personal Branding", desc: "Retrato para redes e site", p: "Personal branding portrait for social media and website. She wears a tailored sage-green blazer with matching trousers and a cream silk top, standing with arms naturally crossed in front of a warm minimalist wall with a large abstract painting, confident approachable smile. Soft natural window light, polished yet warm professional look." },
+  ]},
+  { cat: 'estudio', catNome: "Estúdio & Retratos", itens: [
+    { id: "est-branco", nome: "Fundo Branco", desc: "Clean, leve e luminoso", p: "Clean high-key studio portrait on a seamless pure white background. She wears a fitted white ribbed top and light beige tailored trousers, standing with relaxed natural posture, one hand in her pocket, soft genuine smile. Bright even softbox lighting, minimal shadows, fresh and airy commercial look." },
+    { id: "est-preto", nome: "Fundo Preto", desc: "Contraste e sofisticação", p: "Dramatic low-key studio portrait on a deep black background. She wears an elegant black off-shoulder satin top and delicate gold earrings, hair sleek, three-quarter pose looking slightly past the camera. One strong soft light from the side sculpting the face (Rembrandt lighting) and a subtle rim light separating her hair from the black backdrop, rich contrast." },
+    { id: "est-cinza", nome: "Fundo Cinza", desc: "Clássico de estúdio fine art", p: "Classic studio portrait on a textured mid-grey hand-painted canvas backdrop. She wears a soft camel cashmere turtleneck and minimal makeup, seated on a wooden stool leaning slightly forward with forearms on her knees, calm confident expression. Soft window-like key light, timeless fine-art portrait feel." },
+    { id: "est-cinema", nome: "Luz Cinematográfica", desc: "Cores de cinema e clima intenso", p: "Cinematic studio portrait with moody colored light. She wears a deep emerald velvet blazer over a black camisole, slicked-back hair, looking over her shoulder. Teal light from one side and warm amber light from the other, light haze in the air, cinematic film look with soft background bokeh." },
+    { id: "est-close", nome: "Close Editorial", desc: "Beleza de capa de revista", p: "Beauty editorial close-up of her face and shoulders. Glowing dewy skin, soft nude glossy lips, defined lashes, hair pulled back with face-framing strands, bare shoulders and a single thin gold necklace. Butterfly beauty lighting from above with a reflector below, clean light background, beauty campaign quality." },
+    { id: "est-corpo", nome: "Corpo Inteiro", desc: "Look completo da cabeça aos pés", p: "Full-body fashion studio portrait. She wears a tailored black pantsuit with a white silk camisole and pointed black heels, standing tall in a confident power pose with one foot forward. Seamless warm-beige paper backdrop with a soft floor curve, large soft key light with a gentle shadow on the floor, full figure visible from head to toe." },
+  ]},
+  { cat: 'moda', catNome: "Moda & Elegância", itens: [
+    { id: "moda-editorial", nome: "Editorial de Moda", desc: "Casaco statement e sombras gráficas", p: "High-fashion editorial photoshoot. She wears an oversized structured red wool coat with strong shoulders over a black turtleneck and sculptural gold earrings. Posed against a raw concrete wall with bold graphic shadows from hard sunlight, angular pose, intense gaze. Fashion magazine color grading." },
+    { id: "moda-oldmoney", nome: "Old Money", desc: "Luxo silencioso e elegante", p: "Quiet-luxury old money portrait. She wears a cream cable-knit sweater draped over her shoulders, a crisp white shirt, high-waisted navy tailored trousers, pearl stud earrings and a classic gold watch, hair in a smooth low ponytail. Terrace of a classic country estate with manicured hedges and a stone balustrade, late-afternoon golden light." },
+    { id: "moda-glamour", nome: "Glamour", desc: "Hollywood clássica", p: "Old Hollywood glamour portrait. She wears a champagne silk bias-cut gown with thin straps, vintage diamond earrings, voluminous glossy waves swept to one side and classic red lipstick. Reclining elegantly on a velvet chaise longue, soft spotlight with glamorous highlights and deep shadows, subtle film grain." },
+    { id: "moda-pb", nome: "Preto e Branco", desc: "Fine art atemporal", p: "Black-and-white fine art portrait. She wears an oversized white shirt, hair loose and slightly tousled, sitting by a large window with light falling across her face and creating soft shadows. Monochrome with rich tonal range and deep blacks, timeless analog film feel. The entire image is black and white." },
+    { id: "moda-minimal", nome: "Minimalista", desc: "Tons neutros e linhas limpas", p: "Minimalist fashion portrait. She wears a sleek sand-colored knit midi dress, minimal gold jewelry and a clean low bun. Standing in a bright empty room with smooth plaster walls and a single sculptural chair, soft diffused daylight, muted neutral palette, generous negative space." },
+    { id: "moda-gala", nome: "Vestido de Gala", desc: "Escadaria de mármore e lustres", p: "Luxury evening gown photoshoot. She wears a floor-length deep burgundy satin gown with a side slit, elegant drop earrings and a sophisticated updo. Posing on a grand marble staircase of a luxury hotel with crystal chandeliers, warm elegant light, the gown flowing over the steps." },
+  ]},
+  { cat: 'lifestyle', catNome: "Lifestyle", itens: [
+    { id: "life-cafe", nome: "Cafeteria", desc: "Café, janela e luz natural", p: "Lifestyle photoshoot in a cozy specialty coffee shop. She wears a soft beige oversized sweater and light jeans, sitting at a wooden table by the window holding a latte, laughing naturally. Warm interior with plants, exposed brick and pendant lights, soft window light, candid feel." },
+    { id: "life-livros", nome: "Biblioteca", desc: "Livros, madeira e luz quente", p: "Elegant portrait in a classic library. She wears a chocolate-brown knit vest over a white blouse and a pleated midi skirt, holding an open book, leaning against tall dark-wood bookshelves full of old books. Warm lamplight mixed with soft window light, intellectual cozy mood." },
+    { id: "life-urbano", nome: "Urbano", desc: "Street style na cidade", p: "Urban street-style photoshoot. She wears a black leather jacket, white t-shirt, straight-leg jeans and white sneakers, walking across a crosswalk with modern city buildings behind her, hair in motion. Late-afternoon sunlight between the buildings, shallow depth of field, street fashion editorial look." },
+    { id: "life-jardim", nome: "Jardim", desc: "Rosas, vestido leve e sonho", p: "Romantic garden photoshoot. She wears a flowing light floral midi dress, hair in soft waves, walking along a path surrounded by blooming roses and lush greenery, gently touching the flowers. Soft golden backlight, dreamy bokeh, fresh pastel tones." },
+    { id: "life-praia", nome: "Praia ao Pôr do Sol", desc: "Mar, vento e céu dourado", p: "Beach photoshoot at sunset. She wears a flowing white linen dress, barefoot on the wet sand at the water’s edge, wind moving her hair and dress, gentle smile looking toward the horizon. Warm orange and pink sunset sky reflecting on the sea, golden rim light, serene and free mood." },
+    { id: "life-piscina", nome: "Piscina", desc: "Resort, sol e férias", p: "Luxury resort pool photoshoot. She wears an elegant black one-piece swimsuit with a sheer white kimono and oversized sunglasses pushed up on her head, sitting at the edge of an infinity pool with her legs in the water. Turquoise water, palm trees and ocean view, bright summer daylight, vacation editorial mood." },
+    { id: "life-campo", nome: "Campo", desc: "Trigo dourado e chapéu de palha", p: "Countryside photoshoot in an open golden wheat field. She wears a rustic cream cotton dress and a wide straw hat, walking through the tall grass with her fingertips brushing the wheat. Low golden-hour sun behind her, warm haze, soft natural tones." },
   ]},
   { cat: 'celebridade', catNome: 'Estilo Celebridade', itens: [
     { id: 'cel-capa', nome: 'Capa de Revista', desc: 'Editorial fashion de capa', p: 'High-fashion magazine cover editorial. She wears a cropped white shirt with a skinny black tie, black tailored trousers, long black leather gloves and clear statement glasses, sleek straight hair. Dramatic pose reaching one gloved hand toward the camera in the foreground with forced perspective. Pure white seamless background, crisp high-key studio lighting, bold editorial attitude. Leave clean empty space at the top for a magazine title (do not write any text).' },
@@ -114,6 +143,14 @@ const CATALOGO = [
     { id: 'fit-corrida', nome: 'Corrida', desc: 'Pista de atletismo ao ar livre', p: 'Outdoor running photoshoot on a red athletics track. She wears a black sports bra and black high-waisted biker shorts, hair in a ponytail, stretching with both arms raised overhead, energetic smile. White lane lines, green trees in the background, bright natural daylight, sporty and healthy mood, three-quarter framing.' },
     { id: 'fit-yoga', nome: 'Yoga', desc: 'Natureza, calma e equilíbrio', p: 'Yoga photoshoot in a lush green park. She wears a cream sports bra and matching cream biker shorts, hair slicked back, sitting on a yoga mat in a relaxed side stretch, looking at the camera with a calm confident expression. Tropical green plants and soft natural daylight, peaceful wellness mood, full-body framing.' },
     { id: 'fit-estudio', nome: 'Fitness Estúdio', desc: 'Fundo claro, look nude e atitude', p: 'Fitness studio photoshoot. She wears a nude-beige sports top and matching biker shorts, white crew socks and white sneakers, a white cap, long braided hair, posing confidently with one hand on her cap. Seamless light grey studio background, bright clean high-key lighting, athletic campaign look, full-body framing.' },
+  ]},
+  { cat: 'especiais', catNome: "Ensaios Especiais", itens: [
+    { id: "esp-formatura", nome: "Formatura", desc: "Beca, diploma e conquista", p: "Graduation photoshoot. She wears a black graduation gown and cap with a gold tassel over an elegant outfit, holding a rolled diploma tied with a ribbon, proud happy smile. University campus with classic architecture and green trees in the background, bright afternoon light." },
+    { id: "esp-maes", nome: "Dia das Mães", desc: "Peônias, ternura e elegância", p: "Elegant Mother’s Day portrait of a woman on her own. She wears a soft blush-pink blouse and pearl earrings, holding a bouquet of white and pink peonies close to her chest, warm loving smile. Cozy bright living room with sheer curtains, gentle window light, tender and warm mood. No other people in the photo." },
+    { id: "esp-floral", nome: "Ensaio Floral", desc: "Flores no cabelo, clima de pintura", p: "Fine-art floral portrait. She wears a simple off-shoulder ivory top, with fresh flowers woven into her hair and a cascade of blossoms around her shoulders, against a deep moody dark-green backdrop. Painterly soft light like a classical still-life painting." },
+    { id: "esp-vintage", nome: "Vintage Anos 50", desc: "Bolinhas, batom vermelho e carro clássico", p: "Vintage 1950s photoshoot. She wears a polka-dot swing dress with a cinched waist, red lipstick and a retro victory-roll hairstyle, leaning on a classic pastel-blue convertible car. Sunny retro street, warm faded film colors." },
+    { id: "esp-retro", nome: "Retrô Anos 70", desc: "Macacão, cachos e vitrola", p: "1970s retro photoshoot. She wears a rust-orange flared jumpsuit with a wide collar, big soft curls and tinted round sunglasses, posing in a retro living room with wood-paneled walls, a green velvet sofa and a vintage record player. Warm golden tones, analog film grain." },
+    { id: "esp-cinema", nome: "Cinematográfico", desc: "Cena de filme na cidade à noite", p: "Cinematic movie-still portrait at night. She wears a long beige trench coat, standing on a rain-wet city street under a warm street lamp, light rain falling, reflections on the pavement, looking back over her shoulder. Moody film-inspired color grading with deep blues and warm highlights." },
   ]},
 ];
 const ESTILOS = {};
@@ -336,6 +373,16 @@ async function pagamentosDoPeriodo(de, ate) {
   return lista.filter(p => /^Estúdio das Modelos/.test(p.description || '') || (p.metadata && p.metadata.app === 'estudio-das-modelos'));
 }
 
+// ---------- capas do catálogo (estilos novos guardados no banco) ----------
+const ROSTOS = ['with light brown skin and long dark wavy hair', 'Black Brazilian with deep brown skin and natural curly hair', 'with fair skin and long honey-blonde hair', 'Afro-Brazilian with medium brown skin and long box braids', 'with olive skin and long straight black hair', 'with fair skin, freckles and long auburn hair', 'East Asian Brazilian with straight black shoulder-length hair', 'with tan skin and long chestnut hair'];
+async function gerarCapa(id) {
+  const est = ESTILOS[id]; if (!est) throw Object.assign(new Error('estilo'), { code: 400 });
+  const n = [...id].reduce((t, c) => t + c.charCodeAt(0), 0);
+  const prompt = `Professional photograph of a beautiful adult woman, a fictional model about ${26 + (n % 12)} years old, ${ROSTOS[n % ROSTOS.length]}. Create this photo of her: ` + est.p + QUALIDADE;
+  const { img } = await gerarImagem(prompt, []);
+  return sharp(img).rotate().resize(720, 960, { fit: 'cover', position: 'attention' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+}
+
 // ---------- Meta Conversions API (liga sozinha quando META_CAPI_TOKEN existir na Vercel) ----------
 const PIXEL_ID = process.env.META_PIXEL_ID || '1785726135972814';
 const capiEnviados = new Set();
@@ -372,6 +419,16 @@ module.exports = async (req, res) => {
     if (acao === 'catalogo') {
       res.setHeader('Cache-Control', 'public, s-maxage=300');
       return json(res, 200, { catalogo: CATALOGO.map(c => ({ cat: c.cat, catNome: c.catNome, itens: c.itens.map(({ p, ...r }) => r) })), precos: PRECOS, maxFotos: MAX_FOTOS_GRATIS });
+    }
+
+    if (acao === 'capa') {
+      const id = url.searchParams.get('id') || '';
+      if (!/^[a-z0-9-]{3,40}$/.test(id)) return json(res, 400, { erro: 'id' });
+      const b64 = await rpc('estudio_capa_ler', { p_id: id });
+      if (!b64) { res.setHeader('Cache-Control', 'public, s-maxage=60'); return json(res, 404, { erro: 'sem capa' }); }
+      res.statusCode = 200; res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=86400');
+      return res.end(Buffer.from(b64, 'base64'));
     }
 
     if (acao === 'amostra') return json(res, 404, { erro: 'indisponível' }); // capas agora são estáticas: nada de gerar imagem sem pagamento
@@ -464,6 +521,14 @@ module.exports = async (req, res) => {
       if (!pos || pos > pc.qtd) return json(res, 402, { erro: `Seu pacote já liberou todas as ${pc.qtd} fotos. Escolha um novo pacote para liberar mais.`, esgotado: true });
       const usados = await rpc('estudio_creditos_usados', { p_pid: String(pagamentoId) });
       return json(res, 200, { id, restantes: Math.max(0, pc.qtd - usados), foto: 'data:image/jpeg;base64,' + limpa.toString('base64') });
+    }
+
+    if (acao === 'gerar_capa') {
+      const { segredo = '', id = '' } = await lerCorpo(req);
+      if ((await rpc('estudio_capa_segredo_ok', { p_segredo: String(segredo) })) !== true) return json(res, 401, { erro: 'não autorizado' });
+      const buf = await gerarCapa(String(id));
+      const ok = await rpc('estudio_capa_salvar', { p_segredo: String(segredo), p_id: String(id), p_b64: buf.toString('base64') });
+      return json(res, ok ? 200 : 500, { ok, id, bytes: buf.length });
     }
 
     if (acao === 'admin_login') {
