@@ -6,14 +6,14 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Painel · Estúdio das Modelos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Painel: cabeçalho fixo com filtros, resumo financeiro, situação das fotos, pacotes, origem e lista de pedidos */
-:root{--bg:#faf5f2;--card:#fff;--line:#ecdfdb;--ink:#2a1720;--muted:#7d6670;--rose:#b85c68;--rose-d:#9c4653;--soft:#f7e6e8;--ok:#2f7a52;--ok-s:#e3f2e9;--wait:#9a6a14;--wait-s:#fbf0da;--bad:#b4332e;--bad-s:#fbe5e3;
---serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif}
+/* Painel: lucro do período, funil de visitas, anúncios, custo real da IA, dia a dia, pacotes, origem e pedidos */
+:root{--bg:#f8f2ef;--card:#fff;--line:#eadcd8;--ink:#2a1720;--ink2:#41242f;--muted:#7d6670;--rose:#b85c68;--rose-d:#9c4653;--rose-l:#e9aab2;--soft:#f7e6e8;--ok:#2f7a52;--ok-s:#e3f2e9;--wait:#9a6a14;--wait-s:#fbf0da;--bad:#b4332e;--bad-s:#fbe5e3;--gold:#c9973f;
+--serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;--sh:0 1px 2px rgba(42,23,32,.04),0 6px 20px rgba(42,23,32,.05)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--rose);outline-offset:2px}
@@ -22,7 +22,7 @@ button{cursor:pointer}
 .logo small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:.32em;color:var(--rose);margin-bottom:4px}
 /* login */
 .login{min-height:100vh;display:grid;place-items:center;padding-block:40px}
-.login form{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;width:min(380px,100%);display:grid;gap:14px}
+.login form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px;width:min(390px,100%);display:grid;gap:14px;box-shadow:var(--sh)}
 .login h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:6px 0 0}
 .login p{margin:0;color:var(--muted)}
 label{display:grid;gap:5px;font-size:13px;font-weight:600}
@@ -30,41 +30,81 @@ input,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;b
 .btn{border:0;border-radius:999px;padding:11px 20px;font-weight:700;background:var(--rose);color:#fff}
 .btn:hover{background:var(--rose-d)}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--soft)}
 .erro{color:var(--bad);font-size:13px;min-height:1em}
 /* topo */
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(250,245,242,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(248,242,239,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
-.filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding-block:0 12px}
+.filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding-block:0 12px}
 .filtros .datas{display:flex;gap:8px}
-main{display:grid;gap:22px;padding-block:22px 60px}
+main{display:grid;gap:26px;padding-block:22px 70px}
 main>*,section{min-width:0}
-h2{font-family:var(--serif);font-weight:600;font-size:19px;margin:0 0 10px}
-.note{font-size:12.5px;color:var(--muted);margin:6px 0 0}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
-.kpi b{display:block;font-family:var(--serif);font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
-.kpi span{font-size:12px;color:var(--muted)}
-.kpi.dest{background:var(--ink);color:#fff;border-color:var(--ink)}.kpi.dest span{color:#e9d6db}.kpi.dest .pos{color:#86dcae}.kpi.dest .neg{color:#ff9e98}
+h2{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 4px}
+.sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.aviso{background:var(--wait-s);color:var(--wait);border:1px solid #efd9a6;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600}
 .pos{color:var(--ok)}.neg{color:var(--bad)}
-.custos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+/* destaque do lucro */
+.hero{background:linear-gradient(140deg,#2a1720 0%,#41242f 60%,#5b2f3b 100%);color:#fff;border-radius:22px;padding:22px 22px 20px;box-shadow:var(--sh)}
+.hero .rot{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#e9d6db;font-weight:700}
+.hero .big{font-family:var(--serif);font-weight:700;font-size:clamp(36px,8vw,56px);line-height:1.1;font-variant-numeric:tabular-nums;margin:4px 0 2px}
+.hero .big.pos{color:#86dcae}.hero .big.neg{color:#ff9e98}
+.hero .linha{font-size:13.5px;color:#e9d6db}
+.hero .linha b{color:#fff;font-weight:700}
+.barra{display:flex;height:16px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:16px 0 10px}
+.barra i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:#e9d6db}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.leg em{width:10px;height:10px;border-radius:3px;display:inline-block}
+.c-ads{background:#e0868f}.c-ia{background:#c9973f}.c-out{background:#a89aa1}.c-luc{background:#6fcf9a}.c-neg{background:#ff7a72}
+/* indicadores */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;box-shadow:var(--sh)}
+.kpi b{display:block;font-family:var(--serif);font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;margin-top:2px}
+.kpi span{font-size:12px;color:var(--muted);font-weight:600}
+.kpi small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.kpi.dest{background:var(--ink);color:#fff;border-color:var(--ink)}.kpi.dest span,.kpi.dest small{color:#e9d6db}.kpi.dest .pos{color:#86dcae}.kpi.dest .neg{color:#ff9e98}
+/* funil */
+.painel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--sh)}
+.fun{display:grid;gap:9px}
+.fun .l{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:12px;align-items:center}
+.fun .nome{font-weight:600;font-size:13.5px}
+.fun .trilho{background:#f3e9e6;border-radius:99px;height:22px;overflow:hidden}
+.fun .trilho i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--rose-l),var(--rose));min-width:3px}
+.fun .l.fim .trilho i{background:linear-gradient(90deg,#7fcfa0,var(--ok))}
+.fun .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:13px}
+.fun .num b{font-size:15px}.fun .num span{color:var(--muted);font-size:12px;margin-left:6px}
+.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.mini div{background:#fdf9f7;border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.mini b{display:block;font-size:18px;font-family:var(--serif)}.mini span{font-size:12px;color:var(--muted);font-weight:600}
+/* gráfico */
+.graf{width:100%;height:auto;display:block}
+.graf text{font-family:var(--sans);font-size:11px;fill:var(--muted)}
+.lg2{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.lg2 span{display:inline-flex;align-items:center;gap:6px}.lg2 em{width:10px;height:10px;border-radius:3px;display:inline-block}
 .duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
 .duas>*{min-width:0}
-.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh)}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:12px;color:var(--muted);font-weight:600;background:#fdfaf8}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:700;background:#fdfaf8}
 tr:last-child td{border-bottom:0}
+tr.tot td{font-weight:800;background:#fdfaf8}
 td.n,th.n{text-align:right}
 tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
 .pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}
 .pill.ok{background:var(--ok-s);color:var(--ok)}.pill.wait{background:var(--wait-s);color:var(--wait)}.pill.bad{background:var(--bad-s);color:var(--bad)}.pill.neu{background:#eee6e8;color:var(--muted)}
 .vazio{padding:22px;text-align:center;color:var(--muted)}
+.ajustes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;align-items:end}
+.chk{display:flex;align-items:center;gap:8px;font-weight:600;padding-bottom:10px}.chk input{width:auto}
+.fp{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:10px}
 .det{position:fixed;inset:0;z-index:20;background:rgba(42,23,32,.4);display:grid;place-items:end center}
 .det>div{background:var(--card);width:min(560px,100%);max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:22px;padding-bottom:max(22px,env(safe-area-inset-bottom,0px))}
 .det dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0}
 .det dt{color:var(--muted);font-size:13px}.det dd{margin:0;font-weight:600;word-break:break-word}
 .carregando{opacity:.55;pointer-events:none}
+@media (max-width:560px){.fun .l{grid-template-columns:1fr auto}.fun .trilho{grid-column:1/-1;order:3}.hero{padding:18px}}
 @media (min-width:700px){.det{place-items:center}.det>div{border-radius:18px}}
 </style>
 </head>
@@ -74,7 +114,7 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
   <form id="fLogin" autocomplete="on">
     <div class="logo"><small>ESTÚDIO</small>das Modelos</div>
     <h1>Painel de vendas</h1>
-    <p>Entre para ver pedidos, pagamentos e a origem das vendas.</p>
+    <p>Entre para ver lucro, funil de visitas, anúncios e custo da IA.</p>
     <label for="email">E-mail<input id="email" type="email" autocomplete="username" required></label>
     <label for="senha">Senha<input id="senha" type="password" autocomplete="current-password" required></label>
     <button class="btn" type="submit" id="bEntrar">Entrar</button>
@@ -91,27 +131,54 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
     <div class="wrap filtros">
       <label for="periodo">Período<select id="periodo"><option value="0">Hoje</option><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="custom">Escolher datas</option></select></label>
       <label id="lDatas" hidden>Datas<span class="datas"><input type="date" id="de" aria-label="De"><input type="date" id="ate" aria-label="Até"></span></label>
-      <label for="fPacote">Pacote<select id="fPacote"><option value="">Todos</option><option value="kit4">Essencial · 4 fotos</option><option value="kit10">Ensaio completo · 10 fotos</option><option value="kit20">Álbum VIP · 20 fotos</option><option value="antigo">Pacotes antigos</option></select></label>
-      <label for="fStatus">Status<select id="fStatus"><option value="">Todos</option><option value="approved">Aprovado</option><option value="pendente">Pendente</option><option value="refunded">Estornado</option><option value="falhou">Cancelado ou recusado</option></select></label>
     </div>
   </header>
 
   <main class="wrap" id="main">
+    <div id="avisoPainel" class="aviso" hidden></div>
+
+    <section id="sLucro"></section>
+
     <section>
-      <h2>Resumo financeiro</h2>
+      <h2>Indicadores</h2>
+      <p class="sub">Tudo calculado com o que entrou e o que saiu no período escolhido.</p>
       <div class="kpis" id="kpis"></div>
-      <p class="note">Valores vindos do Mercado Pago. Receita líquida é o que o Mercado Pago repassa depois das taxas, só dos pagamentos aprovados.</p>
     </section>
 
     <section>
-      <h2>Lucro estimado</h2>
-      <div class="custos">
-        <label for="cFoto">Custo por foto gerada (R$)<input id="cFoto" type="number" step="0.01" min="0" inputmode="decimal"></label>
-        <label for="cAds">Gasto com anúncios no período (R$)<input id="cAds" type="number" step="1" min="0" inputmode="decimal" placeholder="0"></label>
+      <h2>Funil de visitas</h2>
+      <p class="sub">Quantas pessoas diferentes chegaram em cada etapa, da visita até o pagamento.</p>
+      <div class="painel" id="funil"></div>
+    </section>
+
+    <section>
+      <h2>Dia a dia</h2>
+      <p class="sub">Receita líquida contra custos (anúncios + IA) e o lucro de cada dia.</p>
+      <div class="painel" id="dias"></div>
+    </section>
+
+    <div class="duas">
+      <section>
+        <h2>Anúncios</h2>
+        <p class="sub" id="adsSub">Gasto das campanhas no Meta.</p>
+        <div class="tbl"><table id="tAds"></table></div>
+      </section>
+      <section>
+        <h2>Custo da IA</h2>
+        <p class="sub">Calculado pelo consumo real de cada foto gerada.</p>
+        <div class="tbl"><table id="tIA"></table></div>
+        <p class="note" id="iaNota"></p>
+      </section>
+    </div>
+
+    <section>
+      <h2>Ajustes dos custos</h2>
+      <div class="painel ajustes">
+        <label for="cDolar">Dólar usado na conta (R$)<input id="cDolar" type="number" step="0.01" min="1" inputmode="decimal"></label>
         <label for="cInfra">Outros custos no período (R$)<input id="cInfra" type="number" step="1" min="0" inputmode="decimal" placeholder="0"></label>
+        <label class="chk" for="cEng"><input type="checkbox" id="cEng" checked>Contar a campanha de engajamento</label>
       </div>
-      <div class="kpis" id="lucro" style="margin-top:10px"></div>
-      <p class="note">Custo de IA é uma estimativa: fotos geradas × custo por foto. Confira o valor real em Gasto, no Google AI Studio. O gasto com anúncios você copia do Gerenciador de Anúncios.</p>
+      <p class="note">O gasto com anúncios vem do Gerenciador de Anúncios e é atualizado automaticamente. A taxa do Mercado Pago já está descontada na receita líquida.</p>
     </section>
 
     <section>
@@ -126,6 +193,10 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
 
     <section>
       <h2>Pedidos</h2>
+      <div class="fp">
+        <label for="fPacote">Pacote<select id="fPacote"><option value="">Todos</option><option value="kit4">Essencial · 4 fotos</option><option value="kit10">Ensaio completo · 10 fotos</option><option value="kit20">Álbum VIP · 20 fotos</option><option value="antigo">Pacotes antigos</option></select></label>
+        <label for="fStatus">Status<select id="fStatus"><option value="">Todos</option><option value="approved">Aprovado</option><option value="pendente">Pendente</option><option value="refunded">Estornado</option><option value="falhou">Cancelado ou recusado</option></select></label>
+      </div>
       <div class="tbl"><table id="tPedidos"></table></div>
       <p class="note">Toque em um pedido para ver os detalhes.</p>
     </section>
@@ -137,7 +208,10 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
 <script>
 const API='/api/estudio';
 const $=s=>document.querySelector(s);
-const brl=v=>'R$ '+(Number(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const num=v=>Number(v)||0;
+const brl=v=>(num(v)<0?'-':'')+'R$ '+Math.abs(num(v)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const int=v=>Math.round(num(v)).toLocaleString('pt-BR');
+const pct=(a,b,d=1)=>b>0?(100*a/b).toLocaleString('pt-BR',{maximumFractionDigits:d})+'%':'—';
 const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(e){}},del(k){try{sessionStorage.removeItem(k)}catch(e){}}};
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let DADOS=null;
@@ -147,6 +221,7 @@ const nomePac=p=>NOMES[p.pacote]||p.pacoteNome||p.pacote||'—';
 const pill=s=>{const [t,c]=STATUS[s]||[s,'neu'];return `<span class="pill ${c}">${t}</span>`};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dataBR=d=>d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+const diaBRT=d=>new Date(d).toLocaleDateString('sv-SE',{timeZone:'America/Sao_Paulo'});
 
 function mostrar(logado){$('#telaLogin').hidden=logado;$('#telaPainel').hidden=!logado}
 
@@ -163,43 +238,87 @@ function intervalo(){const v=$('#periodo').value;const agora=new Date();
   const ini=new Date(agora);ini.setHours(0,0,0,0);ini.setDate(ini.getDate()-Number(v));return{de:ini.toISOString(),ate:agora.toISOString()}}
 $('#periodo').onchange=()=>{$('#lDatas').hidden=$('#periodo').value!=='custom';if($('#periodo').value!=='custom')carregar()};
 ['#de','#ate'].forEach(s=>$(s).onchange=()=>{if($('#de').value)carregar()});
-['#fPacote','#fStatus'].forEach(s=>$(s).onchange=()=>render());
-$('#cFoto').value=ls.get('edm_cfoto')||'0.25';
-[['#cFoto','edm_cfoto'],['#cAds',null],['#cInfra',null]].forEach(([s,k])=>$(s).oninput=()=>{if(k)ls.set(k,$(s).value);render()});
+['#fPacote','#fStatus'].forEach(s=>$(s).onchange=()=>renderPedidos());
+$('#cDolar').value=ls.get('edm_dolar')||'5.30';
+$('#cInfra').value=ls.get('edm_infra')||'';
+$('#cEng').checked=ls.get('edm_eng')!=='0';
+$('#cDolar').oninput=()=>{ls.set('edm_dolar',$('#cDolar').value);render()};
+$('#cInfra').oninput=()=>{ls.set('edm_infra',$('#cInfra').value);render()};
+$('#cEng').onchange=()=>{ls.set('edm_eng',$('#cEng').checked?'1':'0');render()};
 
 async function carregar(){const tk=ss.get('edm_adm');if(!tk){mostrar(false);return}
   $('#main').classList.add('carregando');
   try{const r=await fetch(API+'?acao=admin_resumo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tk,...intervalo()})});
     const j=await r.json();if(r.status===401){ss.del('edm_adm');mostrar(false);$('#eLogin').textContent=j.erro;return}
     if(!r.ok)throw new Error(j.erro||'Erro ao carregar');DADOS=j;render()}
-  catch(err){$('#kpis').innerHTML=`<div class="kpi" style="grid-column:1/-1"><span class="neg">Não foi possível carregar: ${esc(err.message)}</span></div>`}
+  catch(err){$('#sLucro').innerHTML=`<div class="aviso">Não foi possível carregar: ${esc(err.message)}</div>`}
   finally{$('#main').classList.remove('carregando')}}
 
-function filtrados(){if(!DADOS)return[];const fp=$('#fPacote').value,fs=$('#fStatus').value;
-  return DADOS.pedidos.filter(p=>{
-    if(fp==='antigo'?['kit4','kit10','kit20'].includes(p.pacote):(fp&&p.pacote!==fp))return false;
-    if(fs==='pendente')return['pending','in_process','authorized'].includes(p.status);
-    if(fs==='falhou')return['cancelled','rejected'].includes(p.status);
-    return!fs||p.status===fs})}
+const kpi=(t,v,cls='',dica='',dest)=>`<div class="kpi${dest?' dest':''}"><span>${t}</span><b class="${cls}">${v}</b>${dica?`<small>${dica}</small>`:''}</div>`;
 
-const kpi=(t,v,cls='',dest)=>`<div class="kpi${dest?' dest':''}"><b class="${cls}">${v}</b><span>${t}</span></div>`;
-function render(){const L=filtrados();
-  const ap=L.filter(p=>p.status==='approved'),est=L.filter(p=>p.status==='refunded'||p.estornado>0);
-  const pend=L.filter(p=>['pending','in_process','authorized'].includes(p.status));
+function render(){if(!DADOS)return;
+  const L=DADOS.pedidos,P=DADOS.painel;
+  const ap=L.filter(p=>p.status==='approved');
   const bruta=[...ap,...L.filter(p=>p.status==='refunded')].reduce((t,p)=>t+p.valor,0);
-  const estornos=est.reduce((t,p)=>t+(p.estornado||p.valor),0);
+  const estornos=L.filter(p=>p.status==='refunded'||p.estornado>0).reduce((t,p)=>t+(p.estornado||p.valor),0);
   const taxas=ap.reduce((t,p)=>t+p.taxa,0);
   const liquida=ap.reduce((t,p)=>t+(p.liquido||p.valor-p.taxa),0);
   const fotos=L.reduce((t,p)=>t+p.fotos,0);
-  $('#kpis').innerHTML=[kpi('Pedidos no período',L.length),kpi('Pagamentos aprovados',ap.length,'pos'),kpi('Pagamentos pendentes',pend.length),
-    kpi('Receita bruta',brl(bruta)),kpi('Estornos',brl(estornos),estornos?'neg':''),kpi('Taxas do Mercado Pago',brl(taxas)),kpi('Receita líquida',brl(liquida),'',true),
-    kpi('Ticket médio',brl(ap.length?ap.reduce((t,p)=>t+p.valor,0)/ap.length:0))].join('');
-  const cf=parseFloat($('#cFoto').value)||0,ads=parseFloat($('#cAds').value)||0,infra=parseFloat($('#cInfra').value)||0;
-  const ia=fotos*cf,lucro=liquida-ia-ads-infra;
-  $('#lucro').innerHTML=[kpi('Receita líquida',brl(liquida)),kpi(`Custo de IA (${fotos} fotos)`,brl(ia)),kpi('Anúncios + outros',brl(ads+infra)),kpi('Lucro estimado',brl(lucro),lucro>=0?'pos':'neg',true),
-    kpi('Custo por venda nos anúncios',ap.length&&ads?brl(ads/ap.length):'—')].join('');
-  const nIni=ap.filter(p=>p.fotos===0).length,nGer=ap.filter(p=>p.fotos>0&&p.fotos<p.qtd).length,nOk=ap.filter(p=>p.qtd&&p.fotos>=p.qtd).length;
-  $('#geracao').innerHTML=[kpi('Pagos sem foto gerada',nIni,nIni?'neg':''),kpi('Gerando (fotos restantes)',nGer),kpi('Concluídos',nOk,'pos'),kpi('Fotos geradas no período',fotos)].join('');
+  const dolar=num($('#cDolar').value)||5.3,infra=num($('#cInfra').value),comEng=$('#cEng').checked;
+  const campanhas=((P&&P.ads)||[]).filter(a=>comEng||!/engaj/i.test(a.nome));
+  const ads=campanhas.reduce((t,a)=>t+num(a.gasto),0);
+  const tipos=(P&&P.ia_por_tipo)||{};
+  const ia=Object.values(tipos).reduce((t,o)=>t+num(o.usd)*dolar+num(o.brl_fixo),0);
+  const lucro=liquida-ads-ia-infra;
+  const f=(P&&P.funil)||{};const visitas=num(f.PageView);
+
+  $('#avisoPainel').hidden=!!P;
+  if(!P)$('#avisoPainel').textContent='Para ver funil, anúncios e custo real da IA, saia e entre de novo no painel.';
+
+  // destaque do lucro
+  const base=Math.max(liquida,ads+ia+infra,0.01);
+  const seg=(v,c)=>v>0?`<i class="${c}" style="width:${(100*v/base).toFixed(2)}%"></i>`:'';
+  const sobra=Math.max(0,liquida-ads-ia-infra);
+  $('#sLucro').innerHTML=`<div class="hero"><div class="rot">Lucro do período</div><div class="big ${lucro>=0?'pos':'neg'}">${brl(lucro)}</div>
+    <div class="linha">Receita líquida <b>${brl(liquida)}</b> − anúncios <b>${brl(ads)}</b> − IA <b>${brl(ia)}</b>${infra?` − outros <b>${brl(infra)}</b>`:''}</div>
+    <div class="barra" role="img" aria-label="Divisão da receita líquida entre anúncios, IA, outros custos e lucro">${seg(ads,'c-ads')}${seg(ia,'c-ia')}${seg(infra,'c-out')}${seg(sobra,'c-luc')}</div>
+    <div class="leg"><span><em class="c-ads"></em>Anúncios ${pct(ads,base,0)}</span><span><em class="c-ia"></em>IA ${pct(ia,base,0)}</span>${infra?`<span><em class="c-out"></em>Outros ${pct(infra,base,0)}</span>`:''}<span><em class="${lucro>=0?'c-luc':'c-neg'}"></em>${lucro>=0?'Lucro '+pct(sobra,base,0):'Prejuízo'}</span></div></div>`;
+
+  // indicadores
+  const n=ap.length;
+  $('#kpis').innerHTML=[
+    kpi('Vendas aprovadas',int(n),'pos',`${L.length} pedidos · ${L.filter(p=>['pending','in_process','authorized'].includes(p.status)).length} pendentes`),
+    kpi('Receita bruta',brl(bruta),'',`taxas do Mercado Pago ${brl(taxas)}`),
+    kpi('Receita líquida',brl(liquida),'',estornos?`estornos ${brl(estornos)}`:'depois das taxas',true),
+    kpi('Ticket médio',brl(n?ap.reduce((t,p)=>t+p.valor,0)/n:0)),
+    kpi('Custo por venda (anúncios)',n&&ads?brl(ads/n):'—','',ads?`gasto ${brl(ads)}`:'sem gasto no período'),
+    kpi('Retorno dos anúncios (ROAS)',ads?(bruta/ads).toLocaleString('pt-BR',{maximumFractionDigits:2})+'x':'—','','receita bruta ÷ anúncios'),
+    kpi('Custo de IA por venda',n?brl(ia/n):'—','',`${int(fotos)} fotos entregues`),
+    kpi('Margem de lucro',liquida>0?pct(lucro,liquida,0):'—',lucro>=0?'pos':'neg','lucro ÷ receita líquida')].join('');
+
+  renderFunil(f,visitas,n,ads);
+  renderDias(L,P,dolar,comEng);
+
+  // anúncios
+  const tot={g:0,i:0,c:0};
+  const linhas=campanhas.map(a=>{tot.g+=num(a.gasto);tot.i+=num(a.impressoes);tot.c+=num(a.cliques);
+    return `<tr><td>${esc(a.nome)}</td><td class="n">${brl(a.gasto)}</td><td class="n">${int(a.impressoes)}</td><td class="n">${int(a.cliques)}</td><td class="n">${pct(a.cliques,a.impressoes,2)}</td><td class="n">${num(a.cliques)?brl(a.gasto/a.cliques):'—'}</td></tr>`}).join('');
+  $('#tAds').innerHTML='<thead><tr><th>Campanha</th><th class="n">Gasto</th><th class="n">Impressões</th><th class="n">Cliques</th><th class="n">CTR</th><th class="n">Custo/clique</th></tr></thead><tbody>'+(linhas?linhas+`<tr class="tot"><td>Total</td><td class="n">${brl(tot.g)}</td><td class="n">${int(tot.i)}</td><td class="n">${int(tot.c)}</td><td class="n">${pct(tot.c,tot.i,2)}</td><td class="n">${tot.c?brl(tot.g/tot.c):'—'}</td></tr>`:'<tr><td colspan="6" class="vazio">Sem dados de anúncios no período.</td></tr>')+'</tbody>';
+  const at=P&&P.ads_atualizado?new Date(P.ads_atualizado):null;
+  const velho=at&&(Date.now()-at.getTime()>6*3600e3);
+  $('#adsSub').innerHTML=at?`Gasto das campanhas no Meta · atualizado em ${dataBR(at)}${velho?' <b class="neg">(desatualizado)</b>':''}`:'Gasto das campanhas no Meta.';
+
+  // custo da IA
+  const nomeTipo={foto:'Fotos dos clientes',capa:'Capas do catálogo',chat:'Chat da Mel',historico:'Antes do registro automático'};
+  const ordem=['foto','capa','chat','historico'].filter(k=>tipos[k]);
+  const lIA=ordem.map(k=>{const o=tipos[k],c=num(o.usd)*dolar+num(o.brl_fixo);return `<tr><td>${nomeTipo[k]}</td><td class="n">${k==='historico'?'—':int(o.n)}</td><td class="n">${k==='foto'&&num(o.n)?brl(c/o.n):'—'}</td><td class="n">${brl(c)}</td></tr>`}).join('');
+  $('#tIA').innerHTML='<thead><tr><th>Tipo</th><th class="n">Chamadas</th><th class="n">Média</th><th class="n">Custo</th></tr></thead><tbody>'+(lIA?lIA+`<tr class="tot"><td>Total</td><td class="n"></td><td class="n"></td><td class="n">${brl(ia)}</td></tr>`:'<tr><td colspan="4" class="vazio">Sem gastos de IA no período.</td></tr>')+'</tbody>';
+  $('#iaNota').textContent=tipos.historico?'"Antes do registro automático" é o valor real cobrado pelo Google até 01/11 de manhã. Dali em diante, cada foto é somada pelo consumo exato e convertida pelo dólar acima.':'Cada foto é somada pelo consumo exato de tokens e convertida pelo dólar acima.';
+
+  // situação das fotos
+  const ap2=ap;const nIni=ap2.filter(p=>p.fotos===0).length,nGer=ap2.filter(p=>p.fotos>0&&p.fotos<p.qtd).length,nOk=ap2.filter(p=>p.qtd&&p.fotos>=p.qtd).length;
+  $('#geracao').innerHTML=[kpi('Pagos sem foto gerada',nIni,nIni?'neg':''),kpi('Gerando (fotos restantes)',nGer),kpi('Concluídos',nOk,'pos'),kpi('Fotos geradas no período',int(fotos))].join('');
+
   // pacotes
   const porPac={};ap.forEach(p=>{const k=nomePac(p);porPac[k]=porPac[k]||{n:0,v:0};porPac[k].n++;porPac[k].v+=p.valor});
   const rp=Object.entries(porPac).sort((a,b)=>b[1].v-a[1].v);
@@ -208,7 +327,54 @@ function render(){const L=filtrados();
   const porOr={};L.forEach(p=>{const o=p.origem||{};const k=o.utm_source?[o.utm_source,o.utm_campaign,o.utm_content].filter(Boolean).join(' · '):(o.fbclid?'Meta (sem UTM)':'Direto ou sem UTM');porOr[k]=porOr[k]||{ped:0,ap:0,v:0};porOr[k].ped++;if(p.status==='approved'){porOr[k].ap++;porOr[k].v+=p.valor}});
   const ro=Object.entries(porOr).sort((a,b)=>b[1].v-a[1].v||b[1].ped-a[1].ped);
   $('#tOrigem').innerHTML='<thead><tr><th>Origem · campanha · anúncio</th><th class="n">Pedidos</th><th class="n">Pagos</th><th class="n">Receita</th></tr></thead><tbody>'+(ro.length?ro.map(([k,o])=>`<tr><td style="white-space:normal">${esc(k)}</td><td class="n">${o.ped}</td><td class="n">${o.ap}</td><td class="n">${brl(o.v)}</td></tr>`).join(''):'<tr><td colspan="4" class="vazio">Nenhum pedido no período.</td></tr>')+'</tbody>';
-  // pedidos
+  renderPedidos();
+}
+
+function renderFunil(f,visitas,vendas,ads){
+  const passos=[['Visitaram a página','PageView'],['Deram play no vídeo','VSL_Play'],['Assistiram 25% do vídeo','VSL_25'],['Assistiram 50% do vídeo','VSL_50'],['Assistiram 75% do vídeo','VSL_75'],['Assistiram o vídeo até o fim','VSL_Completo'],['Abriram o estúdio de criação','Lead'],['Escolheram um estilo','CustomizeProduct'],['Geraram uma foto','FotoGerada'],['Foram para o pagamento','InitiateCheckout'],['Geraram o Pix','AddPaymentInfo'],['Pagaram (Mercado Pago)','#pagos']];
+  if(!visitas){$('#funil').innerHTML='<div class="vazio">As visitas começam a ser contadas a partir da publicação deste painel. Volte daqui a pouco.</div>';return}
+  let ant=visitas;
+  const html=passos.map(([nome,ev],i)=>{const v=ev==='#pagos'?vendas:num(f[ev]);const larg=Math.max(v?2:0,100*v/visitas);
+    const taxa=i===0?'':`<span>${pct(v,ant,0)} da etapa anterior</span>`;ant=v||ant;
+    return `<div class="l${ev==='#pagos'?' fim':''}"><div class="nome">${nome}</div><div class="trilho"><i style="width:${Math.min(100,larg).toFixed(1)}%"></i></div><div class="num"><b>${int(v)}</b><span>${pct(v,visitas,1)} das visitas</span></div></div>`}).join('');
+  const extra=[['Clicaram no botão do vídeo',f.VSL_CTA],['Abriram o chat da Mel',f.ChatAberto],['Viram o pop-up de saída',f.SaidaPopup_Visto],['Clicaram no pop-up',f.SaidaPopup_CTA],['Custo por visita',visitas&&ads?brl(ads/visitas):'—']];
+  $('#funil').innerHTML=`<div class="fun">${html}</div><div class="mini">${extra.map(([t,v])=>`<div><b>${typeof v==='string'?v:int(v)}</b><span>${t}</span></div>`).join('')}</div>`;
+}
+
+function renderDias(L,P,dolar,comEng){
+  const de=new Date(DADOS.de),ate=new Date(DADOS.ate);const mapa={};
+  for(let t=de.getTime(),k=0;t<=ate.getTime()+864e5&&k<100;t+=864e5,k++){const d=diaBRT(t);if(d>diaBRT(ate))break;mapa[d]=mapa[d]||{rec:0,ads:0,ia:0}}
+  L.filter(p=>p.status==='approved').forEach(p=>{const d=diaBRT(p.aprovado||p.criado);if(mapa[d])mapa[d].rec+=p.liquido||(p.valor-p.taxa)});
+  ((P&&P.ads_dia)||[]).forEach(a=>{if(mapa[a.dia])mapa[a.dia].ads+=num(a.gasto)});
+  ((P&&P.ia_dia)||[]).forEach(a=>{if(mapa[a.dia])mapa[a.dia].ia+=num(a.usd)*dolar+num(a.brl_fixo)});
+  let dias=Object.keys(mapa).sort();if(dias.length>45)dias=dias.slice(-45);
+  if(!dias.length){$('#dias').innerHTML='<div class="vazio">Sem dados no período.</div>';return}
+  const S=dias.map(d=>{const o=mapa[d],c=o.ads+o.ia;return{d,rec:o.rec,cus:c,luc:o.rec-c}});
+  const W=720,H=230,mL=44,mR=8,mT=12,mB=26,iw=W-mL-mR,ih=H-mT-mB;
+  const maxV=Math.max(1,...S.map(s=>Math.max(s.rec,s.cus,s.luc))),minV=Math.min(0,...S.map(s=>s.luc));
+  const y=v=>mT+ih*(1-(v-minV)/(maxV-minV));const gw=iw/S.length,bw=Math.min(18,gw*.34);
+  let g='';
+  for(let i=0;i<=4;i++){const v=minV+(maxV-minV)*i/4,yy=y(v);g+=`<line x1="${mL}" x2="${W-mR}" y1="${yy}" y2="${yy}" stroke="#eadcd8" stroke-width="1"/><text x="${mL-6}" y="${yy+4}" text-anchor="end">${Math.round(v)}</text>`}
+  g+=`<line x1="${mL}" x2="${W-mR}" y1="${y(0)}" y2="${y(0)}" stroke="#b9a7ad" stroke-width="1.2"/>`;
+  const passo=Math.ceil(S.length/8);
+  S.forEach((s,i)=>{const cx=mL+gw*(i+.5);
+    g+=`<g><title>${s.d.split('-').reverse().slice(0,2).join('/')} · receita ${brl(s.rec)} · custos ${brl(s.cus)} · lucro ${brl(s.luc)}</title>`+
+    `<rect x="${cx-bw-1}" y="${Math.min(y(s.rec),y(0))}" width="${bw}" height="${Math.max(1,Math.abs(y(0)-y(s.rec)))}" rx="3" fill="#b85c68"/>`+
+    `<rect x="${cx+1}" y="${Math.min(y(s.cus),y(0))}" width="${bw}" height="${Math.max(1,Math.abs(y(0)-y(s.cus)))}" rx="3" fill="#c9b8be"/></g>`;
+    if(i%passo===0)g+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${s.d.split('-').reverse().slice(0,2).join('/')}</text>`});
+  const pts=S.map((s,i)=>`${(mL+gw*(i+.5)).toFixed(1)},${y(s.luc).toFixed(1)}`).join(' ');
+  g+=`<polyline points="${pts}" fill="none" stroke="#2f7a52" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`+S.map((s,i)=>`<circle cx="${(mL+gw*(i+.5)).toFixed(1)}" cy="${y(s.luc).toFixed(1)}" r="3.4" fill="#fff" stroke="#2f7a52" stroke-width="2"><title>Lucro ${brl(s.luc)}</title></circle>`).join('');
+  $('#dias').innerHTML=`<div style="overflow-x:auto"><svg class="graf" style="min-width:560px" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico diário de receita líquida, custos e lucro">${g}</svg></div><div class="lg2"><span><em style="background:#b85c68"></em>Receita líquida</span><span><em style="background:#c9b8be"></em>Custos (anúncios + IA)</span><span><em style="background:#2f7a52"></em>Lucro do dia</span></div>`;
+}
+
+function filtrados(){if(!DADOS)return[];const fp=$('#fPacote').value,fs=$('#fStatus').value;
+  return DADOS.pedidos.filter(p=>{
+    if(fp==='antigo'?['kit4','kit10','kit20'].includes(p.pacote):(fp&&p.pacote!==fp))return false;
+    if(fs==='pendente')return['pending','in_process','authorized'].includes(p.status);
+    if(fs==='falhou')return['cancelled','rejected'].includes(p.status);
+    return!fs||p.status===fs})}
+
+function renderPedidos(){const L=filtrados();
   $('#tPedidos').innerHTML='<thead><tr><th>Data</th><th>Status</th><th>Pacote</th><th class="n">Valor</th><th class="n">Fotos</th><th>Cliente</th><th>Origem</th></tr></thead><tbody>'+(L.length?L.map((p,i)=>`<tr class="click" data-i="${i}" tabindex="0"><td>${dataBR(p.criado)}</td><td>${pill(p.status)}</td><td>${esc(nomePac(p))}</td><td class="n">${brl(p.valor)}</td><td class="n">${p.status==='approved'?`${p.fotos}/${p.qtd}`:'—'}</td><td>${esc(p.nome||'—')}</td><td>${esc((p.origem||{}).utm_source||((p.origem||{}).fbclid?'Meta':'—'))}</td></tr>`).join(''):'<tr><td colspan="7" class="vazio">Nenhum pedido com esses filtros.</td></tr>')+'</tbody>';
   $('#tPedidos').querySelectorAll('tr.click').forEach(tr=>{const abrir=()=>detalhe(L[+tr.dataset.i]);tr.onclick=abrir;tr.onkeydown=e=>{if(e.key==='Enter')abrir()}})}
 
