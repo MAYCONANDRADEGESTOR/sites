@@ -175,6 +175,11 @@ section{position:relative;z-index:2}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);font-weight:700;font-size:14.5px;background:var(--paper);transition:.25s}
 .tab.on{background:var(--plum);color:#fff;border-color:var(--plum)}
+.busca{margin:30px auto 0;max-width:520px}
+.busca input{width:100%;padding:14px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);font:inherit;font-size:16px;color:inherit}
+.busca input:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 4px rgba(184,92,104,.12)}
+.busca + .tabs{margin-top:16px}
+.busca-vazia{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px 0}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:26px}
 .item{background:var(--paper);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);text-align:left;transition:transform .45s var(--ease),box-shadow .45s var(--ease);display:flex;flex-direction:column}
 .item:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
@@ -401,7 +406,7 @@ footer a{color:var(--plum);font-weight:700}
       <div class="cta-box">
         <button class="btn btn-r" id="ctaVsl">Quero criar meu ensaio agora <span class="arr">→</span></button>
         <div class="micro">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>40 estilos exclusivos</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>69 estilos exclusivos</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Pronto em minutos</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pix na hora</span>
         </div>
@@ -417,7 +422,7 @@ footer a{color:var(--plum);font-weight:700}
 <section class="sec" style="padding-bottom:40px">
   <div class="wrap">
     <div class="trust">
-      <div><i>✦</i><p><b>40 estilos</b><span>em 10 categorias</span></p></div>
+      <div><i>✦</i><p><b>69 estilos</b><span>em 14 categorias</span></p></div>
       <div><i>📸</i><p><b>Alta resolução</b><span>perfil, stories e original</span></p></div>
       <div><i>⚡</i><p><b>Pix na hora</b><span>liberação automática</span></p></div>
       <div><i>🔒</i><p><b>Privacidade</b><span>selfies não ficam salvas</span></p></div>
@@ -451,6 +456,7 @@ footer a{color:var(--plum);font-weight:700}
       <h2 class="h2 rv">Escolha o ensaio <em>dos seus sonhos</em></h2>
       <p class="sub rv">Toque no estilo que mais combina com você e crie o seu agora.</p>
     </div>
+    <div class="busca"><input id="busca" type="search" placeholder="Buscar estilo: praia, executiva, aniversário..." aria-label="Buscar estilo" autocomplete="off" enterkeyhint="search"></div>
     <div class="tabs" id="tabs"></div>
     <div class="grid" id="grid"></div>
     <p class="note">Imagens de referência de cada estilo. O seu ensaio é criado a partir das suas fotos.</p>
@@ -683,16 +689,24 @@ const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',
 const salvar=()=>DB.set('estado',{fotos:S.fotos,pg:S.pg,cred:S.cred});
 
 /* ---------- imagens do catálogo ---------- */
-const imgCat=(el,id)=>{el.loading='lazy';el.src='/estudio/catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=amostra&id='+id}};
+const imgCat=(el,id)=>{el.loading='lazy';el.src='/estudio/catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=capa&id='+id}};
 $$('img[data-cat]').forEach(i=>{if(!i.closest('#gal'))imgCat(i,i.dataset.cat)});
 
 /* ---------- catálogo ---------- */
 function renderTabs(box,on,cb){box.innerHTML='';CAT.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c.cat===on?' on':'');b.textContent=c.catNome;b.onclick=()=>cb(c.cat);box.appendChild(b)})}
-function renderGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#grid');g.innerHTML='';
-  c.itens.forEach(it=>{const b=document.createElement('button');b.className='item';
+let catAtual=null;
+function renderItens(lista){const g=$('#grid');g.innerHTML='';
+  lista.forEach(({c,it})=>{const b=document.createElement('button');b.className='item';
    b.innerHTML=`<div class="im"><span class="lbl">${c.catNome}</span><img alt="${it.nome}"></div><div class="bd"><div><h4>${it.nome}</h4><p>${it.desc}</p></div><span class="go">→</span></div>`;
-   imgCat(b.querySelector('img'),it.id);b.onclick=()=>abrirEstudio(it.id);g.appendChild(b)});
-  renderTabs($('#tabs'),cat,renderGrid)}
+   imgCat(b.querySelector('img'),it.id);b.onclick=()=>{trackC('EstiloEscolhido',{estilo:it.id,categoria:c.cat});abrirEstudio(it.id)};g.appendChild(b)});
+  if(!lista.length)g.innerHTML='<p class="busca-vazia">Nenhum estilo com esse nome. Tente "praia", "aniversário" ou "executiva".</p>'}
+function renderGrid(cat){catAtual=cat;const c=CAT.find(x=>x.cat===cat);const bs=$('#busca');if(bs)bs.value='';
+  renderItens(c.itens.map(it=>({c,it})));renderTabs($('#tabs'),cat,renderGrid)}
+const semAcento=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+(()=>{const bs=$('#busca');if(!bs)return;let t;bs.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(()=>{const q=semAcento(bs.value.trim());
+  if(!q){if(catAtual)renderGrid(catAtual);return}
+  renderItens(CAT.flatMap(c=>c.itens.filter(it=>semAcento(it.nome+' '+it.desc+' '+c.catNome).includes(q)).map(it=>({c,it}))));
+  $$('#tabs .tab').forEach(x=>x.classList.remove('on'))},180)})})();
 function renderSGrid(cat){const c=CAT.find(x=>x.cat===cat);const g=$('#sgrid');g.innerHTML='';
   c.itens.forEach(it=>{const b=document.createElement('button');b.className='opt'+(S.estilo===it.id?' on':'');
    b.innerHTML=`<div class="im"><img alt="${it.nome}"></div><b>${it.nome}</b>`;imgCat(b.querySelector('img'),it.id);
