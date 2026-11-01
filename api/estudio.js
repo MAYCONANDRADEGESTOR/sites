@@ -305,6 +305,37 @@ async function chatVendas(hist) {
   return reserva;
 }
 
+// ---------- origem da venda e painel ----------
+const CAMPOS_ORIGEM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'landing'];
+function limparOrigem(o) {
+  const r = { app: 'estudio-das-modelos' };
+  if (o && typeof o === 'object') for (const k of CAMPOS_ORIGEM) if (typeof o[k] === 'string' && o[k].trim()) r[k] = o[k].trim().slice(0, 150);
+  return r;
+}
+const b64u = (b) => Buffer.from(b).toString('base64url');
+function tokenAdmin() {
+  const corpo = b64u(JSON.stringify({ adm: 1, exp: Date.now() + 12 * 3600e3 }));
+  return corpo + '.' + crypto.createHmac('sha256', chave()).update('adm:' + corpo).digest('base64url');
+}
+function adminValido(t) {
+  if (typeof t !== 'string' || !t.includes('.')) return false;
+  const [corpo, sig] = t.split('.');
+  const esperado = crypto.createHmac('sha256', chave()).update('adm:' + corpo).digest('base64url');
+  if (!sig || sig.length !== esperado.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(esperado))) return false;
+  try { return JSON.parse(Buffer.from(corpo, 'base64url').toString()).exp > Date.now(); } catch (e) { return false; }
+}
+async function pagamentosDoPeriodo(de, ate) {
+  const lista = [];
+  for (let offset = 0; offset < 1000; offset += 100) {
+    const q = new URLSearchParams({ sort: 'date_created', criteria: 'desc', range: 'date_created', begin_date: de, end_date: ate, limit: '100', offset: String(offset) });
+    const j = await mp('/v1/payments/search?' + q.toString());
+    const res = j.results || [];
+    lista.push(...res);
+    if (res.length < 100) break;
+  }
+  return lista.filter(p => /^Estúdio das Modelos/.test(p.description || '') || (p.metadata && p.metadata.app === 'estudio-das-modelos'));
+}
+
 // ---------- rotas ----------
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -370,7 +401,7 @@ module.exports = async (req, res) => {
 
     if (acao === 'pix') {
       if (!limitar('pix:' + ip, 20, 3600e3)) return json(res, 429, { erro: 'Muitas tentativas. Aguarde um pouco.' });
-      const { pacote, nome = '', email = '' } = await lerCorpo(req);
+      const { pacote, nome = '', email = '', origem = {} } = await lerCorpo(req);
       const pc = PRECOS[pacote];
       if (!pc) return json(res, 400, { erro: 'Pacote inválido.' });
       const emailOk = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email) ? email : `cliente${Date.now()}@estudiodasmodelos.app`;
@@ -381,6 +412,7 @@ module.exports = async (req, res) => {
           external_reference: pacote + ':' + crypto.randomBytes(6).toString('hex'),
           payer: { email: emailOk, first_name: String(nome).slice(0, 40) || 'Cliente' },
           date_of_expiration: new Date(Date.now() + 30 * 60e3).toISOString().replace('Z', '-00:00'),
+          metadata: limparOrigem(origem),
         }),
       });
       const t = pg.point_of_interaction?.transaction_data || {};
@@ -407,6 +439,40 @@ module.exports = async (req, res) => {
       if (!pos || pos > pc.qtd) return json(res, 402, { erro: `Seu pacote já liberou todas as ${pc.qtd} fotos. Escolha um novo pacote para liberar mais.`, esgotado: true });
       const usados = await rpc('estudio_creditos_usados', { p_pid: String(pagamentoId) });
       return json(res, 200, { id, restantes: Math.max(0, pc.qtd - usados), foto: 'data:image/jpeg;base64,' + limpa.toString('base64') });
+    }
+
+    if (acao === 'admin_login') {
+      if (!limitar('adm:' + ip, 8, 900e3)) return json(res, 429, { erro: 'Muitas tentativas. Aguarde 15 minutos.' });
+      const { email = '', senha = '' } = await lerCorpo(req);
+      const ok = await rpc('estudio_admin_login', { p_email: String(email).slice(0, 120), p_senha: String(senha).slice(0, 120) });
+      if (ok !== true) return json(res, 401, { erro: 'E-mail ou senha incorretos.' });
+      return json(res, 200, { token: tokenAdmin() });
+    }
+
+    if (acao === 'admin_resumo') {
+      const { token, de, ate } = await lerCorpo(req);
+      if (!adminValido(token)) return json(res, 401, { erro: 'Sessão expirada. Entre de novo.' });
+      const fim = ate && !isNaN(Date.parse(ate)) ? new Date(ate) : new Date();
+      const ini = de && !isNaN(Date.parse(de)) ? new Date(de) : new Date(fim.getTime() - 30 * 864e5);
+      const pgs = await pagamentosDoPeriodo(ini.toISOString(), fim.toISOString());
+      const aprovados = pgs.filter(p => p.status === 'approved' || p.status === 'refunded').map(p => String(p.id));
+      const usados = {};
+      if (aprovados.length) (await rpc('estudio_creditos_lote', { p_ids: aprovados })).forEach(r => { usados[r.pid] = r.usados; });
+      const pedidos = pgs.map(p => {
+        const pacote = String(p.external_reference || '').split(':')[0];
+        const pc = PRECOS[pacote] || LEGADO[pacote] || { qtd: 0, nome: pacote };
+        const taxa = (p.fee_details || []).reduce((t, f) => t + (Number(f.amount) || 0), 0);
+        const { app, ...origem } = p.metadata || {};
+        return {
+          id: String(p.id), criado: p.date_created, aprovado: p.date_approved, status: p.status, detalhe: p.status_detail,
+          valor: Number(p.transaction_amount) || 0, estornado: Number(p.transaction_amount_refunded) || 0,
+          liquido: Number(p.transaction_details?.net_received_amount) || 0, taxa,
+          pacote, pacoteNome: pc.nome, qtd: pc.qtd, fotos: usados[String(p.id)] || 0,
+          nome: p.payer?.first_name || '', email: /@estudiodasmodelos\.app$/.test(p.payer?.email || '') ? '' : (p.payer?.email || ''),
+          origem,
+        };
+      });
+      return json(res, 200, { de: ini.toISOString(), ate: fim.toISOString(), pedidos, custoFotoPadrao: 0.25 });
     }
 
     return json(res, 404, { erro: 'Ação desconhecida' });
