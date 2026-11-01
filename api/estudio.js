@@ -336,6 +336,30 @@ async function pagamentosDoPeriodo(de, ate) {
   return lista.filter(p => /^Estúdio das Modelos/.test(p.description || '') || (p.metadata && p.metadata.app === 'estudio-das-modelos'));
 }
 
+// ---------- Meta Conversions API (liga sozinha quando META_CAPI_TOKEN existir na Vercel) ----------
+const PIXEL_ID = process.env.META_PIXEL_ID || '1785726135972814';
+const capiEnviados = new Set();
+const sha = (v) => crypto.createHash('sha256').update(String(v).trim().toLowerCase()).digest('hex');
+async function capiCompra(pg, pc, req) {
+  const tk = process.env.META_CAPI_TOKEN;
+  if (!tk || capiEnviados.has(String(pg.id))) return;
+  capiEnviados.add(String(pg.id));
+  try {
+    const meta = pg.metadata || {};
+    const user = { client_ip_address: (req.headers['x-forwarded-for'] || '').split(',')[0] || undefined, client_user_agent: req.headers['user-agent'] || undefined };
+    if (meta.fbclid) user.fbc = `fb.1.${Date.parse(meta.landing || pg.date_created) || Date.now()}.${meta.fbclid}`;
+    const em = pg.payer?.email || '';
+    if (em && !/@estudiodasmodelos\.app$/.test(em)) user.em = [sha(em)];
+    if (pg.payer?.first_name) user.fn = [sha(pg.payer.first_name)];
+    const corpo = { data: [{ event_name: 'Purchase', event_time: Math.floor((Date.parse(pg.date_approved) || Date.now()) / 1000), event_id: 'pix-' + pg.id,
+      action_source: 'website', event_source_url: 'https://musastudio.vercel.app/', user_data: user,
+      custom_data: { currency: 'BRL', value: Number(pg.transaction_amount) || pc.valor, content_ids: [String(pg.external_reference || '').split(':')[0]], content_type: 'product', num_items: pc.qtd } }] };
+    if (process.env.META_TEST_CODE) corpo.test_event_code = process.env.META_TEST_CODE;
+    const r = await fetch(`https://graph.facebook.com/v21.0/${PIXEL_ID}/events?access_token=${encodeURIComponent(tk)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) });
+    if (!r.ok) { capiEnviados.delete(String(pg.id)); console.log('[capi]', r.status, (await r.text()).slice(0, 300)); }
+  } catch (e) { capiEnviados.delete(String(pg.id)); console.log('[capi]', e.message); }
+}
+
 // ---------- rotas ----------
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -425,6 +449,7 @@ module.exports = async (req, res) => {
       if (!/^\d+$/.test(id || '')) return json(res, 400, { erro: 'id' });
       const { pg, pacote, pc, ok } = await pagamentoAprovado(id);
       const usados = ok ? await rpc('estudio_creditos_usados', { p_pid: id }) : 0;
+      if (ok && usados === 0) await capiCompra(pg, pc, req);
       return json(res, 200, { status: pg.status, aprovado: ok, pacote, qtd: pc ? pc.qtd : 0, usados });
     }
 
