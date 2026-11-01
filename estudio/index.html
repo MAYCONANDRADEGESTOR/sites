@@ -684,8 +684,12 @@ const S={passo:1,estilo:null,selfies:[],fotos:[],pg:null,cred:null};
 /* eventos do pixel: padrão (otimizáveis) e personalizados (públicos/relatórios) */
 (()=>{try{const q=new URLSearchParams(location.search),o={};['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(k=>{const v=q.get(k);if(v)o[k]=v.slice(0,150)});if(Object.keys(o).length){o.landing=new Date().toISOString();localStorage.setItem('edm_origem',JSON.stringify(o))}}catch(e){}})();
 const origemVenda=()=>{try{return JSON.parse(localStorage.getItem('edm_origem')||'{}')}catch(e){return{}}};
-const track=(ev,p,opt)=>{try{window.fbq&&fbq('track',ev,p||{},opt||{})}catch(e){}};
-const trackC=(ev,p)=>{try{window.fbq&&fbq('trackCustom',ev,p||{})}catch(e){}};
+/* funil próprio (painel): mesma lista de eventos do pixel, contada por visitante */
+const sid=(()=>{try{let s=localStorage.getItem('edm_sid');if(!s){s=Math.random().toString(36).slice(2,12)+Date.now().toString(36);localStorage.setItem('edm_sid',s)}return s}catch(e){return 'v'+Math.random().toString(36).slice(2,12)}})();
+const beacon=ev=>{try{const o=origemVenda(),b=JSON.stringify({s:sid,e:ev,c:o.utm_campaign||'',a:o.utm_content||''});if(navigator.sendBeacon)navigator.sendBeacon(API+'?acao=evento',new Blob([b],{type:'text/plain'}));else fetch(API+'?acao=evento',{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'text/plain'}})}catch(e){}};
+const track=(ev,p,opt)=>{beacon(ev);try{window.fbq&&fbq('track',ev,p||{},opt||{})}catch(e){}};
+const trackC=(ev,p)=>{beacon(ev);try{window.fbq&&fbq('trackCustom',ev,p||{})}catch(e){}};
+beacon('PageView');
 const uma=(k,fn)=>{try{if(sessionStorage.getItem('px_'+k))return;sessionStorage.setItem('px_'+k,1)}catch(e){}fn()};
 const PROD={content_category:'ensaio-fotografico-ia',content_type:'product',currency:'BRL'};
 
