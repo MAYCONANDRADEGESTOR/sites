@@ -219,13 +219,20 @@ summary:after{content:"+";font-family:Fraunces;font-size:28px;line-height:1;colo
 details[open] summary:after{transform:rotate(45deg)}
 details p{color:var(--muted);margin-top:12px;font-size:15.5px}
 
-.final{text-align:center;padding:100px 0 110px}
+.final{text-align:center;padding:96px 0 104px}
+.final .eyebrow{display:inline-block;margin-bottom:14px}
+.final-sub{max-width:36ch;margin:0 auto 32px}
+.btn-pulse{min-height:58px;padding:18px 40px;font-size:15px;letter-spacing:.09em;animation:pulse 2.4s cubic-bezier(.4,0,.2,1) infinite;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-pulse:active{transform:scale(.97);background:var(--rose-d)}
+.final-note{margin-top:18px;font-size:13px;color:var(--muted)}
+@media (max-width:560px){.btn-pulse{width:100%;max-width:360px}}
 footer{border-top:1px solid var(--line);padding:40px 0 110px;font-size:13px;color:var(--muted);position:relative;z-index:2}
 footer .wrap{display:grid;gap:14px}
 footer a{color:var(--plum);font-weight:700}
 .disc{font-size:12px;line-height:1.6;opacity:.85}
 .mobcta{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:45;display:none}
 .mobcta .btn{width:100%}
+.mobcta{transition:opacity .3s,transform .3s}.mobcta.oculto{opacity:0;transform:translateY(16px);pointer-events:none}
 
 .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
 .rv.in{opacity:1;transform:none}
@@ -317,7 +324,8 @@ footer a{color:var(--plum);font-weight:700}
 .toast.on{opacity:1;transform:translateX(-50%)}
 
 /* ===== assistente (chat) ===== */
-.chatbtn{position:fixed;right:16px;bottom:max(18px,env(safe-area-inset-bottom));z-index:50;width:60px;height:60px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(20,120,60,.7);animation:pulseG 2.2s infinite}
+.chatbtn{position:fixed;right:16px;bottom:max(18px,env(safe-area-inset-bottom));z-index:50;width:60px;height:60px;border-radius:50%;background:var(--plum);color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -12px rgba(40,10,25,.55);transition:opacity .3s,transform .3s}
+.chatbtn.oculto{opacity:0;transform:scale(.8);pointer-events:none}
 .chatbtn svg{width:30px;height:30px}
 .chatbtn .dot{position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:var(--rose);border:2px solid #fff}
 @keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
@@ -505,11 +513,13 @@ footer a{color:var(--plum);font-weight:700}
   </div>
 </section>
 
-<section class="final">
+<section class="final" id="final">
   <div class="wrap">
-    <h2 class="h2 rv">Você merece um ensaio <em>à sua altura.</em></h2>
-    <p class="sub rv" style="margin:0 auto 30px">Comece agora. Leva menos de 1 minuto para enviar suas fotos.</p>
-    <button class="btn btn-r rv" data-open>Criar meu ensaio <span class="arr">→</span></button>
+    <span class="eyebrow rv">Estúdio das Modelos</span>
+    <h2 class="h2 rv">Seu próximo ensaio <em>começa aqui.</em></h2>
+    <p class="sub rv final-sub">Escolha seu estilo favorito e transforme suas fotos em um ensaio incrível com inteligência artificial.</p>
+    <button class="btn btn-r btn-pulse rv" data-open data-origem="cta_final">CRIAR MEU ENSAIO <span class="arr">→</span></button>
+    <p class="final-note rv">Pix na hora · fotos em alta resolução · suas selfies não ficam guardadas</p>
   </div>
 </section>
 
@@ -629,6 +639,8 @@ let CAT=[], PRECOS={kit4:{valor:19.9,qtd:4},kit10:{valor:29.9,qtd:10},kit20:{val
 const DEPOIMENTOS=[]; // depoimentos reais: {nome:'',msgs:['...'],img:'url opcional'}
 const S={passo:1,estilo:null,selfies:[],fotos:[],pg:null,cred:null};
 /* eventos do pixel: padrão (otimizáveis) e personalizados (públicos/relatórios) */
+(()=>{try{const q=new URLSearchParams(location.search),o={};['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(k=>{const v=q.get(k);if(v)o[k]=v.slice(0,150)});if(Object.keys(o).length){o.landing=new Date().toISOString();localStorage.setItem('edm_origem',JSON.stringify(o))}}catch(e){}})();
+const origemVenda=()=>{try{return JSON.parse(localStorage.getItem('edm_origem')||'{}')}catch(e){return{}}};
 const track=(ev,p,opt)=>{try{window.fbq&&fbq('track',ev,p||{},opt||{})}catch(e){}};
 const trackC=(ev,p)=>{try{window.fbq&&fbq('trackCustom',ev,p||{})}catch(e){}};
 const uma=(k,fn)=>{try{if(sessionStorage.getItem('px_'+k))return;sessionStorage.setItem('px_'+k,1)}catch(e){}fn()};
@@ -700,7 +712,7 @@ const studio=$('#studio');
 function abrirEstudio(estilo){if(estilo)S.estilo=estilo;studio.classList.add('open');document.body.style.overflow='hidden';
   const cat=(estiloInfo(S.estilo)||{}).cat||(CAT[0]&&CAT[0].cat);if(cat)renderSGrid(cat);
   ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));renderRes();uma('lead',()=>track('Lead',{...PROD,content_name:'Abriu o estúdio'}))}
-$$('[data-open]').forEach(b=>b.onclick=()=>abrirEstudio());
+$$('[data-open]').forEach(b=>b.onclick=()=>{trackC('CliqueCriarEnsaio',{origem:b.dataset.origem||'botao'});abrirEstudio()});
 $('#fechar').onclick=()=>{studio.classList.remove('open');document.body.style.overflow=''};
 function ir(p){S.passo=p;$$('.pane').forEach(x=>x.classList.toggle('on',+x.dataset.pane===p));$$('.prog i').forEach(i=>i.classList.toggle('on',+i.dataset.p<=p));erro('');$('#sbody').scrollTop=0;atualizar()}
 function atualizar(){const a=$('#avancar'),v=$('#voltar');$('#sfoot').hidden=S.passo===3;v.style.display=S.passo>1?'':'none';
@@ -766,7 +778,14 @@ async function salvarArquivo(dataUrl,nome){
   try{if(navigator.canShare&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const b=await (await fetch(dataUrl)).blob();const f=new File([b],nome,{type:'image/jpeg'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}}catch(e){if(e.name==='AbortError')return}
   const a=document.createElement('a');a.href=dataUrl;a.download=nome;document.body.appendChild(a);a.click();a.remove()}
 async function baixar(f,fmt){const url=await formatar(f.foto,fmt);await salvarArquivo(url,`estudio-${f.estilo}-${fmt}-${f.id.slice(0,5)}.jpg`);toast('Foto salva ✨')}
-$('#baixarAlbum').onclick=async()=>{for(const f of S.fotos){await salvarArquivo(f.foto,`estudio-${f.estilo}-${f.id.slice(0,5)}.jpg`);await new Promise(r=>setTimeout(r,500))}toast('Álbum baixado ✨')};
+$('#baixarAlbum').onclick=async()=>{const b=$('#baixarAlbum');if(!S.fotos.length||b.disabled)return;const txt=b.textContent;b.disabled=true;b.textContent='Preparando suas fotos...';
+  const nomes=S.fotos.map((f,i)=>`estudio-das-modelos-${String(i+1).padStart(2,'0')}-${f.estilo}.jpg`);
+  try{if(navigator.canShare&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const files=await Promise.all(S.fotos.map(async(f,i)=>new File([await (await fetch(f.foto)).blob()],nomes[i],{type:'image/jpeg'})));
+      if(navigator.canShare({files})){try{await navigator.share({files});toast('Toque em "Salvar imagens" para guardar no celular');return}catch(e){if(e.name==='AbortError')return}}}
+    for(let i=0;i<S.fotos.length;i++){const a=document.createElement('a');a.href=S.fotos[i].foto;a.download=nomes[i];document.body.appendChild(a);a.click();a.remove();await new Promise(r=>setTimeout(r,450))}
+    toast(`${S.fotos.length} foto${S.fotos.length>1?'s':''} baixada${S.fotos.length>1?'s':''}`)}
+  catch(e){toast('Não deu para baixar todas de uma vez. Toque em "Baixar em HD" em cada foto.')}
+  finally{b.disabled=false;b.textContent=txt}};
 
 /* ---------- pagamento Pix + cupom ---------- */
 let pacote='kit10',poll=null;
@@ -778,7 +797,7 @@ $$('.pk').forEach(p=>p.onclick=()=>{pacote=p.dataset.pk;$$('.pk').forEach(x=>x.c
 const fecharSheet=()=>{$('#sheet').classList.remove('open');clearInterval(poll)};
 $('#shX').onclick=fecharSheet;$('#sheet').onclick=e=>{if(e.target.id==='sheet')fecharSheet()};
 $('#gerarPix').onclick=async()=>{const b=$('#gerarPix');b.disabled=true;b.textContent='Gerando Pix…';
-  try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pacote,nome:$('#nome').value,email:$('#email').value})});
+  try{const r=await fetch(API+'?acao=pix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pacote,nome:$('#nome').value,email:$('#email').value,origem:origemVenda()})});
     const j=await r.json();if(!r.ok||j.erro)throw new Error(j.erro||'Erro ao gerar Pix');
     S.pg={id:j.pagamentoId,pacote,qtd:j.qtd,valor:j.valor};salvar();track('AddPaymentInfo',{...PROD,content_ids:[pacote],value:j.valor});
     $('#qrImg').src='data:image/png;base64,'+j.qr;$('#ccTxt').value=j.copiaCola;$('#pixValor').textContent=brl(j.valor);
@@ -833,6 +852,7 @@ $('#chatGo').onclick=()=>{trackC('ChatCTA');fecharChat();abrirEstudio()};
 /* ---------- efeitos ---------- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
 $$('.rv').forEach(el=>io.observe(el));
+(()=>{const cb=$('#chatBtn');if(!cb||!('IntersectionObserver' in window))return;const vis=new Set();const o=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));cb.classList.toggle('oculto',vis.size>0);const m=document.querySelector('.mobcta');if(m)m.classList.toggle('oculto',vis.has(document.querySelector('#final')))});['#final','footer'].forEach(q=>{const el=document.querySelector(q);if(el)o.observe(el)})})();
 addEventListener('scroll',()=>$('#top').classList.toggle('sc',scrollY>10),{passive:true});
 $('#ano').textContent=new Date().getFullYear();
 })();
