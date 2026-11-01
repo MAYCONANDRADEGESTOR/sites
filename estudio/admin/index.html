@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Painel · Estúdio das Modelos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Painel: cabeçalho fixo com filtros, resumo financeiro, situação das fotos, pacotes, origem e lista de pedidos */
+:root{--bg:#faf5f2;--card:#fff;--line:#ecdfdb;--ink:#2a1720;--muted:#7d6670;--rose:#b85c68;--rose-d:#9c4653;--soft:#f7e6e8;--ok:#2f7a52;--ok-s:#e3f2e9;--wait:#9a6a14;--wait-s:#fbf0da;--bad:#b4332e;--bad-s:#fbe5e3;
+--serif:"Fraunces",Georgia,serif;--sans:"Manrope",system-ui,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.logo{font-family:var(--serif);font-style:italic;font-weight:700;font-size:22px;line-height:1}
+.logo small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:.32em;color:var(--rose);margin-bottom:4px}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding-block:40px}
+.login form{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;width:min(380px,100%);display:grid;gap:14px}
+.login h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:6px 0 0}
+.login p{margin:0;color:var(--muted)}
+label{display:grid;gap:5px;font-size:13px;font-weight:600}
+input,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;min-width:0;width:100%}
+.btn{border:0;border-radius:999px;padding:11px 20px;font-weight:700;background:var(--rose);color:#fff}
+.btn:hover{background:var(--rose-d)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.erro{color:var(--bad);font-size:13px;min-height:1em}
+/* topo */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(250,245,242,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.filtros{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding-block:0 12px}
+.filtros .datas{display:flex;gap:8px}
+main{display:grid;gap:22px;padding-block:22px 60px}
+main>*,section{min-width:0}
+h2{font-family:var(--serif);font-weight:600;font-size:19px;margin:0 0 10px}
+.note{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.kpi b{display:block;font-family:var(--serif);font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi span{font-size:12px;color:var(--muted)}
+.kpi.dest{background:var(--ink);color:#fff;border-color:var(--ink)}.kpi.dest span{color:#e9d6db}.kpi.dest .pos{color:#86dcae}.kpi.dest .neg{color:#ff9e98}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.custos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
+.duas>*{min-width:0}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600;background:#fdfaf8}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right}
+tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--ok-s);color:var(--ok)}.pill.wait{background:var(--wait-s);color:var(--wait)}.pill.bad{background:var(--bad-s);color:var(--bad)}.pill.neu{background:#eee6e8;color:var(--muted)}
+.vazio{padding:22px;text-align:center;color:var(--muted)}
+.det{position:fixed;inset:0;z-index:20;background:rgba(42,23,32,.4);display:grid;place-items:end center}
+.det>div{background:var(--card);width:min(560px,100%);max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:22px;padding-bottom:max(22px,env(safe-area-inset-bottom,0px))}
+.det dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0}
+.det dt{color:var(--muted);font-size:13px}.det dd{margin:0;font-weight:600;word-break:break-word}
+.carregando{opacity:.55;pointer-events:none}
+@media (min-width:700px){.det{place-items:center}.det>div{border-radius:18px}}
+</style>
+</head>
+<body>
+
+<section class="login wrap" id="telaLogin">
+  <form id="fLogin" autocomplete="on">
+    <div class="logo"><small>ESTÚDIO</small>das Modelos</div>
+    <h1>Painel de vendas</h1>
+    <p>Entre para ver pedidos, pagamentos e a origem das vendas.</p>
+    <label for="email">E-mail<input id="email" type="email" autocomplete="username" required></label>
+    <label for="senha">Senha<input id="senha" type="password" autocomplete="current-password" required></label>
+    <button class="btn" type="submit" id="bEntrar">Entrar</button>
+    <div class="erro" id="eLogin" role="alert"></div>
+  </form>
+</section>
+
+<div id="telaPainel" hidden>
+  <header>
+    <div class="wrap top">
+      <div class="logo"><small>ESTÚDIO</small>das Modelos</div>
+      <div style="display:flex;gap:8px"><button class="btn ghost" id="bAtualizar">Atualizar</button><button class="btn ghost" id="bSair">Sair</button></div>
+    </div>
+    <div class="wrap filtros">
+      <label for="periodo">Período<select id="periodo"><option value="0">Hoje</option><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="custom">Escolher datas</option></select></label>
+      <label id="lDatas" hidden>Datas<span class="datas"><input type="date" id="de" aria-label="De"><input type="date" id="ate" aria-label="Até"></span></label>
+      <label for="fPacote">Pacote<select id="fPacote"><option value="">Todos</option><option value="kit4">Essencial · 4 fotos</option><option value="kit10">Ensaio completo · 10 fotos</option><option value="kit20">Álbum VIP · 20 fotos</option><option value="antigo">Pacotes antigos</option></select></label>
+      <label for="fStatus">Status<select id="fStatus"><option value="">Todos</option><option value="approved">Aprovado</option><option value="pendente">Pendente</option><option value="refunded">Estornado</option><option value="falhou">Cancelado ou recusado</option></select></label>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <section>
+      <h2>Resumo financeiro</h2>
+      <div class="kpis" id="kpis"></div>
+      <p class="note">Valores vindos do Mercado Pago. Receita líquida é o que o Mercado Pago repassa depois das taxas, só dos pagamentos aprovados.</p>
+    </section>
+
+    <section>
+      <h2>Lucro estimado</h2>
+      <div class="custos">
+        <label for="cFoto">Custo por foto gerada (R$)<input id="cFoto" type="number" step="0.01" min="0" inputmode="decimal"></label>
+        <label for="cAds">Gasto com anúncios no período (R$)<input id="cAds" type="number" step="1" min="0" inputmode="decimal" placeholder="0"></label>
+        <label for="cInfra">Outros custos no período (R$)<input id="cInfra" type="number" step="1" min="0" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <div class="kpis" id="lucro" style="margin-top:10px"></div>
+      <p class="note">Custo de IA é uma estimativa: fotos geradas × custo por foto. Confira o valor real em Gasto, no Google AI Studio. O gasto com anúncios você copia do Gerenciador de Anúncios.</p>
+    </section>
+
+    <section>
+      <h2>Situação das fotos</h2>
+      <div class="kpis" id="geracao"></div>
+    </section>
+
+    <div class="duas">
+      <section><h2>Por pacote</h2><div class="tbl"><table id="tPacotes"></table></div></section>
+      <section><h2>Origem das vendas</h2><div class="tbl"><table id="tOrigem"></table></div><p class="note">Origem salva a partir dos links com utm_source, utm_campaign e utm_content. Sem UTM aparece como "Direto ou sem UTM".</p></section>
+    </div>
+
+    <section>
+      <h2>Pedidos</h2>
+      <div class="tbl"><table id="tPedidos"></table></div>
+      <p class="note">Toque em um pedido para ver os detalhes.</p>
+    </section>
+  </main>
+</div>
+
+<div class="det" id="det" hidden><div role="dialog" aria-modal="true" aria-labelledby="detTit"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="detTit" style="margin:0">Pedido</h2><button class="btn ghost" id="detX">Fechar</button></div><dl id="detDl"></dl></div></div>
+
+<script>
+const API='/api/estudio';
+const $=s=>document.querySelector(s);
+const brl=v=>'R$ '+(Number(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(e){}},del(k){try{sessionStorage.removeItem(k)}catch(e){}}};
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let DADOS=null;
+const STATUS={approved:['Aprovado','ok'],pending:['Pendente','wait'],in_process:['Em análise','wait'],authorized:['Autorizado','wait'],refunded:['Estornado','bad'],charged_back:['Contestado','bad'],cancelled:['Expirado','neu'],rejected:['Recusado','bad']};
+const NOMES={kit4:'Essencial · 4 fotos',kit10:'Ensaio completo · 10 fotos',kit20:'Álbum VIP · 20 fotos',foto:'1 foto (antigo)',kit5:'5 fotos (antigo)',kit15:'15 fotos (antigo)'};
+const nomePac=p=>NOMES[p.pacote]||p.pacoteNome||p.pacote||'—';
+const pill=s=>{const [t,c]=STATUS[s]||[s,'neu'];return `<span class="pill ${c}">${t}</span>`};
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dataBR=d=>d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+
+function mostrar(logado){$('#telaLogin').hidden=logado;$('#telaPainel').hidden=!logado}
+
+$('#fLogin').onsubmit=async e=>{e.preventDefault();const b=$('#bEntrar');b.disabled=true;$('#eLogin').textContent='';
+  try{const r=await fetch(API+'?acao=admin_login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:$('#email').value,senha:$('#senha').value})});
+    const j=await r.json();if(!r.ok)throw new Error(j.erro||'Não foi possível entrar.');
+    ss.set('edm_adm',j.token);$('#senha').value='';mostrar(true);carregar()}
+  catch(err){$('#eLogin').textContent=err.message}finally{b.disabled=false}};
+$('#bSair').onclick=()=>{ss.del('edm_adm');DADOS=null;mostrar(false)};
+$('#bAtualizar').onclick=()=>carregar();
+
+function intervalo(){const v=$('#periodo').value;const agora=new Date();
+  if(v==='custom'){const de=$('#de').value,ate=$('#ate').value;return{de:de?new Date(de+'T00:00:00').toISOString():undefined,ate:ate?new Date(ate+'T23:59:59').toISOString():agora.toISOString()}}
+  const ini=new Date(agora);ini.setHours(0,0,0,0);ini.setDate(ini.getDate()-Number(v));return{de:ini.toISOString(),ate:agora.toISOString()}}
+$('#periodo').onchange=()=>{$('#lDatas').hidden=$('#periodo').value!=='custom';if($('#periodo').value!=='custom')carregar()};
+['#de','#ate'].forEach(s=>$(s).onchange=()=>{if($('#de').value)carregar()});
+['#fPacote','#fStatus'].forEach(s=>$(s).onchange=()=>render());
+$('#cFoto').value=ls.get('edm_cfoto')||'0.25';
+[['#cFoto','edm_cfoto'],['#cAds',null],['#cInfra',null]].forEach(([s,k])=>$(s).oninput=()=>{if(k)ls.set(k,$(s).value);render()});
+
+async function carregar(){const tk=ss.get('edm_adm');if(!tk){mostrar(false);return}
+  $('#main').classList.add('carregando');
+  try{const r=await fetch(API+'?acao=admin_resumo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tk,...intervalo()})});
+    const j=await r.json();if(r.status===401){ss.del('edm_adm');mostrar(false);$('#eLogin').textContent=j.erro;return}
+    if(!r.ok)throw new Error(j.erro||'Erro ao carregar');DADOS=j;render()}
+  catch(err){$('#kpis').innerHTML=`<div class="kpi" style="grid-column:1/-1"><span class="neg">Não foi possível carregar: ${esc(err.message)}</span></div>`}
+  finally{$('#main').classList.remove('carregando')}}
+
+function filtrados(){if(!DADOS)return[];const fp=$('#fPacote').value,fs=$('#fStatus').value;
+  return DADOS.pedidos.filter(p=>{
+    if(fp==='antigo'?['kit4','kit10','kit20'].includes(p.pacote):(fp&&p.pacote!==fp))return false;
+    if(fs==='pendente')return['pending','in_process','authorized'].includes(p.status);
+    if(fs==='falhou')return['cancelled','rejected'].includes(p.status);
+    return!fs||p.status===fs})}
+
+const kpi=(t,v,cls='',dest)=>`<div class="kpi${dest?' dest':''}"><b class="${cls}">${v}</b><span>${t}</span></div>`;
+function render(){const L=filtrados();
+  const ap=L.filter(p=>p.status==='approved'),est=L.filter(p=>p.status==='refunded'||p.estornado>0);
+  const pend=L.filter(p=>['pending','in_process','authorized'].includes(p.status));
+  const bruta=[...ap,...L.filter(p=>p.status==='refunded')].reduce((t,p)=>t+p.valor,0);
+  const estornos=est.reduce((t,p)=>t+(p.estornado||p.valor),0);
+  const taxas=ap.reduce((t,p)=>t+p.taxa,0);
+  const liquida=ap.reduce((t,p)=>t+(p.liquido||p.valor-p.taxa),0);
+  const fotos=L.reduce((t,p)=>t+p.fotos,0);
+  $('#kpis').innerHTML=[kpi('Pedidos no período',L.length),kpi('Pagamentos aprovados',ap.length,'pos'),kpi('Pagamentos pendentes',pend.length),
+    kpi('Receita bruta',brl(bruta)),kpi('Estornos',brl(estornos),estornos?'neg':''),kpi('Taxas do Mercado Pago',brl(taxas)),kpi('Receita líquida',brl(liquida),'',true),
+    kpi('Ticket médio',brl(ap.length?ap.reduce((t,p)=>t+p.valor,0)/ap.length:0))].join('');
+  const cf=parseFloat($('#cFoto').value)||0,ads=parseFloat($('#cAds').value)||0,infra=parseFloat($('#cInfra').value)||0;
+  const ia=fotos*cf,lucro=liquida-ia-ads-infra;
+  $('#lucro').innerHTML=[kpi('Receita líquida',brl(liquida)),kpi(`Custo de IA (${fotos} fotos)`,brl(ia)),kpi('Anúncios + outros',brl(ads+infra)),kpi('Lucro estimado',brl(lucro),lucro>=0?'pos':'neg',true),
+    kpi('Custo por venda nos anúncios',ap.length&&ads?brl(ads/ap.length):'—')].join('');
+  const nIni=ap.filter(p=>p.fotos===0).length,nGer=ap.filter(p=>p.fotos>0&&p.fotos<p.qtd).length,nOk=ap.filter(p=>p.qtd&&p.fotos>=p.qtd).length;
+  $('#geracao').innerHTML=[kpi('Pagos sem foto gerada',nIni,nIni?'neg':''),kpi('Gerando (fotos restantes)',nGer),kpi('Concluídos',nOk,'pos'),kpi('Fotos geradas no período',fotos)].join('');
+  // pacotes
+  const porPac={};ap.forEach(p=>{const k=nomePac(p);porPac[k]=porPac[k]||{n:0,v:0};porPac[k].n++;porPac[k].v+=p.valor});
+  const rp=Object.entries(porPac).sort((a,b)=>b[1].v-a[1].v);
+  $('#tPacotes').innerHTML='<thead><tr><th>Pacote</th><th class="n">Vendas</th><th class="n">Receita</th></tr></thead><tbody>'+(rp.length?rp.map(([k,o])=>`<tr><td>${esc(k)}</td><td class="n">${o.n}</td><td class="n">${brl(o.v)}</td></tr>`).join(''):'<tr><td colspan="3" class="vazio">Nenhuma venda aprovada no período.</td></tr>')+'</tbody>';
+  // origem
+  const porOr={};L.forEach(p=>{const o=p.origem||{};const k=o.utm_source?[o.utm_source,o.utm_campaign,o.utm_content].filter(Boolean).join(' · '):'Direto ou sem UTM';porOr[k]=porOr[k]||{ped:0,ap:0,v:0};porOr[k].ped++;if(p.status==='approved'){porOr[k].ap++;porOr[k].v+=p.valor}});
+  const ro=Object.entries(porOr).sort((a,b)=>b[1].v-a[1].v||b[1].ped-a[1].ped);
+  $('#tOrigem').innerHTML='<thead><tr><th>Origem · campanha · anúncio</th><th class="n">Pedidos</th><th class="n">Pagos</th><th class="n">Receita</th></tr></thead><tbody>'+(ro.length?ro.map(([k,o])=>`<tr><td style="white-space:normal">${esc(k)}</td><td class="n">${o.ped}</td><td class="n">${o.ap}</td><td class="n">${brl(o.v)}</td></tr>`).join(''):'<tr><td colspan="4" class="vazio">Nenhum pedido no período.</td></tr>')+'</tbody>';
+  // pedidos
+  $('#tPedidos').innerHTML='<thead><tr><th>Data</th><th>Status</th><th>Pacote</th><th class="n">Valor</th><th class="n">Fotos</th><th>Cliente</th><th>Origem</th></tr></thead><tbody>'+(L.length?L.map((p,i)=>`<tr class="click" data-i="${i}" tabindex="0"><td>${dataBR(p.criado)}</td><td>${pill(p.status)}</td><td>${esc(nomePac(p))}</td><td class="n">${brl(p.valor)}</td><td class="n">${p.status==='approved'?`${p.fotos}/${p.qtd}`:'—'}</td><td>${esc(p.nome||'—')}</td><td>${esc((p.origem||{}).utm_source||'—')}</td></tr>`).join(''):'<tr><td colspan="7" class="vazio">Nenhum pedido com esses filtros.</td></tr>')+'</tbody>';
+  $('#tPedidos').querySelectorAll('tr.click').forEach(tr=>{const abrir=()=>detalhe(L[+tr.dataset.i]);tr.onclick=abrir;tr.onkeydown=e=>{if(e.key==='Enter')abrir()}})}
+
+function detalhe(p){const o=p.origem||{};
+  const linhas=[['ID do pagamento',p.id],['Status',pill(p.status)+(p.detalhe?` <span style="color:var(--muted);font-weight:500">(${esc(p.detalhe)})</span>`:'')],['Criado em',dataBR(p.criado)],['Aprovado em',dataBR(p.aprovado)],
+    ['Pacote',esc(nomePac(p))],['Valor',brl(p.valor)],['Taxa',brl(p.taxa)],['Líquido',brl(p.liquido)],['Estornado',p.estornado?brl(p.estornado):'—'],
+    ['Fotos geradas',p.status==='approved'?`${p.fotos} de ${p.qtd}`:'—'],['Cliente',esc(p.nome||'—')],['E-mail',esc(p.email||'—')],
+    ['utm_source',esc(o.utm_source||'—')],['utm_medium',esc(o.utm_medium||'—')],['utm_campaign',esc(o.utm_campaign||'—')],['utm_content',esc(o.utm_content||'—')],['utm_term',esc(o.utm_term||'—')],['fbclid',o.fbclid?'sim':'—'],['Chegou em',dataBR(o.landing)]];
+  $('#detDl').innerHTML=linhas.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('');$('#det').hidden=false;$('#detX').focus()}
+$('#detX').onclick=()=>$('#det').hidden=true;
+$('#det').onclick=e=>{if(e.target.id==='det')$('#det').hidden=true};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#det').hidden=true});
+
+if(ss.get('edm_adm')){mostrar(true);carregar()}else mostrar(false);
+</script>
+</body>
+</html>
