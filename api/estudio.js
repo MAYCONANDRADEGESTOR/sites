@@ -7,7 +7,13 @@ const crypto = require('crypto');
 const sharp = require('sharp');
 
 const PRECOS = {
-  foto: { valor: 9.9, qtd: 1, nome: '1 foto em HD (perfil + stories + original)' },
+  kit4: { valor: 19.9, qtd: 4, nome: 'Essencial com 4 fotos em HD' },
+  kit10: { valor: 29.9, qtd: 10, nome: 'Ensaio completo com 10 fotos em HD (o mais escolhido)' },
+  kit20: { valor: 47.9, qtd: 20, nome: 'Álbum VIP com 20 fotos em HD' },
+};
+// pacotes antigos: só para honrar Pix já pagos antes da troca (não aparecem mais no site)
+const LEGADO = {
+  foto: { valor: 9.9, qtd: 1, nome: '1 foto em HD' },
   kit5: { valor: 19.9, qtd: 5, nome: 'Ensaio com 5 fotos em HD' },
   kit15: { valor: 29.9, qtd: 15, nome: 'Álbum completo com 15 fotos em HD' },
 };
@@ -176,7 +182,7 @@ async function motorGemini(prompt, refs) {
       body: JSON.stringify({ contents: [{ role: 'user', parts: partes }], generationConfig: { responseModalities: ['TEXT', 'IMAGE'], imageConfig: { aspectRatio: '3:4' } } }),
     });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) { ultimo = `${modelo}: ${r.status} ${j?.error?.message || ''}`; if (erroQuota(r.status, ultimo)) quota = true; continue; }
+    if (!r.ok) { ultimo = `${modelo}: ${r.status} ${j?.error?.message || ''}`; if (erroQuota(r.status, ultimo)) { quota = true; if (/free_tier|billing|limit: 0/i.test(ultimo)) break; } continue; }
     const img = (j?.candidates?.[0]?.content?.parts || []).find(p => p.inlineData || p.inline_data);
     if (img) return { img: Buffer.from((img.inlineData || img.inline_data).data, 'base64') };
     ultimo = `${modelo}: sem imagem (${j?.candidates?.[0]?.finishReason || j?.promptFeedback?.blockReason || 'vazio'})`;
@@ -232,7 +238,7 @@ async function mp(path, opts = {}) {
 async function pagamentoAprovado(id) {
   const pg = await mp('/v1/payments/' + id);
   const pacote = String(pg.external_reference || '').split(':')[0];
-  const pc = PRECOS[pacote];
+  const pc = PRECOS[pacote] || LEGADO[pacote];
   const ok = pg.status === 'approved' && pc && Number(pg.transaction_amount) + 0.001 >= pc.valor;
   return { pg, pacote, pc, ok };
 }
