@@ -205,10 +205,31 @@ async function rpc(fn, args) {
   return r.json();
 }
 
+// ---------- custo real da IA: tokens usados × preço do Google (guardado no banco para o painel) ----------
+// preços em US$ por 1 milhão de tokens: entrada, saída de texto/raciocínio e saída de imagem
+const PRECOS_IA = [
+  ['gemini-3.1-flash-image', { i: 0.5, t: 3, img: 60 }],
+  ['gemini-3-flash-image', { i: 0.5, t: 3, img: 60 }],
+  ['gemini-2.5-flash-image', { i: 0.3, t: 2.5, img: 30 }],
+];
+async function registrarUso(tipo, modelo, j) {
+  try {
+    const u = j && j.usageMetadata; if (!u) return;
+    const detImg = (u.candidatesTokensDetails || []).filter(d => String(d.modality).toUpperCase() === 'IMAGE').reduce((t, d) => t + (d.tokenCount || 0), 0);
+    const saida = u.candidatesTokenCount || 0, raciocinio = u.thoughtsTokenCount || 0;
+    const outImg = tipo === 'chat' ? 0 : (detImg || saida);
+    const outTxt = tipo === 'chat' ? saida + raciocinio : Math.max(0, saida - outImg) + raciocinio;
+    const inTok = u.promptTokenCount || 0;
+    const p = (PRECOS_IA.find(([k]) => String(modelo).startsWith(k)) || [0, { i: 0.5, t: 3, img: 60 }])[1];
+    const usd = (inTok * p.i + outTxt * p.t + outImg * p.img) / 1e6;
+    await rpc('estudio_ia_gravar', { p_tipo: tipo, p_modelo: String(modelo).slice(0, 80), p_in: inTok, p_out_txt: outTxt, p_out_img: outImg, p_custo_usd: Number(usd.toFixed(6)) });
+  } catch (e) { console.log('[uso-ia]', e.message); }
+}
+
 // ---------- motores de imagem (troca automática) ----------
 const erroQuota = (status, txt) => status === 429 || /quota|exhaust|rate.?limit|resource_exhausted|limit/i.test(txt || '');
 
-async function motorGemini(prompt, refs) {
+async function motorGemini(prompt, refs, tipo = 'foto') {
   const key = process.env.GEMINI_API_KEY; if (!key) return { pulou: true };
   let ultimo = '', quota = false;
   const partes = [{ text: prompt }, ...refs.map(b => ({ inlineData: { mimeType: 'image/jpeg', data: b.toString('base64') } }))];
@@ -220,6 +241,7 @@ async function motorGemini(prompt, refs) {
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) { ultimo = `${modelo}: ${r.status} ${j?.error?.message || ''}`; if (erroQuota(r.status, ultimo)) { quota = true; if (/free_tier|billing|limit: 0/i.test(ultimo)) break; } continue; }
+    await registrarUso(tipo, modelo.trim(), j); // o Google cobra qualquer resposta aceita, com ou sem imagem
     const img = (j?.candidates?.[0]?.content?.parts || []).find(p => p.inlineData || p.inline_data);
     if (img) return { img: Buffer.from((img.inlineData || img.inline_data).data, 'base64') };
     ultimo = `${modelo}: sem imagem (${j?.candidates?.[0]?.finishReason || j?.promptFeedback?.blockReason || 'vazio'})`;
@@ -227,8 +249,8 @@ async function motorGemini(prompt, refs) {
   return { erro: ultimo, quota };
 }
 
-async function gerarImagem(prompt, refs = []) {
-  const g = await motorGemini(prompt, refs);
+async function gerarImagem(prompt, refs = [], tipo = 'foto') {
+  const g = await motorGemini(prompt, refs, tipo);
   if (g.img) return { img: g.img, motor: 'gemini' };
   console.log('[motor]', g.pulou ? 'sem GEMINI_API_KEY' : g.erro);
   const e = new Error(g.pulou ? 'Estúdio em manutenção. Volte em alguns minutos.' : (g.quota ? 'Estamos com muita procura agora. Tente novamente em alguns minutos.' : 'Não conseguimos gerar agora. Tente outra foto (rosto bem iluminado, de frente) ou tente de novo em instantes.'));
@@ -336,6 +358,7 @@ async function chatVendas(hist) {
         body: JSON.stringify({ systemInstruction: { parts: [{ text: promptVendas() }] }, contents: hist, generationConfig: { temperature: 0.7, maxOutputTokens: 2500 } }),
       });
       const j = await r.json().catch(() => ({}));
+      if (r.ok) await registrarUso('chat', modelo, j);
       const txt = (j?.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('').trim();
       if (r.ok && txt) return txt.slice(0, 1200);
       console.log('[chat]', modelo, r.status, JSON.stringify(j).slice(0, 300));
@@ -352,8 +375,8 @@ function limparOrigem(o) {
   return r;
 }
 const b64u = (b) => Buffer.from(b).toString('base64url');
-function tokenAdmin() {
-  const corpo = b64u(JSON.stringify({ adm: 1, exp: Date.now() + 12 * 3600e3 }));
+function tokenAdmin(dbt) {
+  const corpo = b64u(JSON.stringify({ adm: 1, exp: Date.now() + 12 * 3600e3, dbt: dbt || undefined }));
   return corpo + '.' + crypto.createHmac('sha256', chave()).update('adm:' + corpo).digest('base64url');
 }
 function adminValido(t) {
@@ -362,6 +385,10 @@ function adminValido(t) {
   const esperado = crypto.createHmac('sha256', chave()).update('adm:' + corpo).digest('base64url');
   if (!sig || sig.length !== esperado.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(esperado))) return false;
   try { return JSON.parse(Buffer.from(corpo, 'base64url').toString()).exp > Date.now(); } catch (e) { return false; }
+}
+function adminDados(t) { // conteúdo do token, só se a assinatura e a validade estiverem corretas
+  if (!adminValido(t)) return null;
+  try { return JSON.parse(Buffer.from(t.split('.')[0], 'base64url').toString()); } catch (e) { return null; }
 }
 async function pagamentosDoPeriodo(de, ate) {
   const lista = [];
@@ -381,7 +408,7 @@ async function gerarCapa(id) {
   const est = ESTILOS[id]; if (!est) throw Object.assign(new Error('estilo'), { code: 400 });
   const n = [...id].reduce((t, c) => t + c.charCodeAt(0), 0);
   const prompt = `Professional photograph of a beautiful adult woman, a fictional model about ${26 + (n % 12)} years old, ${ROSTOS[n % ROSTOS.length]}. Create this photo of her: ` + est.p + QUALIDADE;
-  const { img } = await gerarImagem(prompt, []);
+  const { img } = await gerarImagem(prompt, [], 'capa');
   return sharp(img).rotate().resize(720, 960, { fit: 'cover', position: 'attention' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
 }
 
@@ -471,6 +498,13 @@ module.exports = async (req, res) => {
       return json(res, 200, { pagamentoId: `cupom.${qtd}.${r}.${assinar(qtd + '.' + r)}`, qtd });
     }
 
+    if (acao === 'evento') { // funil de visitas (visitou, assistiu 25/50/75%, clicou, foi ao pagamento...) para o painel
+      if (!limitar('ev:' + ip, 200, 600e3)) return json(res, 429, { erro: 'limite' });
+      const b = await lerCorpo(req).catch(() => ({}));
+      await rpc('estudio_evento_gravar', { p_sessao: String(b.s || '').slice(0, 60), p_evento: String(b.e || '').slice(0, 30), p_campanha: String(b.c || '').slice(0, 150), p_anuncio: String(b.a || '').slice(0, 150) }).catch(() => {});
+      return json(res, 200, { ok: true });
+    }
+
     if (acao === 'chat') {
       if (!limitar('chat:' + ip, 40, 3600e3)) return json(res, 429, { erro: 'Muitas mensagens agora. Tente daqui a pouco.' });
       const { msgs = [] } = await lerCorpo(req);
@@ -538,7 +572,9 @@ module.exports = async (req, res) => {
       const { email = '', senha = '' } = await lerCorpo(req);
       const ok = await rpc('estudio_admin_login', { p_email: String(email).slice(0, 120), p_senha: String(senha).slice(0, 120) });
       if (ok !== true) return json(res, 401, { erro: 'E-mail ou senha incorretos.' });
-      return json(res, 200, { token: tokenAdmin() });
+      let dbt = null; // sessão no banco: libera os dados de funil, custo de IA e gasto de anúncios
+      try { dbt = await rpc('estudio_admin_sessao_criar', { p_email: String(email).slice(0, 120), p_senha: String(senha).slice(0, 120) }); } catch (e) { console.log('[sessao]', e.message); }
+      return json(res, 200, { token: tokenAdmin(dbt) });
     }
 
     if (acao === 'admin_resumo') {
@@ -564,7 +600,13 @@ module.exports = async (req, res) => {
           origem,
         };
       });
-      return json(res, 200, { de: ini.toISOString(), ate: fim.toISOString(), pedidos, custoFotoPadrao: 0.25 });
+      let painel = null; // funil, gasto de anúncios e custo real da IA (guardados no banco)
+      const dadosAdm = adminDados(token);
+      if (dadosAdm && dadosAdm.dbt) {
+        try { painel = await rpc('estudio_painel_ler', { p_token: dadosAdm.dbt, p_de: ini.toISOString(), p_ate: fim.toISOString() }); }
+        catch (e) { console.log('[painel]', e.message); }
+      }
+      return json(res, 200, { de: ini.toISOString(), ate: fim.toISOString(), pedidos, painel, custoFotoPadrao: 0.41 });
     }
 
     return json(res, 404, { erro: 'Ação desconhecida' });
