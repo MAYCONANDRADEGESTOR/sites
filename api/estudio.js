@@ -333,7 +333,7 @@ async function chatVendas(hist) {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        body: JSON.stringify({ systemInstruction: { parts: [{ text: promptVendas() }] }, contents: hist, generationConfig: { temperature: 0.7, maxOutputTokens: 600 } }),
+        body: JSON.stringify({ systemInstruction: { parts: [{ text: promptVendas() }] }, contents: hist, generationConfig: { temperature: 0.7, maxOutputTokens: 2500 } }),
       });
       const j = await r.json().catch(() => ({}));
       const txt = (j?.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('').trim();
