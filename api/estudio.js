@@ -12,7 +12,34 @@ const PRECOS = {
   kit15: { valor: 29.9, qtd: 15, nome: 'Álbum completo com 15 fotos em HD' },
 };
 const MAX_FOTOS_GRATIS = 3;
-const MODELOS = (process.env.ESTUDIO_MODELOS || 'gemini-2.5-flash-image,gemini-3.1-flash-image-preview').split(',');
+const MODELOS_PADRAO = (process.env.ESTUDIO_MODELOS || 'gemini-3.1-flash-image-preview,gemini-3-flash-image,gemini-2.5-flash-image').split(',');
+const CHAT_PADRAO = (process.env.ESTUDIO_CHAT_MODELO || 'gemini-3.8-flash,gemini-3-flash,gemini-3-flash-preview,gemini-2.5-flash').split(',');
+// Descobre na própria chave quais modelos existem (o Google aposenta modelos com frequência).
+let _modelos = null, _modelosEm = 0;
+const versao = n => (n.match(/(\d+(?:\.\d+)?)/) || [0, 0])[1] * 1;
+async function modelosDisponiveis(key) {
+  if (_modelos && Date.now() - _modelosEm < 6 * 3600e3) return _modelos;
+  try {
+    let nomes = [], tok = '';
+    for (let i = 0; i < 5; i++) {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?pageSize=200${tok ? '&pageToken=' + tok : ''}`, { headers: { 'x-goog-api-key': key } });
+      if (!r.ok) break;
+      const j = await r.json();
+      nomes.push(...(j.models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent')).map(m => m.name.replace(/^models\//, '')));
+      if (!(tok = j.nextPageToken)) break;
+    }
+    if (nomes.length) {
+      const ord = a => a.sort((x, y) => versao(y) - versao(x) || (/preview|exp/.test(x) ? 1 : 0) - (/preview|exp/.test(y) ? 1 : 0));
+      const img = ord(nomes.filter(n => /gemini/.test(n) && /image/.test(n) && !/imagen/.test(n)));
+      const chat = ord(nomes.filter(n => /^gemini-[\d.]+-flash(-preview)?(-\d+)?$/.test(n) || /^gemini-flash-latest$/.test(n)));
+      _modelos = { img: [...new Set([...MODELOS_PADRAO.filter(m => nomes.includes(m)), ...img])], chat: [...new Set([...chat, ...CHAT_PADRAO.filter(m => nomes.includes(m))])] };
+      _modelosEm = Date.now();
+      console.log('[modelos]', JSON.stringify(_modelos));
+      return _modelos;
+    }
+  } catch (e) { console.log('[modelos]', e.message); }
+  return { img: MODELOS_PADRAO, chat: CHAT_PADRAO };
+}
 // Supabase (contador de créditos e de alertas). A chave publicável é pública por natureza;
 // as tabelas ficam fechadas e só funções controladas podem ser chamadas com ela.
 const SB_URL = process.env.SUPABASE_URL || 'https://qwzdwqkoecfmzwbxjvdh.supabase.co';
@@ -142,7 +169,8 @@ async function motorGemini(prompt, refs) {
   const key = process.env.GEMINI_API_KEY; if (!key) return { pulou: true };
   let ultimo = '', quota = false;
   const partes = [{ text: prompt }, ...refs.map(b => ({ inlineData: { mimeType: 'image/jpeg', data: b.toString('base64') } }))];
-  for (const modelo of MODELOS) {
+  const lista = (await modelosDisponiveis(key)).img;
+  for (const modelo of lista.slice(0, 4)) {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo.trim()}:generateContent`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({ contents: [{ role: 'user', parts: partes }], generationConfig: { responseModalities: ['TEXT', 'IMAGE'], imageConfig: { aspectRatio: '3:4' } } }),
@@ -224,7 +252,6 @@ async function creditoValido(pid) {
 }
 
 // ---------- assistente de vendas (chat) ----------
-const CHAT_MODELO = process.env.ESTUDIO_CHAT_MODELO || 'gemini-2.5-flash';
 function promptVendas() {
   const cats = CATALOGO.map(c => `${c.catNome}: ${c.itens.map(i => i.nome).join(', ')}`).join('; ');
   const precos = Object.values(PRECOS).map(p => `${p.nome} (${p.qtd} foto${p.qtd > 1 ? 's' : ''}) R$ ${p.valor.toFixed(2).replace('.', ',')}`).join('; ');
@@ -253,16 +280,23 @@ async function chatVendas(hist) {
   const key = process.env.GEMINI_API_KEY;
   const reserva = 'Agora não consigo responder por aqui 😕 Mas é simples: toque em "Criar meu ensaio", escolha o estilo, envie suas selfies e pague no Pix. Suas fotos ficam prontas em minutos!';
   if (!key) return reserva;
-  try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${CHAT_MODELO}:generateContent`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: promptVendas() }] }, contents: hist, generationConfig: { temperature: 0.7, maxOutputTokens: 400 } }),
-    });
-    const j = await r.json().catch(() => ({}));
-    const txt = (j?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
-    if (!r.ok || !txt) { console.log('[chat]', r.status, JSON.stringify(j).slice(0, 300)); return reserva; }
-    return txt.slice(0, 1200);
-  } catch (e) { console.log('[chat]', e.message); return reserva; }
+  // o Gemini exige que a conversa comece com a cliente: a saudação inicial da Mel vira contexto
+  while (hist.length && hist[0].role !== 'user') hist.shift();
+  if (!hist.length) return reserva;
+  const lista = (await modelosDisponiveis(key)).chat;
+  for (const modelo of lista.slice(0, 3)) {
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({ systemInstruction: { parts: [{ text: promptVendas() }] }, contents: hist, generationConfig: { temperature: 0.7, maxOutputTokens: 600 } }),
+      });
+      const j = await r.json().catch(() => ({}));
+      const txt = (j?.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('').trim();
+      if (r.ok && txt) return txt.slice(0, 1200);
+      console.log('[chat]', modelo, r.status, JSON.stringify(j).slice(0, 300));
+    } catch (e) { console.log('[chat]', modelo, e.message); }
+  }
+  return reserva;
 }
 
 // ---------- rotas ----------
@@ -343,6 +377,7 @@ module.exports = async (req, res) => {
         }),
       });
       const t = pg.point_of_interaction?.transaction_data || {};
+      if (!pg.id || !t.qr_code) { console.log('[mp] sem QR', JSON.stringify(pg).slice(0, 300)); return json(res, 502, { erro: 'Não conseguimos gerar o Pix agora. Tente novamente em instantes.' }); }
       return json(res, 200, { pagamentoId: String(pg.id), valor: pc.valor, qtd: pc.qtd, qr: t.qr_code_base64, copiaCola: t.qr_code });
     }
 
