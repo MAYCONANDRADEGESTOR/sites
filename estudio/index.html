@@ -770,7 +770,11 @@ const DB={open(){return new Promise((ok,ko)=>{try{const r=indexedDB.open('musa',
 const salvar=()=>DB.set('estado',{fotos:S.fotos,pg:S.pg,cred:S.cred});
 
 /* ---------- imagens do catálogo ---------- */
-const imgCat=(el,id)=>{el.loading='lazy';el.src='/estudio/catalogo/'+id+'.jpg';el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=capa&id='+id}};
+const capaUrl={};
+function precarregar(id,fim){if(capaUrl[id]){fim&&fim();return}const a=new Image();a.onload=()=>{capaUrl[id]=a.src;fim&&fim()};a.onerror=()=>{const b=new Image();b.onload=()=>{capaUrl[id]=b.src;fim&&fim()};b.onerror=()=>{fim&&fim()};b.src=API+'?acao=capa&id='+id};a.src='/estudio/catalogo/'+id+'.jpg'}
+let precarregado=false;
+function precarregarTudo(){if(precarregado)return;precarregado=true;try{const ids=[];CAT.forEach(c=>c.itens.forEach(it=>ids.push(it.id)));let i=0;const prox=()=>{if(i<ids.length)precarregar(ids[i++],prox)};prox();prox();prox()}catch(e){}}
+const imgCat=(el,id,agora)=>{el.alt='';el.decoding='async';el.style.opacity='0';el.style.transition='opacity .3s ease';const ver=()=>{el.style.opacity='1'};el.onload=ver;el.onerror=()=>{el.onerror=()=>{el.remove()};el.src=API+'?acao=capa&id='+id};el.loading=agora?'eager':'lazy';el.src=capaUrl[id]||('/estudio/catalogo/'+id+'.jpg');if(el.complete&&el.naturalWidth)ver()};
 $$('img[data-cat]').forEach(i=>{if(!i.closest('#gal'))imgCat(i,i.dataset.cat)});
 
 /* ---------- catálogo ---------- */
@@ -779,7 +783,7 @@ let catAtual=null;
 function renderItens(lista){const g=$('#grid');g.innerHTML='';
   lista.forEach(({c,it})=>{const b=document.createElement('button');b.className='item';
    b.innerHTML=`<div class="im"><span class="lbl">${c.catNome}</span><img alt="${it.nome}"></div><div class="bd"><div><h4>${it.nome}</h4><p>${it.desc}</p></div><span class="go">→</span></div>`;
-   imgCat(b.querySelector('img'),it.id);b.onclick=()=>{trackC('EstiloEscolhido',{estilo:it.id,categoria:c.cat});abrirEstudio(it.id)};g.appendChild(b)});
+   imgCat(b.querySelector('img'),it.id,true);b.onclick=()=>{trackC('EstiloEscolhido',{estilo:it.id,categoria:c.cat});abrirEstudio(it.id)};g.appendChild(b)});
   if(!lista.length)g.innerHTML='<p class="busca-vazia">Nenhum estilo com esse nome. Tente "praia", "aniversário" ou "executiva".</p>'}
 function renderGrid(cat){catAtual=cat;const c=CAT.find(x=>x.cat===cat);const bs=$('#busca');if(bs)bs.value='';
   renderItens(c.itens.map(it=>({c,it})));renderTabs($('#tabs'),cat,renderGrid)}
@@ -804,7 +808,7 @@ if(DEPOIMENTOS.length){$('#depoimentos').hidden=false;$('#zap').innerHTML=DEPOIM
 
 /* ---------- estúdio ---------- */
 const studio=$('#studio');
-function abrirEstudio(estilo){if(estilo)S.estilo=estilo;studio.classList.add('open');document.body.style.overflow='hidden';
+function abrirEstudio(estilo){if(estilo)S.estilo=estilo;precarregarTudo();studio.classList.add('open');document.body.style.overflow='hidden';
   const cat=(estiloInfo(S.estilo)||{}).cat||(CAT[0]&&CAT[0].cat);if(cat)renderSGrid(cat);
   ir(S.fotos.length&&!estilo?3:(S.estilo?2:1));renderRes();uma('lead',()=>track('Lead',{...PROD,content_name:'Abriu o estúdio'}))}
 $$('[data-open]').forEach(b=>b.onclick=()=>{trackC('CliqueCriarEnsaio',{origem:b.dataset.origem||'botao'});abrirEstudio()});
