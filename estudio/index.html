@@ -87,6 +87,7 @@ header.top.sc{border-color:var(--line)}
 .liberado .cta-box{display:block;animation:fade .6s var(--ease)}
 .cta-box .btn{width:100%;font-size:17px;padding:19px 26px;animation:pulsaCta 1.4s ease-in-out infinite;will-change:transform,box-shadow}
 @keyframes pulsaCta{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,90,110,.55)}50%{transform:scale(1.05);box-shadow:0 0 0 14px rgba(190,90,110,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,90,110,0)}}
+@media (prefers-reduced-motion:reduce){.cta-box .btn{animation:pulsaCta 1.4s ease-in-out infinite!important}}
 .cta-box .micro{justify-content:center}
 /* botão fixo lá embaixo, sem espera */
 .trava .cta-box{position:relative;z-index:46;width:100%;max-width:520px;margin:14px auto 0}
