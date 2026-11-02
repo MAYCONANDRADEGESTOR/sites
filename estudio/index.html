@@ -87,6 +87,11 @@ header.top.sc{border-color:var(--line)}
 .liberado .cta-box{display:block;animation:fade .6s var(--ease)}
 .cta-box .btn{width:100%;font-size:17px;padding:19px 26px;animation:pulse 1.8s infinite}
 .cta-box .micro{justify-content:center}
+/* botão fixo lá embaixo, sem espera */
+.trava .cta-box{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:46;max-width:520px;margin:0 auto;box-shadow:0 10px 30px rgba(42,23,32,.25);border-radius:18px}
+.trava .cta-box .micro{display:none}
+body:not(.trava) .cta-box{display:none!important}
+.trava .vsl{padding-bottom:96px}
 .trava .pos{display:none}
 .pos{scroll-margin-top:70px}
 .trava header.top .btn,.trava .mobcta,.navsl .mobcta{display:none!important}
@@ -704,6 +709,7 @@ function abrirConteudo(rolar){liberar('clique');document.body.classList.remove('
 $('#ctaVsl').onclick=()=>{if(comSom&&!vid.paused)vid.pause();trackC('VSL_CTA');uma('lead',()=>track('Lead',{...PROD,content_name:'Clicou no botão da VSL'}));abrirConteudo(true)};
 const voltou=/[?&](liberar|acesso)=1/.test(location.search)||lsGet('edm_aberto')==='1';
 if(voltou)setTimeout(()=>abrirConteudo(false));else if(lsGet('edm_vsl')==='1')setTimeout(()=>liberar('retorno'));
+liberar('imediato'); // sem delay: botão aparece logo de cara
 function modoSom(){ov.classList.add('som');ov.hidden=false}
 function atualizaProg(){if(!vid.duration)return;const p=vid.currentTime/vid.duration;
   prog.style.width=(100*(1-Math.pow(1-p,1.6))).toFixed(1)+'%'; // anda mais rápido no começo
