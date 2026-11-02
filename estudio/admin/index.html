@@ -139,19 +139,6 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
 
     <section id="sLucro"></section>
 
-    <section id="sSaldo">
-      <h2>Saldo do Google AI</h2>
-      <p class="sub">Quanto ainda dá para gerar e a hora certa de recarregar.</p>
-      <div class="painel ajustes">
-        <label for="sRec">Total recarregado no Google AI (R$)<input id="sRec" type="number" step="1" min="0" inputmode="decimal"></label>
-        <label for="sDesde">Contando desde<input id="sDesde" type="date"></label>
-        <button class="btn ghost" id="bRecarga" type="button">+ Registrei uma recarga</button>
-      </div>
-      <div class="kpis" id="saldoK" style="margin-top:12px"></div>
-      <div class="tbl" style="margin-top:12px"><table id="tSaldoPac"></table></div>
-      <p class="note" id="saldoNota"></p>
-    </section>
-
     <section>
       <h2>Indicadores</h2>
       <p class="sub">Tudo calculado com o que entrou e o que saiu no período escolhido.</p>
@@ -160,7 +147,7 @@ tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--soft)}
 
     <section>
       <h2>Funil de visitas</h2>
-      <p class="sub">Quantas pessoas diferentes chegaram em cada etapa, da visita até o pagamento.</p>
+      <p class="sub">Quantas pessoas diferentes chegaram em cada etapa, da visita até o pagamento. O vídeo começa sozinho e mudo; as etapas do vídeo contam só quem ligou o som.</p>
       <div class="painel" id="funil"></div>
     </section>
 
@@ -255,54 +242,15 @@ $('#periodo').onchange=()=>{$('#lDatas').hidden=$('#periodo').value!=='custom';i
 $('#cDolar').value=ls.get('edm_dolar')||'5.30';
 $('#cInfra').value=ls.get('edm_infra')||'';
 $('#cEng').checked=ls.get('edm_eng')!=='0';
-$('#cDolar').oninput=()=>{ls.set('edm_dolar',$('#cDolar').value);render();renderSaldo()};
+$('#cDolar').oninput=()=>{ls.set('edm_dolar',$('#cDolar').value);render()};
 $('#cInfra').oninput=()=>{ls.set('edm_infra',$('#cInfra').value);render()};
 $('#cEng').onchange=()=>{ls.set('edm_eng',$('#cEng').checked?'1':'0');render()};
-
-
-// ---------- saldo do Google AI: recarga − gasto desde a data da recarga ----------
-let SALDO=null;
-$('#sRec').value=ls.get('edm_rec_valor')||'50';
-$('#sDesde').value=ls.get('edm_rec_data')||'2026-10-31';
-$('#sRec').oninput=()=>{ls.set('edm_rec_valor',$('#sRec').value);renderSaldo()};
-$('#sDesde').onchange=()=>{ls.set('edm_rec_data',$('#sDesde').value);carregarSaldo()};
-$('#bRecarga').onclick=()=>{const v=num(String(prompt('Quanto você recarregou agora no Google AI? (R$)')||'').replace(',','.'));
-  if(v>0){$('#sRec').value=String(Math.round((num($('#sRec').value)+v)*100)/100);ls.set('edm_rec_valor',$('#sRec').value);renderSaldo()}};
-async function carregarSaldo(){const tk=ss.get('edm_adm');if(!tk)return;
-  const d=$('#sDesde').value;if(!d)return;
-  try{const r=await fetch(API+'?acao=admin_resumo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tk,de:new Date(d+'T00:00:00').toISOString(),ate:new Date().toISOString()})});
-    if(!r.ok)return;SALDO=await r.json();renderSaldo()}catch(e){}}
-function renderSaldo(){
-  if(!SALDO||!SALDO.painel){$('#saldoK').innerHTML='';$('#tSaldoPac').innerHTML='';$('#saldoNota').textContent='Saia e entre de novo no painel para calcular o saldo.';return}
-  const dolar=num($('#cDolar').value)||5.3,tipos=SALDO.painel.ia_por_tipo||{};
-  const custo=o=>o?num(o.usd)*dolar+num(o.brl_fixo):0;
-  const gasto=Object.values(tipos).reduce((t,o)=>t+custo(o),0);
-  const recarga=num($('#sRec').value);
-  const saldo=recarga-gasto;
-  const nFoto=num((tipos.foto||{}).n);
-  const padrao=num(SALDO.custoFotoPadrao)||0.41;
-  const real=nFoto>=5?(custo(tipos.foto)+custo(tipos.chat))/nFoto:0;
-  const porFoto=real||padrao;
-  const devidas=(SALDO.pedidos||[]).filter(p=>p.status==='approved').reduce((t,p)=>t+Math.max(0,num(p.qtd)-num(p.fotos)),0);
-  const reserva=devidas*porFoto;
-  const livre=saldo-reserva;
-  const pac=[['Essencial · 4 fotos',4],['Ensaio completo · 10 fotos',10],['Álbum VIP · 20 fotos',20]];
-  const k10=Math.floor(Math.max(0,livre)/(10*porFoto));
-  const nivel=livre<=0?['Recarregue agora','neg']:k10<5?['Recarregue agora','neg']:k10<15?['Recarregue em breve','']:['Saldo tranquilo','pos'];
-  $('#saldoK').innerHTML=[
-    kpi('Saldo estimado',brl(Math.max(saldo,0)),saldo>=0?'':'neg',`recarregado ${brl(recarga)} − gasto ${brl(gasto)}`,true),
-    kpi('Já vendido e ainda não gerado',`${int(devidas)} fotos`,'',`reserva de ${brl(reserva)}`),
-    kpi('Saldo livre para novas vendas',brl(Math.max(livre,0)),livre>0?'':'neg','saldo − reserva'),
-    kpi('Situação',nivel[0],nivel[1],`≈ ${int(k10)} ensaios de 10 fotos`)].join('');
-  $('#tSaldoPac').innerHTML='<thead><tr><th>Pacote</th><th class="n">Custo de IA</th><th class="n">Ainda dá para atender</th></tr></thead><tbody>'+
-    pac.map(([n,q])=>`<tr><td>${n}</td><td class="n">${brl(q*porFoto)}</td><td class="n">${int(Math.floor(Math.max(0,livre)/(q*porFoto)))}</td></tr>`).join('')+'</tbody>';
-  $('#saldoNota').textContent=`Custo por foto usado na conta: ${brl(porFoto)} (${real?'média real das suas fotos + chat':'valor padrão, até ter 5 fotos geradas'}). Estimativa feita pelo consumo registrado; confira o saldo real no Google AI Studio e, se diferir, ajuste o total recarregado. Ao recarregar de novo, toque em "+ Registrei uma recarga".`}
 
 async function carregar(){const tk=ss.get('edm_adm');if(!tk){mostrar(false);return}
   $('#main').classList.add('carregando');
   try{const r=await fetch(API+'?acao=admin_resumo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tk,...intervalo()})});
     const j=await r.json();if(r.status===401){ss.del('edm_adm');mostrar(false);$('#eLogin').textContent=j.erro;return}
-    if(!r.ok)throw new Error(j.erro||'Erro ao carregar');DADOS=j;render();carregarSaldo()}
+    if(!r.ok)throw new Error(j.erro||'Erro ao carregar');DADOS=j;render()}
   catch(err){$('#sLucro').innerHTML=`<div class="aviso">Não foi possível carregar: ${esc(err.message)}</div>`}
   finally{$('#main').classList.remove('carregando')}}
 
@@ -383,7 +331,7 @@ function render(){if(!DADOS)return;
 }
 
 function renderFunil(f,visitas,vendas,ads){
-  const passos=[['Visitaram a página','PageView'],['Deram play no vídeo','VSL_Play'],['Assistiram 25% do vídeo','VSL_25'],['Assistiram 50% do vídeo','VSL_50'],['Assistiram 75% do vídeo','VSL_75'],['Assistiram o vídeo até o fim','VSL_Completo'],['Abriram o estúdio de criação','Lead'],['Escolheram um estilo','CustomizeProduct'],['Geraram uma foto','FotoGerada'],['Foram para o pagamento','InitiateCheckout'],['Geraram o Pix','AddPaymentInfo'],['Pagaram (Mercado Pago)','#pagos']];
+  const passos=[['Visitaram a página','PageView'],['Ligaram o som do vídeo','VSL_Play'],['Ouviram 25% do vídeo','VSL_25'],['Ouviram 50% do vídeo','VSL_50'],['Ouviram 75% do vídeo','VSL_75'],['Ouviram o vídeo até o fim','VSL_Completo'],['Abriram o estúdio de criação','Lead'],['Escolheram um estilo','CustomizeProduct'],['Geraram uma foto','FotoGerada'],['Foram para o pagamento','InitiateCheckout'],['Geraram o Pix','AddPaymentInfo'],['Pagaram (Mercado Pago)','#pagos']];
   if(!visitas){$('#funil').innerHTML='<div class="vazio">As visitas começam a ser contadas a partir da publicação deste painel. Volte daqui a pouco.</div>';return}
   let ant=visitas;
   const html=passos.map(([nome,ev],i)=>{const v=ev==='#pagos'?vendas:num(f[ev]);const larg=Math.max(v?2:0,100*v/visitas);
