@@ -85,13 +85,14 @@ header.top.sc{border-color:var(--line)}
 .cta-box{display:none}
 .liberado .lockmsg{display:none}
 .liberado .cta-box{display:block;animation:fade .6s var(--ease)}
-.cta-box .btn{width:100%;font-size:17px;padding:19px 26px;animation:pulse 1.8s infinite}
+.cta-box .btn{width:100%;font-size:17px;padding:19px 26px;animation:pulsaCta 1.4s ease-in-out infinite;will-change:transform,box-shadow}
+@keyframes pulsaCta{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,90,110,.55)}50%{transform:scale(1.05);box-shadow:0 0 0 14px rgba(190,90,110,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,90,110,0)}}
 .cta-box .micro{justify-content:center}
 /* botão fixo lá embaixo, sem espera */
-.trava .cta-box{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:46;max-width:520px;margin:0 auto;box-shadow:0 10px 30px rgba(42,23,32,.25);border-radius:18px}
+.trava .cta-box{position:relative;z-index:46;width:100%;max-width:520px;margin:14px auto 0}
 .trava .cta-box .micro{display:none}
 body:not(.trava) .cta-box{display:none!important}
-.trava .vsl{padding-bottom:96px}
+.trava .vsl{padding-bottom:30px}
 .trava .pos{display:none}
 .pos{scroll-margin-top:70px}
 .trava header.top .btn,.trava .mobcta,.navsl .mobcta{display:none!important}
@@ -706,7 +707,7 @@ const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lsSet=
 function liberar(origem){if(liberado)return;liberado=true;document.body.classList.add('liberado');lsSet('edm_vsl','1');
   if(origem==='video'){uma('vc',()=>track('ViewContent',{...PROD,content_name:'VSL assistida',value:PRECOS.kit10.valor}))}}
 function abrirConteudo(rolar){liberar('clique');document.body.classList.remove('trava');lsSet('edm_aberto','1');if(rolar)setTimeout(()=>$('#pos').scrollIntoView({behavior:'smooth'}),60)}
-$('#ctaVsl').onclick=()=>{if(comSom&&!vid.paused)vid.pause();trackC('VSL_CTA');uma('lead',()=>track('Lead',{...PROD,content_name:'Clicou no botão da VSL'}));abrirConteudo(true)};
+$('#ctaVsl').onclick=()=>{try{if(comSom&&!vid.paused)vid.pause();trackC('VSL_CTA');uma('lead',()=>track('Lead',{...PROD,content_name:'Clicou no botão da VSL'}))}catch(e){}abrirConteudo(false);abrirEstudio()};
 const voltou=/[?&](liberar|acesso)=1/.test(location.search)||lsGet('edm_aberto')==='1';
 if(voltou)setTimeout(()=>abrirConteudo(false));else if(lsGet('edm_vsl')==='1')setTimeout(()=>liberar('retorno'));
 liberar('imediato'); // sem delay: botão aparece logo de cara
