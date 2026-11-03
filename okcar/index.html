@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <title>OKCAR — Vistoria e pré-cautelar</title>
 <meta name="description" content="OKCAR: vistoria completa com fotos, checklist de estrutura e pintura, consulta veicular por placa e laudo em PDF.">
 <meta name="theme-color" content="#0d0f12">
@@ -15,7 +15,7 @@
 @media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f2ee;--s1:#fff;--s2:#eceee8;--s3:#e1e4dc;--line:rgba(13,15,18,.11);--fg:#13171c;--mut:#5b656f;--acc:#2f9e44;--acci:#fff;--shadow:0 18px 50px rgba(20,30,20,.12)}}
 :root[data-theme="light"]{--bg:#f1f2ee;--s1:#fff;--s2:#eceee8;--s3:#e1e4dc;--line:rgba(13,15,18,.11);--fg:#13171c;--mut:#5b656f;--acc:#2f9e44;--acci:#fff;--shadow:0 18px 50px rgba(20,30,20,.12)}
 *{box-sizing:border-box;margin:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 body{background:var(--bg);color:var(--fg);font:16px/1.55 Inter,system-ui,sans-serif;min-height:100vh}
 h1,h2,h3{font-family:Unbounded,Inter,sans-serif;letter-spacing:-.02em;line-height:1.15;font-weight:600}
 h1{font-size:clamp(22px,3.4vw,30px)}h2{font-size:18px}h3{font-size:15px}
@@ -102,7 +102,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .prow{display:grid;grid-template-columns:30px 1fr 130px 84px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 .prow:last-child{border:0}
 .prow .n{width:26px;height:26px;border-radius:50%;background:var(--s3);display:grid;place-items:center;font-size:12px;font-weight:700}
-.prow select,.prow input{min-height:40px;padding:6px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--line);font-size:14px;width:100%}
+.prow select,.prow input{min-height:40px;padding:6px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--line);font-size:16px;width:100%}
 @media(max-width:520px){.prow{grid-template-columns:30px 1fr 1fr}.prow input{grid-column:2/-1}}
 .grp{margin-bottom:18px}.grp h3{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:Inter;font-weight:700}
 .erow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px}
@@ -259,7 +259,7 @@ function stepConsultas(){const c=S.cur.consultas||{};const rel=S.cur.relatorios|
 
 function stepFotos(){const f=S.cur.fotos;
   return`<div class="sec"><h3>Fotos obrigatórias</h3><p class="hint" style="margin-bottom:12px">Toque no quadro para tirar ou escolher a foto. Elas são reduzidas automaticamente para o laudo não ficar pesado.</p><div class="slots">${FOTOS.map(([k,t])=>f[k]?`<div class="slot has"><img src="${f[k].s}" alt="${t}"><div class="cap">${t}</div><button class="x" data-act="rmfoto" data-k="${k}" aria-label="Remover foto">${ic('x')}</button></div>`:`<button class="slot" data-act="foto" data-k="${k}">${ic('cam')}${t}</button>`).join('')}</div></div>
-  <div class="sec"><h3>Fotos extras (avarias, detalhes, medições)</h3><div class="slots">${S.cur.extras.map((e,i)=>`<div><div class="slot has"><img src="${e.s}" alt=""><button class="x" data-act="rmextra" data-i="${i}" aria-label="Remover foto">${ic('x')}</button></div><input class="inp" style="margin-top:6px;min-height:40px;font-size:14px" data-extra="${i}" value="${esc(e.t||'')}" placeholder="Legenda"></div>`).join('')}<button class="slot" data-act="extra">${ic('plus')}Adicionar foto</button></div></div>`}
+  <div class="sec"><h3>Fotos extras (avarias, detalhes, medições)</h3><div class="slots">${S.cur.extras.map((e,i)=>`<div><div class="slot has"><img src="${e.s}" alt=""><button class="x" data-act="rmextra" data-i="${i}" aria-label="Remover foto">${ic('x')}</button></div><input class="inp" style="margin-top:6px;min-height:40px;font-size:16px" data-extra="${i}" value="${esc(e.t||'')}" placeholder="Legenda"></div>`).join('')}<button class="slot" data-act="extra">${ic('plus')}Adicionar foto</button></div></div>`}
 
 function stepPintura(){const p=S.cur.pintura,np=notaP(S.cur);
   return`<div class="sec"><h3>Pintura e lataria</h3><div class="legend">${ST_P.map(s=>`<span><i style="background:${s[2]}"></i>${s[1]}</span>`).join('')}</div>
