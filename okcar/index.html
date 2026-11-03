@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OKCAR — Vistoria e pré-cautelar</title>
+<meta name="description" content="OKCAR: vistoria completa com fotos, checklist de estrutura e pintura, consulta veicular por placa e laudo em PDF.">
+<meta name="theme-color" content="#0d0f12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%23bdf24d'/%3E%3Cpath d='m11 21 7 7 12-15' stroke='%230d0f12' stroke-width='4.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f12;--s1:#14181d;--s2:#1b2027;--s3:#232a32;--line:rgba(255,255,255,.09);--fg:#f2f4f6;--mut:#98a2ac;--acc:#bdf24d;--acci:#0d0f12;--bad:#ff5d5d;--warn:#ffb21f;--ok:#39d98a;--blue:#4da3ff;--r:14px;--shadow:0 18px 50px rgba(0,0,0,.35)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f2ee;--s1:#fff;--s2:#eceee8;--s3:#e1e4dc;--line:rgba(13,15,18,.11);--fg:#13171c;--mut:#5b656f;--acc:#2f9e44;--acci:#fff;--shadow:0 18px 50px rgba(20,30,20,.12)}}
+:root[data-theme="light"]{--bg:#f1f2ee;--s1:#fff;--s2:#eceee8;--s3:#e1e4dc;--line:rgba(13,15,18,.11);--fg:#13171c;--mut:#5b656f;--acc:#2f9e44;--acci:#fff;--shadow:0 18px 50px rgba(20,30,20,.12)}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 Inter,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:Unbounded,Inter,sans-serif;letter-spacing:-.02em;line-height:1.15;font-weight:600}
+h1{font-size:clamp(22px,3.4vw,30px)}h2{font-size:18px}h3{font-size:15px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:inherit}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:22px 16px;border-right:1px solid var(--line);background:var(--s1);display:flex;flex-direction:column;gap:6px}
+.brand{font-family:Unbounded,Inter,system-ui,sans-serif;display:flex;align-items:center;gap:10px;padding:4px 8px 22px;font-weight:700;font-size:20px;letter-spacing:-.03em;text-decoration:none}
+.brand svg{width:34px;height:34px}
+.nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--mut);text-decoration:none;font-weight:500;min-height:44px}
+.nav a:hover{background:var(--s2);color:var(--fg)}
+.nav a.on{background:var(--s3);color:var(--fg)}
+.nav a.on svg{color:var(--acc)}
+.side .foot{margin-top:auto;font-size:12px;color:var(--mut);padding:8px}
+.main{padding:30px clamp(16px,4vw,44px) 120px;max-width:1200px;width:100%}
+.bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--s1);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
+.bnav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mut);text-decoration:none;padding:6px 14px;min-width:64px;min-height:48px;border-radius:12px;font-weight:500}
+.bnav a.on{color:var(--fg)}.bnav a.on svg{color:var(--acc)}
+.bnav a.plus{background:var(--acc);color:var(--acci);border-radius:16px;margin-top:-18px;box-shadow:var(--shadow)}
+.bnav a.plus.on,.bnav a.plus:hover{color:var(--acci)}.bnav a.plus svg{color:var(--acci)!important}
+@media(max-width:899px){.app{display:block}.side{display:none}.bnav{display:flex}.main{padding-top:20px}}
+.top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px}
+.top p{color:var(--mut);margin-top:6px;font-size:14px}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:12px;background:var(--s3);font-weight:600;font-size:14px;border:1px solid var(--line);transition:transform .12s,background .15s;white-space:nowrap}
+.btn:hover{background:var(--s2)}.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--acc);color:var(--acci);border-color:transparent}.btn.pri:hover{filter:brightness(1.06);background:var(--acc)}
+.btn.bad{color:var(--bad)}.btn.sm{min-height:36px;padding:0 12px;font-size:13px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card+.card{margin-top:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stat b{display:block;font:600 26px Unbounded,Inter,system-ui,sans-serif;letter-spacing:-.03em;margin-top:4px}
+.stat span{font-size:13px;color:var(--mut)}
+.filters{display:grid;grid-template-columns:1fr 180px 160px;gap:10px;margin-bottom:14px}
+@media(max-width:700px){.filters{grid-template-columns:1fr}}
+.inp,.fld input,.fld select,.fld textarea{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;background:var(--s2);border:1px solid var(--line);outline:0;font-size:16px}
+.fld textarea{min-height:130px;resize:vertical}
+.inp:focus,.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld>span{font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.g1m{grid-template-columns:1fr}}
+.span2{grid-column:span 2}
+.list{display:flex;flex-direction:column;gap:10px}
+.vrow{display:grid;grid-template-columns:92px 170px 1.2fr 1.4fr 140px 100px;gap:12px;align-items:center;padding:14px 16px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;text-decoration:none}
+.vrow:hover{border-color:color-mix(in srgb,var(--acc) 50%,var(--line))}
+.vrow .pl{font:600 15px Unbounded,Inter,system-ui,sans-serif;letter-spacing:.02em}
+.vrow small{display:block;color:var(--mut);font-size:12.5px}
+@media(max-width:860px){.vrow{grid-template-columns:1fr auto;gap:6px 10px}.vrow>:nth-child(n+3){grid-column:1/-1}}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;white-space:nowrap}
+.b-ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.b-warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.b-bad{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.b-mut{background:var(--s3);color:var(--mut)}
+.demo{font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 6px;border-radius:6px;background:var(--s3);color:var(--mut);margin-left:6px;vertical-align:middle}
+.empty{text-align:center;padding:48px 18px;color:var(--mut)}
+.empty h3{color:var(--fg);margin-bottom:8px}
+.steps{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.steps button{flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;background:var(--s1);border:1px solid var(--line);color:var(--mut);font-weight:600;font-size:14px}
+.steps button b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--s3);font-size:12px}
+.steps button.on{color:var(--fg);border-color:var(--acc)}.steps button.on b{background:var(--acc);color:var(--acci)}
+.steps button.done b{background:color-mix(in srgb,var(--ok) 25%,transparent);color:var(--ok)}
+.sec{margin-bottom:22px}.sec>h3{margin-bottom:12px}
+.hint{font-size:13px;color:var(--mut)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.slots{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.slots{grid-template-columns:repeat(2,1fr)}}
+.slot{position:relative;aspect-ratio:4/3;border-radius:12px;border:1.5px dashed var(--line);background:var(--s2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--mut);font-size:13px;font-weight:600;text-align:center;padding:8px;overflow:hidden}
+.slot.has{border-style:solid;padding:0}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 6px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:12px;text-align:left}
+.slot .x{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;display:grid;place-items:center}
+.diag{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:18px;align-items:start}
+@media(max-width:800px){.diag{grid-template-columns:1fr}}
+.diag svg.car{width:100%;max-width:320px;margin:0 auto;display:block}
+.diag [data-part]{cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--mut);margin-bottom:12px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.prow{display:grid;grid-template-columns:30px 1fr 130px 84px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.prow:last-child{border:0}
+.prow .n{width:26px;height:26px;border-radius:50%;background:var(--s3);display:grid;place-items:center;font-size:12px;font-weight:700}
+.prow select,.prow input{min-height:40px;padding:6px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--line);font-size:14px;width:100%}
+@media(max-width:520px){.prow{grid-template-columns:30px 1fr 1fr}.prow input{grid-column:2/-1}}
+.grp{margin-bottom:18px}.grp h3{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:Inter;font-weight:700}
+.erow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.erow:last-child{border:0}
+.seg{display:flex;background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:3px;flex:none}
+.seg button{min-height:36px;padding:0 12px;border-radius:8px;font-size:12.5px;font-weight:700;color:var(--mut)}
+.seg button.on[data-st=na]{background:var(--s3);color:var(--fg)}
+.seg button.on[data-st=ok],.seg button.on[data-st=nc]{background:var(--ok);color:#06140c}
+.seg button.on[data-st=ap],.seg button.on[data-st=pos]{background:var(--bad);color:#1a0505}
+.chk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:700px){.chk{grid-template-columns:1fr}}
+.chk .fld select{min-height:42px}
+.nav2{display:flex;justify-content:space-between;gap:10px;margin-top:22px;position:sticky;bottom:70px}
+@media(min-width:900px){.nav2{bottom:12px}}
+.sticky{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);padding:10px 0}
+.kv{display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:6px 14px;font-size:14.5px}.kv dt{color:var(--mut)}.kv dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.score{display:flex;align-items:center;gap:14px}
+.score .L{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font:700 26px Unbounded,Inter,system-ui,sans-serif;color:#0d0f12}
+.sA{background:var(--ok)}.sB{background:#a6e04a}.sC{background:var(--warn)}.sD{background:var(--bad)}.sN{background:var(--s3);color:var(--mut)!important}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.thumbs figure{position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--s2)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs figcaption{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 5px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:11.5px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.note{font-size:13px;color:var(--mut);background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.prod{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.prod:last-child{border:0}.prod small{display:block;color:var(--mut)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}table.t td{padding:6px 0;border-bottom:1px solid var(--line);vertical-align:top}table.t td:first-child{color:var(--mut);width:42%;padding-right:10px}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{.side,.bnav,.top .row,.nav2{display:none!important}.app{display:block}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#/"><span id="logoMark"></span>OKCAR</a>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot">Pré-avaliação técnica de veículos<br>Dados salvos neste aparelho</div>
+  </aside>
+  <main class="main"><div id="view"></div></main>
+</div>
+<nav class="bnav" id="bnav"></nav>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script>
+'use strict';
+/* ============ utilidades ============ */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>Number(String(n??'').replace(',','.'))||0;
+const brl=n=>num(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const get=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const set=(o,p,v)=>{const k=p.split('.');let a=o;k.slice(0,-1).forEach(x=>a=a[x]=a[x]||{});a[k[k.length-1]]=v};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fdate=t=>new Date(t).toLocaleDateString('pt-BR');
+const fdt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let toastT;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)};
+const IC={grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',plus:'<path d="M12 5v14M5 12h14"/>',layers:'<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',cog:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',check:'<path d="m5 12 5 5 9-10"/>',down:'<path d="M12 4v11m-5-4 5 5 5-5M5 20h14"/>',search:'<circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',left:'<path d="m15 6-6 6 6 6"/>',right:'<path d="m9 6 6 6-6 6"/>',print:'<path d="M7 9V4h10v5M7 17H4v-6h16v6h-3M7 14h10v6H7z"/>'};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+$('#logoMark').innerHTML='<svg viewBox="0 0 40 40" width="34" height="34"><rect width="40" height="40" rx="11" fill="var(--acc)"/><path d="m11 21 7 7 12-15" stroke="var(--acci)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ============ banco local (IndexedDB) ============ */
+const DB={db:null,mem:[],async open(){try{await new Promise((ok,er)=>{const r=indexedDB.open('okcar',1);r.onupgradeneeded=()=>r.result.createObjectStore('v',{keyPath:'id'});r.onsuccess=()=>{this.db=r.result;ok()};r.onerror=()=>er(r.error)})}catch(e){this.db=null}},
+tx(m){return this.db.transaction('v',m).objectStore('v')},
+all(){if(!this.db)return Promise.resolve(this.mem.slice());return new Promise(ok=>{const r=this.tx('readonly').getAll();r.onsuccess=()=>ok(r.result||[]);r.onerror=()=>ok([])})},
+put(v){if(!this.db){const i=this.mem.findIndex(x=>x.id===v.id);i<0?this.mem.push(v):this.mem[i]=v;return Promise.resolve()}return new Promise(ok=>{const r=this.tx('readwrite').put(v);r.onsuccess=r.onerror=()=>ok()})},
+del(id){if(!this.db){this.mem=this.mem.filter(x=>x.id!==id);return Promise.resolve()}return new Promise(ok=>{const r=this.tx('readwrite').delete(id);r.onsuccess=r.onerror=()=>ok()})}};
+
+/* ============ dados fixos ============ */
+const ST_P=[['na','Não avaliado','#7c8791'],['nc','Nada consta','#39d98a'],['rec','Recuperado','#4da3ff'],['rep','Reparado','#ff8a3d'],['rpt','Repintado','#ffd23f'],['av','Avariado','#ff5d5d']];
+const STC=Object.fromEntries(ST_P.map(s=>[s[0],s[2]]));const STN=Object.fromEntries(ST_P.map(s=>[s[0],s[1]]));
+const PARTS=[{id:'pcd',n:1,t:'Para-choque dianteiro',r:[56,10,148,30,14]},{id:'cap',n:2,t:'Capô',r:[68,44,124,92,10]},{id:'plde',n:3,t:'Para-lama diant. esquerdo',r:[34,48,30,92,10]},{id:'pldd',n:4,t:'Para-lama diant. direito',r:[196,48,30,92,10]},{id:'pdde',n:5,t:'Porta diant. esquerda',r:[34,144,30,66,8]},{id:'pddd',n:6,t:'Porta diant. direita',r:[196,144,30,66,8]},{id:'ptde',n:7,t:'Porta tras. esquerda',r:[34,214,30,66,8]},{id:'ptdd',n:8,t:'Porta tras. direita',r:[196,214,30,66,8]},{id:'tet',n:9,t:'Teto',r:[68,150,124,120,12]},{id:'plte',n:10,t:'Para-lama tras. esquerdo',r:[34,284,30,84,10]},{id:'pltd',n:11,t:'Para-lama tras. direito',r:[196,284,30,84,10]},{id:'tmp',n:12,t:'Tampa traseira / porta-malas',r:[68,292,124,78,10]},{id:'pct',n:13,t:'Para-choque traseiro',r:[56,374,148,30,14]}];
+const ITENS=[];[['Longarinas',['Dianteira direita','Dianteira esquerda','Traseira direita','Traseira esquerda']],['Colunas',['A direita','A esquerda','B direita','B esquerda','C direita','C esquerda']],['Painéis',['Dianteiro (frontal)','Corta-fogo','Traseiro']],['Assoalho',['Dianteiro','Traseiro','Porta-malas']],['Caixas de roda',['Dianteira direita','Dianteira esquerda','Traseira direita','Traseira esquerda']],['Torres de amortecedor',['Direita','Esquerda']],['Travessas',['Dianteira','Traseira']],['Vidros',['Para-brisa','Traseiro']],['Identificação',['Chassi (VIN) original','Plaqueta / motor']]].forEach(([g,l])=>l.forEach((t,i)=>ITENS.push({id:g.slice(0,3).toLowerCase()+'_'+ITENS.length,g,t})));
+const FOTOS=[['f45','45° frontal'],['t45','45° traseira'],['le','Lateral esquerda'],['ld','Lateral direita'],['fr','Frente'],['tr','Traseira'],['pn','Painel / km'],['mt','Motor'],['ch','Chassi (VIN)'],['pm','Porta-malas'],['int','Interior / bancos'],['rd','Rodas e pneus']];
+const CONSULTAS=[['roubo','Roubo / furto'],['multas','Multas'],['debitos','IPVA / licenciamento'],['gravame','Gravame / financiamento'],['leilao','Leilão'],['sinistro','Sinistro / perda total'],['recall','Recall pendente'],['restr','Restrições judiciais'],['ident','Identificação veicular conferida']];
+const STEPS=['Dados','Consultas','Fotos','Pintura','Estrutura','Parecer'];
+const RES=['Recomendado','Com ressalvas','Não recomendado'];
+const resCls=r=>r==='Recomendado'?'b-ok':r==='Com ressalvas'?'b-warn':r==='Não recomendado'?'b-bad':'b-mut';
+
+/* ============ notas ============ */
+function notaP(v){const ps=PARTS.filter(p=>(v.pintura?.[p.id]?.st||'na')!=='na');if(!ps.length)return null;const ok=ps.filter(p=>v.pintura[p.id].st==='nc').length;const pc=Math.round(ok/ps.length*100);return{pc,n:ps.length,cls:pc>=92?'A':pc>=77?'B':pc>=54?'C':'D'}}
+function notaE(v){const it=ITENS.filter(i=>(v.estrutura?.[i.id]||'na')!=='na');if(!it.length)return null;const ap=it.filter(i=>v.estrutura[i.id]==='ap').length;return{ap,n:it.length,cls:ap===0?'A':ap<=2?'B':ap<=5?'C':'D'}}
+function sugestao(v){const p=notaP(v),e=notaE(v);const pos=CONSULTAS.filter(c=>v.consultas?.[c[0]]==='pos').length;if((p&&p.cls==='D')||(e&&e.cls==='D')||(v.consultas?.roubo==='pos')||(v.consultas?.sinistro==='pos'))return'Não recomendado';if((p&&p.cls==='C')||(e&&e.cls==='C')||pos>0||(e&&e.ap>0))return'Com ressalvas';return(p||e)?'Recomendado':''}
+
+/* ============ estado ============ */
+const S={list:[],cfg:lsGet('okcar_cfg',{empresa:'OKCAR',doc:'',tel:'(34) 99698-2471',email:'',vist:'',logo:''}),cur:null,step:0,f:{q:'',res:'',per:''},sel:new Set(),busy:{}};
+const novo=()=>({id:uid(),num:0,criada:Date.now(),concluida:false,tipo:'Pré-cautelar',finalidade:'Compra',valor:'',cliente:{nome:'',doc:'',tel:'',email:''},veiculo:{placa:'',km:'',uf:'',anoFab:'',anoMod:'',cor:'',marca:'',modelo:'',versao:'',chassi:'',motor:'',cidade:'',comb:''},consulta:null,consultas:{},relatorios:{},fotos:{},extras:[],pintura:{},estrutura:{},parecer:'',resultado:'',lote:''});
+const proxNum=()=>{const n=(lsGet('okcar_seq',1000))+1;lsSet('okcar_seq',n);return n};
+const vazio=v=>!v.veiculo.placa&&!v.cliente.nome&&!Object.keys(v.fotos).length&&!v.extras.length&&!Object.keys(v.pintura).length&&!Object.keys(v.estrutura).length&&!v.parecer&&!v.valor;
+let saveT;const salvar=(imediato)=>{clearTimeout(saveT);const c=S.cur;if(!c)return;const run=async()=>{const i=S.list.findIndex(x=>x.id===c.id);if(i<0&&vazio(c))return;if(!c.num)c.num=proxNum();i<0?S.list.push(c):S.list[i]=c;await DB.put(c)};imediato?run():saveT=setTimeout(run,450)};
+
+/* ============ API de consulta (via servidor) ============ */
+async function api(action,data={}){try{const r=await fetch('/api/okcar?action='+action+(data.id?'&id='+encodeURIComponent(data.id):''),{method:'POST',headers:{'Content-Type':'application/json','x-okcar-pin':S.cfg.pin||''},body:JSON.stringify(data)});const j=await r.json().catch(()=>({}));return{ok:r.ok,status:r.status,j}}catch(e){return{ok:false,status:0,j:{detail:'Sem conexão com o servidor de consulta.'}}}}
+const MSG={sem_chave:'A chave da API de consulta ainda não foi configurada no servidor.',pin_invalido:'PIN inválido. Informe o PIN correto em Configurações.',insufficient_balance:'Saldo insuficiente na conta da API de consulta.',placa_invalida:'Placa inválida.',service_unavailable:'Serviço de consulta fora do ar agora. Nada foi cobrado.'};
+const erroApi=r=>MSG[r.j.code]||r.j.detail||'Não foi possível consultar agora.';
+
+/* ============ fotos ============ */
+function comprimir(file,max=1400,q=.78){return new Promise((ok,er)=>{const fr=new FileReader();fr.onerror=er;fr.onload=()=>{const im=new Image();im.onerror=er;im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const w=Math.round(im.width*k),h=Math.round(im.height*k);const c=document.createElement('canvas');c.width=w;c.height=h;const cx=c.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,w,h);cx.drawImage(im,0,0,w,h);ok({s:c.toDataURL('image/jpeg',q),w,h})};im.src=fr.result};fr.readAsDataURL(file)})}
+function escolherFoto(cb){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{if(!i.files[0])return;try{cb(await comprimir(i.files[0]))}catch(e){toast('Não consegui ler essa foto.')}};i.click()}
+
+/* ============ diagrama ============ */
+function diagram(v,opt={}){const p=v.pintura||{};let s=`<svg class="car" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 420" width="260" height="420"><rect width="260" height="420" fill="${opt.pdf?'#fff':'none'}"/>`;
+[[22,64,12,40],[226,64,12,40],[22,296,12,40],[226,296,12,40]].forEach(w=>s+=`<rect x="${w[0]}" y="${w[1]}" width="${w[2]}" height="${w[3]}" rx="4" fill="#3a424b"/>`);
+s+=`<rect x="68" y="136" width="124" height="14" rx="3" fill="#5b6670" opacity=".55"/><rect x="68" y="270" width="124" height="22" rx="3" fill="#5b6670" opacity=".55"/>`;
+PARTS.forEach(pt=>{const st=p[pt.id]?.st||'na';const [x,y,w,h,r]=pt.r;s+=`<g data-part="${pt.id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${STC[st]}" fill-opacity="${st==='na'?.35:.85}" stroke="#8b96a1" stroke-width="1.5"/><circle cx="${x+w/2}" cy="${y+h/2}" r="10" fill="#0d0f12"/><text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">${pt.n}</text></g>`});
+return s+'</svg>'}
+const svgPng=(svg,w,h)=>new Promise(ok=>{const i=new Image();i.onload=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(i,0,0,w,h);ok(c.toDataURL('image/png'))};i.onerror=()=>ok(null);i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)});
+
+/* ============ telas ============ */
+const view=$('#view');
+function nav(){const r=(location.hash.slice(2)||'').split('/')[0];const it=[['','grid','Painel'],['nova','plus','Nova vistoria'],['lotes','layers','Lotes'],['config','cog','Ajustes']];
+$('#nav').innerHTML=it.map(([h,i,t])=>`<a href="#/${h}" class="${r===h||(h===''&&['v','editar'].includes(r))?'on':''}">${ic(i)}${t}</a>`).join('');
+$('#bnav').innerHTML=it.map(([h,i,t])=>`<a href="#/${h}" class="${h==='nova'?'plus':''} ${r===h?'on':''}">${ic(i)}${h==='nova'?'Nova':t}</a>`).join('')}
+function vtitle(v){return[v.veiculo.marca,v.veiculo.modelo].filter(Boolean).join(' ')||'Veículo sem identificação'}
+function vfull(v){const a=vtitle(v),b=(v.veiculo.versao||'').trim();return b&&!a.toLowerCase().includes(b.toLowerCase())&&!b.toLowerCase().includes((v.veiculo.modelo||'§').toLowerCase())?a+' '+b:(b.length>=a.length&&b.toLowerCase().includes((v.veiculo.modelo||'§').toLowerCase())?[v.veiculo.marca,b].filter(Boolean).join(' '):a)}
+function resBadge(v){return v.concluida?`<span class="badge ${resCls(v.resultado)}">${esc(v.resultado||'Concluída')}</span>`:'<span class="badge b-mut">Rascunho</span>'}
+
+function telaPainel(){
+  const q=S.f.q.trim().toLowerCase(),agora=Date.now();
+  let l=S.list.slice().sort((a,b)=>b.criada-a.criada).filter(v=>{
+    if(q&&![v.veiculo.placa,v.num,v.cliente.nome,v.veiculo.modelo,v.veiculo.marca].join(' ').toLowerCase().includes(q))return false;
+    if(S.f.res==='rascunho'&&v.concluida)return false;if(S.f.res&&S.f.res!=='rascunho'&&v.resultado!==S.f.res)return false;
+    if(S.f.per){const d={hoje:1,'7':7,'30':30}[S.f.per];if(agora-v.criada>d*864e5)return false}return true});
+  const mes=S.list.filter(v=>new Date(v.criada).getMonth()===new Date().getMonth()&&new Date(v.criada).getFullYear()===new Date().getFullYear());
+  const fat=mes.reduce((a,v)=>a+num(v.valor),0);
+  return`<div class="top"><div><h1>Painel</h1><p>Suas vistorias, consultas e laudos em um lugar só.</p></div><div class="row"><a class="btn pri" href="#/nova">${ic('plus')}Nova vistoria</a></div></div>
+  <div class="stats"><div class="stat"><span>Vistorias</span><b>${S.list.length}</b></div><div class="stat"><span>Neste mês</span><b>${mes.length}</b></div><div class="stat"><span>Faturado no mês</span><b>${brl(fat)}</b></div><div class="stat"><span>Rascunhos</span><b>${S.list.filter(v=>!v.concluida).length}</b></div></div>
+  <div class="filters"><input class="inp" id="fq" placeholder="Buscar por placa, nº, cliente ou modelo" value="${esc(S.f.q)}"><select class="inp" id="fr"><option value="">Todos os resultados</option>${['rascunho',...RES].map(x=>`<option ${S.f.res===x?'selected':''} value="${x}">${x==='rascunho'?'Rascunhos':x}</option>`).join('')}</select><select class="inp" id="fp"><option value="">Todo o período</option><option value="hoje" ${S.f.per==='hoje'?'selected':''}>Hoje</option><option value="7" ${S.f.per==='7'?'selected':''}>7 dias</option><option value="30" ${S.f.per==='30'?'selected':''}>30 dias</option></select></div>
+  <div class="list" id="lista">${l.length?l.map(v=>`<a class="vrow" href="#/v/${v.id}"><div><b>${v.num?'OK-'+v.num:'—'}</b><small>${fdate(v.criada)}</small></div><div class="pl">${esc(v.veiculo.placa||'SEM PLACA')}${v.demo?'<span class="demo">EXEMPLO</span>':''}</div><div>${esc(vtitle(v))}<small>${esc(v.veiculo.anoMod||'')} ${esc(v.veiculo.cor||'')}</small></div><div>${esc(v.cliente.nome||'Cliente não informado')}<small>${esc(v.tipo)} · ${esc(v.finalidade)}</small></div><div>${resBadge(v)}</div><div style="text-align:right">${v.valor?brl(v.valor):''}</div></a>`).join(''):`<div class="card empty"><h3>${S.list.length?'Nada encontrado':'Nenhuma vistoria ainda'}</h3><p>${S.list.length?'Ajuste a busca ou os filtros.':'Crie a primeira vistoria: placa, fotos, checklist e laudo em PDF.'}</p><div style="margin-top:16px"><a class="btn pri" href="#/nova">${ic('plus')}Nova vistoria</a></div></div>`}</div>`}
+
+function F(label,path,o={}){const val=get(S.cur,path)??'';const cls=o.cls||'';
+  if(o.opts)return`<label class="fld ${cls}"><span>${label}</span><select data-f="${path}">${o.opts.map(x=>{const[a,b]=Array.isArray(x)?x:[x,x];return`<option value="${esc(a)}" ${val===a?'selected':''}>${esc(b)}</option>`}).join('')}</select></label>`;
+  return`<label class="fld ${cls}"><span>${label}</span><input data-f="${path}" value="${esc(val)}" ${o.attr||''}></label>`}
+
+function stepDados(){return`<div class="sec"><h3>Vistoria</h3><div class="g3">${F('Tipo','tipo',{opts:['Pré-cautelar','Pré-avaliação','Avaliação de compra']})}${F('Finalidade','finalidade',{opts:['Compra','Venda','Repasse','Showroom','Troca']})}${F('Valor cobrado (R$)','valor',{attr:'inputmode="decimal" placeholder="0,00"'})}</div></div>
+  <div class="sec"><h3>Cliente</h3><div class="g2">${F('Nome','cliente.nome',{attr:'autocomplete="off"'})}${F('CPF / CNPJ','cliente.doc',{attr:'inputmode="numeric"'})}${F('Telefone / WhatsApp','cliente.tel',{attr:'inputmode="tel"'})}${F('E-mail','cliente.email',{attr:'inputmode="email"'})}</div></div>
+  <div class="sec"><h3>Veículo</h3><div class="row" style="align-items:flex-end;margin-bottom:12px"><div style="flex:1;min-width:160px">${F('Placa','veiculo.placa',{attr:'maxlength="8" autocapitalize="characters" placeholder="ABC1D23" style="font-family:Unbounded,Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase"'})}</div><button class="btn pri" data-act="buscar" ${S.busy.buscar?'disabled':''}>${S.busy.buscar?'<span class="spin"></span>':ic('search')}Buscar dados pela placa</button></div>
+  <p class="hint" style="margin-bottom:12px">A busca preenche marca, modelo, ano, cor, município e dados de roubo/furto. Para testar sem custo, use a placa TST0001.</p>
+  <div class="g4">${F('Marca','veiculo.marca')}${F('Modelo','veiculo.modelo')}${F('Versão','veiculo.versao',{cls:'span2'})}${F('Ano fabricação','veiculo.anoFab',{attr:'inputmode="numeric"'})}${F('Ano modelo','veiculo.anoMod',{attr:'inputmode="numeric"'})}${F('Cor','veiculo.cor')}${F('Combustível','veiculo.comb')}${F('Km','veiculo.km',{attr:'inputmode="numeric"'})}${F('Município','veiculo.cidade')}${F('UF','veiculo.uf',{attr:'maxlength="2"'})}${F('Chassi (VIN)','veiculo.chassi',{attr:'maxlength="17" style="text-transform:uppercase"'})}${F('Motor','veiculo.motor')}</div></div>
+  ${S.cur.consulta?`<div class="note">Última consulta da placa: <b>${esc(S.cur.consulta.vehicle?.brand||'sem cadastro')} ${esc(S.cur.consulta.vehicle?.model||'')}</b>${S.cur.consulta.vehicle?.fipe?.amount?` · FIPE aprox. <b>${brl(S.cur.consulta.vehicle.fipe.amount)}</b>`:''}${S.cur.consulta.vehicle?.theft?' · <b style="color:var(--bad)">REGISTRO DE ROUBO/FURTO</b>':''}</div>`:''}`}
+
+function stepConsultas(){const c=S.cur.consultas||{};const rel=S.cur.relatorios||{};
+  return`<div class="sec"><h3>Checagem veicular</h3><p class="hint" style="margin-bottom:12px">Marque o resultado de cada consulta. Roubo/furto vem da busca por placa; os demais você preenche com o relatório que usar (veja os pagos abaixo ou outra fonte).</p>
+  <div class="chk">${CONSULTAS.map(([k,t])=>`<label class="fld"><span>${t}</span><select data-f="consultas.${k}">${[['','Não consultado'],['nc','Nada consta'],['pos','Possui / atenção']].map(([v,l])=>`<option value="${v}" ${(c[k]||'')===v?'selected':''}>${l}</option>`).join('')}</select></label>`).join('')}</div>
+  <label class="fld" style="margin-top:12px"><span>Observações das consultas</span><textarea data-f="consultas.obs" style="min-height:90px" placeholder="Ex.: 2 multas quitadas, 1 recall de airbag pendente...">${esc(c.obs||'')}</textarea></label></div>
+  <div class="sec"><h3>Relatórios completos (pagos, via API)</h3><div class="card" id="prods">${S.prods?S.prods.map(p=>`<div class="prod"><div><b>${esc(p.name)}</b><small>${esc(p.description||'')}</small></div><button class="btn sm pri" data-act="pedir" data-p="${esc(p.code)}" data-n="${esc(p.name)}" data-v="${esc(p.prices?.[0]?.amount||'')}" ${S.busy['r'+p.code]?'disabled':''}>${S.busy['r'+p.code]?'<span class="spin"></span>':'Pedir · '+brl(p.prices?.[0]?.amount)}</button></div>`).join('')||'<p class="hint">Nenhum relatório disponível.</p>':`<p class="hint" style="margin-bottom:10px">Carrega a lista de relatórios e preços da sua conta de consulta. Cada pedido é cobrado do saldo da conta.</p><button class="btn" data-act="produtos">${S.busy.produtos?'<span class="spin"></span>':''}Carregar relatórios disponíveis</button>`}</div>
+  ${Object.keys(rel).map(k=>`<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3>${esc(rel[k].nome)}</h3><span class="badge ${rel[k].status==='completed'?'b-ok':rel[k].status==='failed'?'b-bad':'b-mut'}">${rel[k].status==='completed'?'Pronto':rel[k].status==='failed'?'Sem dados':'Processando…'}</span></div>${rel[k].result?`<table class="t">${flat(rel[k].result).slice(0,60).map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</table><p class="hint" style="margin-top:8px">Dados pessoais (proprietário, documentos, endereço) ficam só aqui e não entram no PDF.</p>`:`<p class="hint">${rel[k].status==='failed'?'Não há dados desta placa para este relatório. O valor foi devolvido ao saldo.':'Aguardando a fonte de dados…'}</p>`}</div>`).join('')}</div>`}
+
+function stepFotos(){const f=S.cur.fotos;
+  return`<div class="sec"><h3>Fotos obrigatórias</h3><p class="hint" style="margin-bottom:12px">Toque no quadro para tirar ou escolher a foto. Elas são reduzidas automaticamente para o laudo não ficar pesado.</p><div class="slots">${FOTOS.map(([k,t])=>f[k]?`<div class="slot has"><img src="${f[k].s}" alt="${t}"><div class="cap">${t}</div><button class="x" data-act="rmfoto" data-k="${k}" aria-label="Remover foto">${ic('x')}</button></div>`:`<button class="slot" data-act="foto" data-k="${k}">${ic('cam')}${t}</button>`).join('')}</div></div>
+  <div class="sec"><h3>Fotos extras (avarias, detalhes, medições)</h3><div class="slots">${S.cur.extras.map((e,i)=>`<div><div class="slot has"><img src="${e.s}" alt=""><button class="x" data-act="rmextra" data-i="${i}" aria-label="Remover foto">${ic('x')}</button></div><input class="inp" style="margin-top:6px;min-height:40px;font-size:14px" data-extra="${i}" value="${esc(e.t||'')}" placeholder="Legenda"></div>`).join('')}<button class="slot" data-act="extra">${ic('plus')}Adicionar foto</button></div></div>`}
+
+function stepPintura(){const p=S.cur.pintura,np=notaP(S.cur);
+  return`<div class="sec"><h3>Pintura e lataria</h3><div class="legend">${ST_P.map(s=>`<span><i style="background:${s[2]}"></i>${s[1]}</span>`).join('')}</div>
+  <div class="diag"><div id="dg">${diagram(S.cur)}<p class="hint" style="text-align:center;margin-top:6px">Toque numa peça para trocar o status</p></div><div>
+  <div class="row" style="margin-bottom:8px"><button class="btn sm" data-act="pall">Marcar tudo como “Nada consta”</button>${np?`<span class="badge b-mut">Classe ${np.cls} · ${np.pc}% sem apontamento</span>`:''}</div>
+  ${PARTS.map(pt=>`<div class="prow"><span class="n">${pt.n}</span><span>${pt.t}</span><select data-f="pintura.${pt.id}.st">${ST_P.map(s=>`<option value="${s[0]}" ${(p[pt.id]?.st||'na')===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select><input data-f="pintura.${pt.id}.esp" inputmode="numeric" placeholder="µm" value="${esc(p[pt.id]?.esp||'')}" aria-label="Espessura em micrômetros"></div>`).join('')}</div></div></div>`}
+
+function stepEstrutura(){const e=S.cur.estrutura,ne=notaE(S.cur);const gs=[...new Set(ITENS.map(i=>i.g))];
+  return`<div class="sec"><div class="row" style="margin-bottom:14px"><button class="btn sm" data-act="eall">Marcar tudo como OK</button>${ne?`<span class="badge b-mut">Classe ${ne.cls} · ${ne.ap} apontamento(s) em ${ne.n} itens</span>`:''}</div>
+  ${gs.map(g=>`<div class="grp"><h3>${g}</h3>${ITENS.filter(i=>i.g===g).map(i=>{const s=e[i.id]||'na';return`<div class="erow"><span>${i.t}</span><div class="seg">${[['na','—'],['ok','OK'],['ap','Apontamento']].map(([k,l])=>`<button data-act="est" data-id="${i.id}" data-st="${k}" class="${s===k?'on':''}">${l}</button>`).join('')}</div></div>`}).join('')}</div>`).join('')}</div>`}
+
+function stepParecer(){const sg=sugestao(S.cur);return`<div class="sec"><h3>Parecer técnico</h3><label class="fld"><span>Comentário técnico</span><textarea data-f="parecer" style="min-height:170px" placeholder="Resumo das condições do veículo, apontamentos, recomendações ao cliente...">${esc(S.cur.parecer)}</textarea></label></div>
+  <div class="sec"><h3>Resultado</h3>${sg?`<p class="hint" style="margin-bottom:10px">Sugestão pelo que foi preenchido: <b>${sg}</b>. A decisão final é sua.</p>`:''}<div class="g3">${F('Resultado final','resultado',{opts:[['','Escolher…'],...RES]})}</div></div>
+  <div class="note">O laudo gerado é uma <b>pré-avaliação técnica</b> baseada em inspeção visual e consultas de terceiros. Não substitui laudo cautelar oficial emitido por empresa credenciada.</div>`}
+
+function telaEditor(){const v=S.cur;const done=[v.veiculo.placa,Object.values(v.consultas||{}).some(Boolean),Object.keys(v.fotos).length>=6,notaP(v),notaE(v),v.resultado];
+  const body=[stepDados,stepConsultas,stepFotos,stepPintura,stepEstrutura,stepParecer][S.step]();
+  return`<div class="top"><div><h1>${v.num?'Vistoria OK-'+v.num:'Nova vistoria'}</h1><p>${esc(vtitle(v))}${v.veiculo.placa?' · '+esc(v.veiculo.placa):''}</p></div><div class="row"><button class="btn" data-act="sair">Salvar e sair</button></div></div>
+  <div class="steps">${STEPS.map((t,i)=>`<button data-act="step" data-i="${i}" class="${S.step===i?'on':''} ${done[i]&&S.step!==i?'done':''}"><b>${done[i]&&S.step!==i?'✓':i+1}</b>${t}</button>`).join('')}</div>
+  <div id="stepbody">${body}</div>
+  <div class="nav2 sticky"><button class="btn" data-act="prev" ${S.step===0?'disabled':''}>${ic('left')}Voltar</button>${S.step<5?`<button class="btn pri" data-act="next">Próximo${ic('right')}</button>`:`<button class="btn pri" data-act="concluir">${ic('check')}Concluir e gerar laudo</button>`}</div>`}
+
+function telaDetalhe(v){const np=notaP(v),ne=notaE(v);const cls=n=>n?'s'+n.cls:'sN';
+  const fotos=[...FOTOS.filter(f=>v.fotos[f[0]]).map(f=>[v.fotos[f[0]].s,f[1]]),...v.extras.map(e=>[e.s,e.t||'Foto extra'])];
+  return`<div class="top"><div><h1>${esc(v.veiculo.placa||'Sem placa')} <span style="color:var(--mut);font-size:.6em">OK-${v.num}</span></h1><p>${esc(vtitle(v))} · ${fdt(v.criada)}${v.demo?' · <b>EXEMPLO</b>':''}</p></div><div class="row"><button class="btn pri" data-act="pdf" data-id="${v.id}">${S.busy.pdf?'<span class="spin"></span>':ic('down')}Baixar laudo (PDF)</button><a class="btn" href="#/editar/${v.id}">${ic('edit')}Editar</a><button class="btn bad" data-act="excluir" data-id="${v.id}">${ic('trash')}</button></div></div>
+  <div class="g3 g1m" style="margin-bottom:14px"><div class="card"><span class="hint">Resultado</span><div style="margin-top:8px">${resBadge(v)}</div></div><div class="card score"><div class="L ${cls(np)}">${np?np.cls:'—'}</div><div><b>Pintura / lataria</b><div class="hint">${np?np.pc+'% sem apontamento':'Não avaliada'}</div></div></div><div class="card score"><div class="L ${cls(ne)}">${ne?ne.cls:'—'}</div><div><b>Estrutura</b><div class="hint">${ne?ne.ap+' apontamento(s) em '+ne.n+' itens':'Não avaliada'}</div></div></div></div>
+  <div class="g2 g1m" style="margin-bottom:14px"><div class="card"><h3 style="margin-bottom:12px">Veículo</h3><dl class="kv"><dt>Marca / modelo</dt><dd>${esc(vfull(v))}</dd><dt>Ano</dt><dd>${esc(v.veiculo.anoFab||'—')}/${esc(v.veiculo.anoMod||'—')}</dd><dt>Cor</dt><dd>${esc(v.veiculo.cor||'—')}</dd><dt>Km</dt><dd>${esc(v.veiculo.km||'—')}</dd><dt>Chassi</dt><dd>${esc(v.veiculo.chassi||'—')}</dd><dt>Município</dt><dd>${esc([v.veiculo.cidade,v.veiculo.uf].filter(Boolean).join(' / ')||'—')}</dd></dl></div>
+  <div class="card"><h3 style="margin-bottom:12px">Cliente e serviço</h3><dl class="kv"><dt>Cliente</dt><dd>${esc(v.cliente.nome||'—')}</dd><dt>Telefone</dt><dd>${esc(v.cliente.tel||'—')}</dd><dt>Tipo</dt><dd>${esc(v.tipo)} · ${esc(v.finalidade)}</dd><dt>Valor</dt><dd>${v.valor?brl(v.valor):'—'}</dd><dt>Lote</dt><dd>${esc(v.lote||'Sem lote')}</dd></dl></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">Checagem veicular</h3><div class="row">${CONSULTAS.map(([k,t])=>{const s=v.consultas?.[k];return`<span class="badge ${s==='nc'?'b-ok':s==='pos'?'b-bad':'b-mut'}">${t}: ${s==='nc'?'nada consta':s==='pos'?'atenção':'não consultado'}</span>`}).join('')}</div></div>
+  ${v.parecer?`<div class="card"><h3 style="margin-bottom:8px">Parecer técnico</h3><p style="white-space:pre-wrap">${esc(v.parecer)}</p></div>`:''}
+  <div class="card"><h3 style="margin-bottom:12px">Fotos (${fotos.length})</h3>${fotos.length?`<div class="thumbs">${fotos.map(f=>`<figure><img src="${f[0]}" alt="${esc(f[1])}" loading="lazy"><figcaption>${esc(f[1])}</figcaption></figure>`).join('')}</div>`:'<p class="hint">Nenhuma foto adicionada.</p>'}</div>`}
+
+function telaLotes(){const mapa={};S.list.filter(v=>v.lote).forEach(v=>(mapa[v.lote]=mapa[v.lote]||[]).push(v));
+  const livres=S.list.filter(v=>v.concluida&&!v.lote).sort((a,b)=>b.criada-a.criada);
+  return`<div class="top"><div><h1>Lotes</h1><p>Agrupe vistorias concluídas para cobrança ou fechamento do dia.</p></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">Vistorias prontas para lote</h3>${livres.length?`<div class="list">${livres.map(v=>`<label class="erow" style="cursor:pointer"><span><input type="checkbox" data-sel="${v.id}" ${S.sel.has(v.id)?'checked':''} style="margin-right:10px;width:18px;height:18px;accent-color:var(--acc)"><b>${esc(v.veiculo.placa||'SEM PLACA')}</b> · ${esc(vtitle(v))}</span><span>${v.valor?brl(v.valor):'—'}</span></label>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn pri" data-act="criarlote" ${S.sel.size?'':'disabled'}>${ic('layers')}Criar lote com ${S.sel.size||''} selecionada(s)</button></div>`:'<p class="hint">Nenhuma vistoria concluída sem lote.</p>'}</div>
+  <div style="margin-top:14px" class="list">${Object.keys(mapa).sort().reverse().map(k=>{const a=mapa[k];return`<div class="card"><div class="row" style="justify-content:space-between"><div><h3>${esc(k)}</h3><p class="hint">${a.length} vistoria(s) · ${brl(a.reduce((s,v)=>s+num(v.valor),0))}</p></div><div class="row"><button class="btn sm" data-act="lotepdf" data-l="${esc(k)}">${ic('down')}Capa PDF</button><button class="btn sm bad" data-act="desfazer" data-l="${esc(k)}">Desfazer</button></div></div></div>`}).join('')||(livres.length?'':'<div class="card empty"><h3>Nenhum lote criado</h3></div>')}</div>`}
+
+function telaConfig(){const c=S.cfg;const I=(l,k,a='')=>`<label class="fld"><span>${l}</span><input data-cfg="${k}" value="${esc(c[k]||'')}" ${a}></label>`;
+  return`<div class="top"><div><h1>Ajustes</h1><p>Dados que aparecem no cabeçalho do laudo e acesso à consulta.</p></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">Sua empresa no laudo</h3><div class="g2">${I('Nome da empresa','empresa')}${I('CNPJ / CPF','doc')}${I('Telefone / WhatsApp','tel')}${I('E-mail','email')}${I('Vistoriador responsável','vist')}<label class="fld"><span>Logo (opcional)</span><div class="row">${c.logo?`<img src="${c.logo}" alt="" style="height:44px;border-radius:8px;background:#fff;padding:4px">`:''}<button class="btn sm" data-act="logo">${c.logo?'Trocar logo':'Enviar logo'}</button>${c.logo?'<button class="btn sm bad" data-act="rmlogo">Remover</button>':''}</div></label></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">Acesso à consulta por placa</h3><div class="g2">${I('PIN de acesso','pin','type="password" autocomplete="off"')}</div><p class="hint" style="margin-top:8px">O PIN libera as consultas pagas (placas reais). A chave da API fica guardada no servidor, nunca neste aparelho.</p></div>
+  <div class="card"><h3 style="margin-bottom:12px">Dados e backup</h3><p class="hint" style="margin-bottom:12px">As vistorias ficam salvas neste navegador. Exporte um backup de vez em quando.</p><div class="row"><button class="btn" data-act="exp">${ic('down')}Exportar backup</button><button class="btn" data-act="imp">Importar backup</button>${S.list.some(v=>v.demo)?'<button class="btn bad" data-act="rmdemo">Remover exemplos</button>':''}</div></div>`}
+
+function telaNaoEncontrada(){return`<div class="card empty"><h3>Vistoria não encontrada</h3><a class="btn" href="#/">Voltar ao painel</a></div>`}
+
+/* ============ roteamento ============ */
+function render(){nav();const [,a,b]=('/'+(location.hash.slice(2)||'')).split('/');const keep=window.scrollY;
+  if(a==='nova'){if(!S.cur||!S.editNew){S.cur=novo();S.step=0;S.editNew=true}view.innerHTML=telaEditor()}
+  else if(a==='editar'){const v=S.list.find(x=>x.id===b);if(!v){view.innerHTML=telaNaoEncontrada();return}if(!S.cur||S.cur.id!==b){S.cur=v;S.step=0}S.editNew=false;view.innerHTML=telaEditor()}
+  else if(a==='v'){const v=S.list.find(x=>x.id===b);view.innerHTML=v?telaDetalhe(v):telaNaoEncontrada()}
+  else if(a==='lotes'){S.cur=null;view.innerHTML=telaLotes()}
+  else if(a==='config'){S.cur=null;view.innerHTML=telaConfig()}
+  else{S.cur=null;view.innerHTML=telaPainel()}
+  if(a!=='nova'&&a!=='editar')S.editNew=false;
+  window.scrollTo(0,keep)}
+window.addEventListener('hashchange',()=>{salvar(true);window.scrollTo(0,0);render()});
+const rerenderStep=()=>{const k=window.scrollY;$('#stepbody').innerHTML=[stepDados,stepConsultas,stepFotos,stepPintura,stepEstrutura,stepParecer][S.step]();window.scrollTo(0,k);document.querySelectorAll('.steps button').forEach((b,i)=>{b.classList.toggle('on',i===S.step)})};
+
+/* ============ eventos ============ */
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.dataset.f&&S.cur){let v=t.value;if(t.dataset.f==='veiculo.placa'){v=v.toUpperCase().replace(/[^A-Z0-9]/g,'');t.value=v}if(t.dataset.f==='veiculo.chassi'){v=v.toUpperCase();t.value=v}set(S.cur,t.dataset.f,v);salvar();
+    if(/^pintura\./.test(t.dataset.f)&&t.dataset.f.endsWith('.st')){const d=$('#dg');if(d)d.firstElementChild.outerHTML=diagram(S.cur)}}
+  else if(t.dataset.extra!==undefined&&S.cur){S.cur.extras[t.dataset.extra].t=t.value;salvar()}
+  else if(t.dataset.cfg){S.cfg[t.dataset.cfg]=t.value;lsSet('okcar_cfg',S.cfg)}
+  else if(t.id==='fq'){S.f.q=t.value;const p=t.selectionStart;view.innerHTML=telaPainel();const n=$('#fq');n.focus();n.setSelectionRange(p,p)}
+  else if(t.id==='fr'){S.f.res=t.value;view.innerHTML=telaPainel()}else if(t.id==='fp'){S.f.per=t.value;view.innerHTML=telaPainel()}
+  else if(t.dataset.sel){t.checked?S.sel.add(t.dataset.sel):S.sel.delete(t.dataset.sel);const b=$('[data-act=criarlote]');if(b){b.disabled=!S.sel.size;b.lastChild.textContent='Criar lote com '+(S.sel.size||'')+' selecionada(s)'}}});
+document.addEventListener('click',async e=>{
+  const pt=e.target.closest('[data-part]');if(pt&&S.cur){const id=pt.dataset.part;const ord=ST_P.map(s=>s[0]);const cur=S.cur.pintura[id]?.st||'na';set(S.cur,'pintura.'+id+'.st',ord[(ord.indexOf(cur)+1)%ord.length]);salvar();rerenderStep();return}
+  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,v=S.cur;
+  if(a==='step'){S.step=+b.dataset.i;salvar(true);render();window.scrollTo(0,0)}
+  else if(a==='next'||a==='prev'){S.step+=a==='next'?1:-1;salvar(true);render();window.scrollTo(0,0)}
+  else if(a==='sair'){salvar(true);toast('Vistoria salva');setTimeout(()=>location.hash='#/',150)}
+  else if(a==='concluir'){if(!v.veiculo.placa&&!confirm('A vistoria está sem placa. Concluir mesmo assim?'))return;if(!v.resultado)v.resultado=sugestao(v)||'Com ressalvas';v.concluida=true;salvar(true);S.cur=null;S.editNew=false;toast('Vistoria concluída');location.hash='#/v/'+v.id}
+  else if(a==='foto'){escolherFoto(r=>{v.fotos[b.dataset.k]=r;salvar();rerenderStep()})}
+  else if(a==='rmfoto'){e.stopPropagation();delete v.fotos[b.dataset.k];salvar();rerenderStep()}
+  else if(a==='extra'){escolherFoto(r=>{v.extras.push({...r,t:''});salvar();rerenderStep()})}
+  else if(a==='rmextra'){v.extras.splice(+b.dataset.i,1);salvar();rerenderStep()}
+  else if(a==='pall'){PARTS.forEach(p=>set(v,'pintura.'+p.id+'.st','nc'));salvar();rerenderStep()}
+  else if(a==='eall'){ITENS.forEach(i=>v.estrutura[i.id]='ok');salvar();rerenderStep()}
+  else if(a==='est'){v.estrutura[b.dataset.id]=b.dataset.st;salvar();rerenderStep()}
+  else if(a==='buscar')buscarPlaca();
+  else if(a==='produtos')carregarProdutos();
+  else if(a==='pedir')pedirRelatorio(b.dataset);
+  else if(a==='pdf'){const x=S.list.find(i=>i.id===b.dataset.id);S.busy.pdf=true;b.disabled=true;try{await gerarLaudo(x)}catch(err){console.error(err);toast('Não consegui gerar o PDF. Verifique a conexão e tente de novo.')}S.busy.pdf=false;if(location.hash.startsWith('#/v/'))render()}
+  else if(a==='excluir'){if(confirm('Excluir esta vistoria? Não dá para desfazer.')){await DB.del(b.dataset.id);S.list=S.list.filter(x=>x.id!==b.dataset.id);toast('Vistoria excluída');location.hash='#/'}}
+  else if(a==='criarlote'){const d=new Date(),k='okcar_'+String(d.getDate()).padStart(2,'0')+String(d.getMonth()+1).padStart(2,'0')+d.getFullYear()+'_'+(Object.keys(S.list.reduce((m,x)=>(x.lote&&(m[x.lote]=1),m),{})).length+1);for(const x of S.list)if(S.sel.has(x.id)){x.lote=k;await DB.put(x)}S.sel.clear();toast('Lote criado');render()}
+  else if(a==='desfazer'){if(confirm('Desfazer este lote? As vistorias voltam para a lista.'))for(const x of S.list)if(x.lote===b.dataset.l){x.lote='';await DB.put(x)}render()}
+  else if(a==='lotepdf')lotePdf(b.dataset.l);
+  else if(a==='logo')escolherFoto(r=>{S.cfg.logo=r.s;lsSet('okcar_cfg',S.cfg);render()});
+  else if(a==='rmlogo'){S.cfg.logo='';lsSet('okcar_cfg',S.cfg);render()}
+  else if(a==='exp'){const bl=new Blob([JSON.stringify({v:1,list:S.list,cfg:{...S.cfg,pin:''}})],{type:'application/json'});const u=URL.createObjectURL(bl);const l=document.createElement('a');l.href=u;l.download='okcar-backup-'+new Date().toISOString().slice(0,10)+'.json';l.click();setTimeout(()=>URL.revokeObjectURL(u),2000)}
+  else if(a==='imp'){const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=async()=>{try{const j=JSON.parse(await i.files[0].text());for(const x of j.list||[]){await DB.put(x)}S.list=await DB.all();toast('Backup importado');render()}catch(err){toast('Arquivo de backup inválido')}};i.click()}
+  else if(a==='rmdemo'){for(const x of S.list.filter(v=>v.demo))await DB.del(x.id);S.list=S.list.filter(v=>!v.demo);toast('Exemplos removidos');render()}});
+
+/* ============ consultas ============ */
+async function buscarPlaca(){const v=S.cur,pl=(v.veiculo.placa||'').toUpperCase();if(pl.length<7){toast('Digite a placa completa');return}S.busy.buscar=true;rerenderStep();
+  const r=await api('consulta',{placa:pl});S.busy.buscar=false;
+  if(r.ok&&r.j.object==='lookup'){v.consulta=r.j;if(r.j.result==='found'){const x=r.j.vehicle,m=v.veiculo,sf=(k,val)=>{if(val!=null&&val!==''&&!m[k])m[k]=String(val)};sf('marca',x.brand);sf('modelo',x.model);sf('versao',x.version);sf('anoFab',x.manufacture_year);sf('anoMod',x.model_year);sf('cor',x.color);sf('comb',x.fuel);sf('cidade',x.city);sf('uf',x.state);v.consultas.roubo=x.theft?'pos':'nc';toast('Dados preenchidos pela placa')}else toast('Placa sem cadastro na base')}
+  else toast(erroApi(r));salvar(true);render()}
+async function carregarProdutos(){S.busy.produtos=true;rerenderStep();const r=await api('produtos');S.busy.produtos=false;if(r.ok)S.prods=(r.j.data||[]).filter(p=>p.type==='report');else toast(erroApi(r));rerenderStep()}
+async function pedirRelatorio(d){const v=S.cur,pl=(v.veiculo.placa||'').toUpperCase();if(pl.length<7){toast('Preencha a placa antes');return}if(!confirm(`Pedir "${d.n}" para ${pl}?\nSerá cobrado ${brl(d.v)} do saldo da conta de consulta.`))return;
+  S.busy['r'+d.p]=true;rerenderStep();const r=await api('relatorio',{placa:pl,produto:d.p});S.busy['r'+d.p]=false;
+  if(!(r.ok&&r.j.id)){if(r.status===409&&r.j.report?.id){}else{toast(erroApi(r));rerenderStep();return}}
+  const id=r.j.id||r.j.report.id;v.relatorios[d.p]={id,nome:d.n,status:'queued',result:null};salvar(true);rerenderStep();acompanhar(v,d.p)}
+async function acompanhar(v,k){for(let i=0;i<30;i++){await new Promise(o=>setTimeout(o,i<3?4000:10000));const r=await api('relatorio_status',{id:v.relatorios[k].id});if(r.ok&&(r.j.status==='completed'||r.j.status==='failed')){v.relatorios[k].status=r.j.status;v.relatorios[k].result=r.j.result||null;if(r.j.status==='failed')toast('Sem dados para esta placa. Valor devolvido.');else toast('Relatório pronto');await DB.put(v);if(S.cur&&S.cur.id===v.id&&S.step===1)rerenderStep();return}}}
+function flat(o,p='',d=0,out=[]){if(o==null)return out;if(typeof o!=='object'){out.push([p,String(o)]);return out}if(Array.isArray(o)){if(o.every(x=>typeof x!=='object'))out.push([p,o.join(', ')]);else o.slice(0,20).forEach((x,i)=>flat(x,p+'['+(i+1)+']',d+1,out));return out}if(d>3)return out;Object.entries(o).forEach(([k,x])=>flat(x,p?p+' › '+k:k,d+1,out));return out}
+const PRIV=/prop|nome|cpf|cnpj|document|endere|telef|fone|mail|cep|logradouro/i;
+
+/* ============ PDF do laudo ============ */
+const C={dark:[13,15,18],acc:[189,242,77],fg:[24,28,33],mut:[110,118,126],line:[222,226,220],ok:[39,160,98],bad:[220,60,60],warn:[222,150,20],soft:[244,245,242]};
+const rgbSt=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+async function gerarLaudo(v){
+  const J=window.jspdf&&window.jspdf.jsPDF;if(!J){toast('A biblioteca de PDF ainda não carregou. Aguarde um instante e tente de novo.');return}
+  const doc=new J({unit:'mm',format:'a4'});const W=210,H=297,M=14;const cfg=S.cfg;let y=0;
+  const T=(t,x,yy,o={})=>{doc.setFont('helvetica',o.b?'bold':'normal');doc.setFontSize(o.s||10);doc.setTextColor(...(o.c||C.fg));doc.text(String(t),x,yy,{align:o.a||'left',maxWidth:o.w})};
+  const R=(x,yy,w,h,c,r=0)=>{doc.setFillColor(...c);r?doc.roundedRect(x,yy,w,h,r,r,'F'):doc.rect(x,yy,w,h,'F')};
+  const header=()=>{R(0,0,W,24,C.dark);if(cfg.logo){try{doc.addImage(cfg.logo,'JPEG',M,4,16,16)}catch(e){}}else{R(M,4,16,16,C.acc,4);doc.setDrawColor(...C.dark);doc.setLineWidth(1.6);doc.lines([[3.4,3.6],[6.4,-7.6]],M+4.2,12.4,[1,1],'S',false)}
+    T(cfg.empresa||'OKCAR',M+20,11.5,{b:1,s:15,c:[255,255,255]});T('Pré-avaliação técnica de veículo',M+20,17,{s:8.5,c:[170,178,186]});
+    T('Vistoria OK-'+v.num,W-M,11,{b:1,s:12,c:C.acc,a:'right'});T(fdt(v.criada),W-M,17,{s:8.5,c:[170,178,186],a:'right'});y=32};
+  const nova=()=>{doc.addPage();header()};
+  const need=h=>{if(y+h>H-18)nova()};
+  const sec=t=>{need(14);T(t,M,y,{b:1,s:12});R(M,y+2,W-2*M,.5,C.acc);y+=9};
+  const badge=(t,x,yy,c,w)=>{doc.setFont('helvetica','bold');doc.setFontSize(8.5);const tw=w||doc.getTextWidth(t)+8;R(x,yy-4.6,tw,6.6,c,3.3);T(t,x+tw/2,yy,{b:1,s:8.5,c:[255,255,255],a:'center'});return tw};
+  const kv=(k,val,x,yy,w)=>{T(k.toUpperCase(),x,yy,{s:7,c:C.mut,b:1});T(val||'—',x,yy+4.6,{s:10,w})};
+  const loadImg=s=>new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=s});
+  const fit=(f,x,yy,w,h)=>{const k=Math.min(w/f.w,h/f.h),ww=f.w*k,hh=f.h*k;R(x,yy,w,h,C.soft,2);doc.addImage(f.s,'JPEG',x+(w-ww)/2,yy+(h-hh)/2,ww,hh,undefined,'FAST')};
+  header();
+  // --- placa e resultado
+  R(M,y-2,W-2*M,34,C.soft,3);R(M+5,y+3,46,12,C.dark,2);T((v.veiculo.placa||'SEM PLACA').toUpperCase(),M+28,y+11.2,{b:1,s:15,c:C.acc,a:'center'});
+  T(vfull(v)||'Veículo',M+56,y+8,{b:1,s:12,w:W-2*M-62});
+  T([v.veiculo.anoFab&&v.veiculo.anoMod?v.veiculo.anoFab+'/'+v.veiculo.anoMod:'',v.veiculo.cor,v.veiculo.km?v.veiculo.km+' km':'',v.veiculo.comb].filter(Boolean).join('  ·  '),M+56,y+14,{s:9,c:C.mut,w:W-2*M-62});
+  const rc=v.resultado==='Recomendado'?C.ok:v.resultado==='Não recomendado'?C.bad:C.warn;badge((v.resultado||'Em análise').toUpperCase(),M+56,y+24,rc);
+  T(v.tipo+' · '+v.finalidade,W-M-4,y+24,{s:8.5,c:C.mut,a:'right'});y+=42;
+  // --- notas
+  const np=notaP(v),ne=notaE(v);const nc=n=>n?({A:C.ok,B:[130,190,50],C:C.warn,D:C.bad}[n.cls]):[170,176,182];
+  [['PINTURA E LATARIA',np,np?np.pc+'% sem apontamento':'Não avaliada'],['ESTRUTURA',ne,ne?ne.ap+' apontamento(s) em '+ne.n+' itens':'Não avaliada']].forEach((s,i)=>{const x=M+i*((W-2*M)/2+2);R(x,y,(W-2*M)/2-2,22,C.soft,3);R(x+4,y+4,14,14,nc(s[1]),3);T(s[1]?s[1].cls:'-',x+11,y+14.4,{b:1,s:14,c:[255,255,255],a:'center'});T(s[0],x+22,y+9,{b:1,s:8.5,c:C.mut});T(s[2],x+22,y+15.5,{s:10})});y+=30;
+  // --- fotos de destaque
+  const f1=v.fotos.f45,f2=v.fotos.t45;if(f1||f2){const w=(W-2*M-4)/2;if(f1)fit(f1,M,y,w,52);if(f2)fit(f2,M+w+4,y,w,52);y+=58}
+  // --- checagem
+  sec('Checagem veicular');const cw=(W-2*M)/3;CONSULTAS.forEach((c,i)=>{const x=M+(i%3)*cw,yy=y+Math.floor(i/3)*13;const s=v.consultas?.[c[0]];const col=s==='nc'?C.ok:s==='pos'?C.bad:[170,176,182];R(x,yy-4,cw-3,11,C.soft,2);R(x,yy-4,1.6,11,col);T(c[1],x+4,yy,{s:8.2,c:C.mut,w:cw-8});T(s==='nc'?'Nada consta':s==='pos'?'Atenção':'Não consultado',x+4,yy+4.2,{b:1,s:9,c:col})});y+=Math.ceil(CONSULTAS.length/3)*13+2;
+  if(v.consultas?.obs){const l=doc.splitTextToSize(v.consultas.obs,W-2*M);need(l.length*4.5+4);doc.setFontSize(9);T(l.join('\n'),M,y,{s:9,c:C.mut});y+=l.length*4+4}
+  // --- dados
+  nova();sec('Dados do veículo');const col=(W-2*M)/3;[['Marca',v.veiculo.marca],['Modelo',v.veiculo.modelo],['Versão',v.veiculo.versao],['Ano fab./modelo',(v.veiculo.anoFab||'—')+' / '+(v.veiculo.anoMod||'—')],['Cor',v.veiculo.cor],['Combustível',v.veiculo.comb],['Quilometragem',v.veiculo.km?v.veiculo.km+' km':''],['Município / UF',[v.veiculo.cidade,v.veiculo.uf].filter(Boolean).join(' / ')],['Motor',v.veiculo.motor],['Chassi (VIN)',v.veiculo.chassi]].forEach((d,i)=>kv(d[0],d[1],M+(i%3)*col,y+Math.floor(i/3)*13,col-4));y+=Math.ceil(10/3)*13+4;
+  const fipe=v.consulta?.vehicle?.fipe;if(fipe?.amount){sec('Referência de mercado');kv('Tabela FIPE (versão provável)',brl(fipe.amount),M,y);kv('Versão FIPE',v.consulta.vehicle.version||'',M+70,y,100);y+=14}
+  sec('Cliente e serviço');[['Cliente',v.cliente.nome],['Telefone',v.cliente.tel],['Serviço',v.tipo+' · '+v.finalidade]].forEach((d,i)=>kv(d[0],d[1],M+i*col,y,col-4));y+=14;
+  const rels=Object.values(v.relatorios||{}).filter(r=>r.result);rels.forEach(r=>{const ls=flat(r.result).filter(([k])=>!PRIV.test(k)).slice(0,30);if(!ls.length)return;sec('Relatório: '+r.nome);ls.forEach(([a,b])=>{need(6);T(a,M,y,{s:8.5,c:C.mut,w:70});T(b,M+72,y,{s:9,w:W-2*M-72});y+=5.2});y+=4});
+  // --- pintura
+  nova();sec('Pintura e lataria');const png=await svgPng(diagram(v,{pdf:1}),520,840);if(png)doc.addImage(png,'PNG',M,y,62,100);
+  let ty=y;ST_P.forEach((s,i)=>{R(M+68+i*19,ty-3,2.6,2.6,rgbSt(s[2]),.8);T(s[1],M+71.4+i*19,ty-.7,{s:5.8,c:C.mut})});ty+=7;
+  PARTS.forEach((p,i)=>{const st=v.pintura?.[p.id]?.st||'na',e=v.pintura?.[p.id]?.esp;R(M+68,ty-4,W-2*M-68,6.6,i%2?[255,255,255]:C.soft);R(M+69,ty-3,5,5,[13,15,18],2.5);T(p.n,M+71.5,ty+.6,{b:1,s:7,c:[255,255,255],a:'center'});T(p.t,M+77,ty+.4,{s:9});R(M+W-2*M-60,ty-2.6,3,3,rgbSt(STC[st]),.8);T(STN[st],M+W-2*M-55,ty+.4,{s:8.5});T(e?e+' mic':'',W-M-2,ty+.4,{s:8.5,c:C.mut,a:'right'});ty+=6.6});
+  y=Math.max(y+104,ty+6);
+  // --- estrutura
+  sec('Estrutura');[...new Set(ITENS.map(i=>i.g))].forEach(g=>{need(12);T(g.toUpperCase(),M,y,{b:1,s:8,c:C.mut});y+=4.5;ITENS.filter(i=>i.g===g).forEach((it,i)=>{need(6.4);const s=v.estrutura?.[it.id]||'na';R(M,y-4,W-2*M,6,i%2?[255,255,255]:C.soft);T(it.t,M+3,y,{s:9});const c=s==='ok'?C.ok:s==='ap'?C.bad:[170,176,182];R(W-M-36,y-3,2.6,2.6,c,1.3);T(s==='ok'?'OK':s==='ap'?'Apontamento':'Não avaliado',W-M-31,y-.2,{b:1,s:8.5,c});y+=6});y+=3});
+  // --- fotos
+  const todas=[...FOTOS.filter(f=>v.fotos[f[0]]).map(f=>({...v.fotos[f[0]],t:f[1]})),...v.extras.map(e=>({...e,t:e.t||'Foto extra'}))];
+  for(let i=0;i<todas.length;i+=6){nova();sec('Registro fotográfico');const w=(W-2*M-6)/2,h=62;todas.slice(i,i+6).forEach((f,j)=>{const x=M+(j%2)*(w+6),yy=y+Math.floor(j/2)*(h+10);fit(f,x,yy,w,h);T(f.t,x,yy+h+4.2,{s:8.5,c:C.mut,w})})}
+  // --- parecer
+  nova();sec('Parecer técnico');const pl=doc.splitTextToSize(v.parecer||'Sem comentários do vistoriador.',W-2*M-8);R(M,y-2,W-2*M,Math.max(30,pl.length*4.6+10),C.soft,3);T(pl.join('\n'),M+4,y+4,{s:10});y+=Math.max(30,pl.length*4.6+10)+10;
+  need(40);T('Resultado: ',M,y,{b:1,s:11});badge((v.resultado||'Em análise').toUpperCase(),M+24,y,rc);y+=22;
+  doc.setDrawColor(...C.mut);doc.setLineWidth(.2);doc.line(M,y,M+75,y);T(cfg.vist||cfg.empresa||'Responsável técnico',M,y+5,{s:9});T([cfg.doc,cfg.tel,cfg.email].filter(Boolean).join('  ·  '),M,y+10,{s:8,c:C.mut});y+=22;
+  need(26);R(M,y,W-2*M,22,[255,248,225],3);T('Aviso importante',M+4,y+6,{b:1,s:9});T('Este documento é uma pré-avaliação técnica baseada em inspeção visual no momento da vistoria e em consultas a bases de terceiros. Não substitui o laudo cautelar oficial emitido por empresa credenciada nem constitui garantia de procedência.',M+4,y+11,{s:8,w:W-2*M-8});
+  const n=doc.getNumberOfPages();for(let p=1;p<=n;p++){doc.setPage(p);R(0,H-10,W,.3,C.line);T((cfg.empresa||'OKCAR')+' · Vistoria OK-'+v.num,M,H-5.5,{s:7.5,c:C.mut});T('Página '+p+' de '+n,W-M,H-5.5,{s:7.5,c:C.mut,a:'right'})}
+  doc.save('laudo-okcar-'+(v.veiculo.placa||'veiculo')+'-OK'+v.num+'.pdf');toast('Laudo gerado')}
+
+async function lotePdf(k){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){toast('A biblioteca de PDF ainda não carregou.');return}const a=S.list.filter(v=>v.lote===k);const doc=new J({unit:'mm',format:'a4'});const M=14;
+  doc.setFillColor(13,15,18);doc.rect(0,0,210,24,'F');doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(S.cfg.empresa||'OKCAR',M,15);doc.setFontSize(10);doc.setTextColor(189,242,77);doc.text('Capa do lote',196,15,{align:'right'});
+  doc.setTextColor(24,28,33);doc.setFontSize(12);doc.text(k,M,36);doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(110,118,126);doc.text(a.length+' vistoria(s) · '+new Date().toLocaleDateString('pt-BR'),M,42);
+  let y=54;doc.setFont('helvetica','bold');doc.setTextColor(24,28,33);doc.setFontSize(8.5);['Nº','PLACA','VEÍCULO','CLIENTE','RESULTADO','VALOR'].forEach((t,i)=>doc.text(t,[M,34,60,112,150,196][i],y,{align:i===5?'right':'left'}));y+=3;doc.setDrawColor(189,242,77);doc.setLineWidth(.6);doc.line(M,y,196,y);y+=6;doc.setFont('helvetica','normal');doc.setFontSize(9);let tot=0;
+  a.forEach(v=>{if(y>275){doc.addPage();y=20}tot+=num(v.valor);[['OK-'+v.num,M],[v.veiculo.placa||'—',34],[vtitle(v).slice(0,26),60],[(v.cliente.nome||'—').slice(0,22),112],[v.resultado||'—',150]].forEach(c=>doc.text(String(c[0]),c[1],y));doc.text(v.valor?brl(v.valor):'—',196,y,{align:'right'});y+=7});
+  doc.line(M,y-3,196,y-3);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Total: '+brl(tot),196,y+4,{align:'right'});doc.save(k+'.pdf')}
+
+/* ============ início ============ */
+(async()=>{await DB.open();S.list=await DB.all();
+  if(!S.list.length&&!lsGet('okcar_seeded',false)){lsSet('okcar_seeded',true);const mk=(pl,marca,modelo,ano,cor,res,cli,val,dias)=>{const v=novo();v.demo=true;v.num=proxNum();v.criada=Date.now()-dias*864e5;v.concluida=true;v.resultado=res;v.cliente.nome=cli;v.valor=val;Object.assign(v.veiculo,{placa:pl,marca,modelo,anoMod:ano,anoFab:ano-1,cor,km:'48200',comb:'Flex'});PARTS.forEach(p=>v.pintura[p.id]={st:res==='Não recomendado'&&p.n<4?'rpt':'nc'});ITENS.forEach(i=>v.estrutura[i.id]=res==='Não recomendado'&&i.g==='Longarinas'?'ap':'ok');v.parecer='Exemplo ilustrativo para demonstração do sistema.';return v};
+    S.list=[mk('EXE1A23','Fiat','Argo Drive 1.0',2022,'Prata','Recomendado','Cliente de exemplo',150,1),mk('EXE2B34','Volkswagen','Nivus Highline',2023,'Cinza','Com ressalvas','Cliente de exemplo',150,3),mk('EXE3C45','Chevrolet','Onix Plus',2021,'Branco','Não recomendado','Cliente de exemplo',150,6)];for(const v of S.list)await DB.put(v)}
+  render()})();
+</script>
+</body>
+</html>
